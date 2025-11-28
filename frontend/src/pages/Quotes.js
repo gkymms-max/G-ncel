@@ -514,7 +514,24 @@ export default function Quotes() {
                       data-testid="discount-value-input"
                     />
                   </div>
-                  <div>
+                </div>
+                
+                <div className="flex items-center space-x-2 mb-4">
+                  <input
+                    type="checkbox"
+                    id="include_vat"
+                    checked={includeVAT}
+                    onChange={(e) => setIncludeVAT(e.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300"
+                    data-testid="include-vat-checkbox"
+                  />
+                  <Label htmlFor="include_vat" className="text-sm font-normal cursor-pointer">
+                    KDV Dahil Et
+                  </Label>
+                </div>
+                
+                {includeVAT && (
+                  <div className="mb-4">
                     <Label htmlFor="vat_rate">KDV Oranı (%)</Label>
                     <Input
                       id="vat_rate"
@@ -523,9 +540,10 @@ export default function Quotes() {
                       value={formData.vat_rate}
                       onChange={(e) => setFormData({ ...formData, vat_rate: parseFloat(e.target.value) || 0 })}
                       data-testid="vat-rate-input"
+                      className="w-32"
                     />
                   </div>
-                </div>
+                )}
 
                 <div className="bg-gray-50 p-4 rounded-lg space-y-2">
                   <div className="flex justify-between text-sm">

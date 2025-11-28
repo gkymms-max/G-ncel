@@ -44,8 +44,10 @@ export default function Quotes() {
     product_id: "",
     quantity: 0,
     unit_price: 0,
-    note: ""
+    note: "",
+    use_package: false
   });
+  const [includeVAT, setIncludeVAT] = useState(false);
 
   useEffect(() => {
     fetchQuotes();

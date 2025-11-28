@@ -86,7 +86,33 @@ export default function Quotes() {
 
     const product = products.find(p => p.id === newItem.product_id);
     const unitPrice = newItem.unit_price || product.unit_price;
-    const subtotal = newItem.quantity * unitPrice;
+    
+    let calculatedQuantity = newItem.quantity;
+    let displayText = "";
+    
+    // Paket bazlı hesaplama
+    if (newItem.use_package) {
+      if (product.unit === "KG" && product.package_kg) {
+        calculatedQuantity = newItem.quantity * product.package_kg;
+        displayText = `${newItem.quantity} paket (${calculatedQuantity} KG)`;
+      } else if (product.unit === "m²" && product.package_m2) {
+        calculatedQuantity = newItem.quantity * product.package_m2;
+        displayText = `${newItem.quantity} paket (${calculatedQuantity} m²)`;
+      } else if (product.unit === "Metre" && product.package_length) {
+        calculatedQuantity = newItem.quantity * product.package_length;
+        displayText = `${newItem.quantity} paket (${calculatedQuantity} Metre)`;
+      } else if (product.unit === "Adet" && product.package_count) {
+        calculatedQuantity = newItem.quantity * product.package_count;
+        displayText = `${newItem.quantity} paket (${calculatedQuantity} Adet)`;
+      } else {
+        toast.error("Bu ürün için paket bilgisi tanımlanmamış");
+        return;
+      }
+    } else {
+      displayText = `${calculatedQuantity} ${product.unit}`;
+    }
+    
+    const subtotal = calculatedQuantity * unitPrice;
 
     const item = {
       product_id: product.id,
@@ -94,14 +120,15 @@ export default function Quotes() {
       product_code: product.code,
       product_image: product.image,
       unit: product.unit,
-      quantity: newItem.quantity,
+      quantity: calculatedQuantity,
+      display_text: displayText,
       unit_price: unitPrice,
       subtotal: subtotal,
       note: newItem.note
     };
 
     setFormData({ ...formData, items: [...formData.items, item] });
-    setNewItem({ product_id: "", quantity: 0, unit_price: 0, note: "" });
+    setNewItem({ product_id: "", quantity: 0, unit_price: 0, note: "", use_package: false });
   };
 
   const removeItem = (index) => {

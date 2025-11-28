@@ -491,10 +491,12 @@ async def get_quote_pdf(quote_id: str, current_user: str = Depends(get_current_u
 # Settings endpoints
 @api_router.get("/settings", response_model=Settings)
 async def get_settings(current_user: str = Depends(get_current_user)):
-    settings = await db.settings.find_one({"id": "company_settings"}, {"_id": 0})
+    settings = await db.settings.find_one({"user_id": current_user}, {"_id": 0})
     if not settings:
-        # Create default settings
+        # Create default settings for this user
         default_settings = Settings(
+            id=str(uuid.uuid4()),
+            user_id=current_user,
             company_name="Firma Adı",
             company_address="Firma Adresi",
             company_phone="+90 XXX XXX XX XX",

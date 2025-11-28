@@ -517,13 +517,22 @@ async def update_settings(settings_update: SettingsUpdate, current_user: str = D
     update_data = {k: v for k, v in settings_update.model_dump().items() if v is not None}
     update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
     
-    await db.settings.update_one(
-        {"id": "company_settings"},
-        {"$set": update_data},
-        upsert=True
-    )
+    # Check if settings exist for this user
+    existing = await db.settings.find_one({"user_id": current_user}, {"_id": 0})
+    if not existing:
+        # Create new settings for this user
+        update_data['id'] = str(uuid.uuid4())
+        update_data['user_id'] = current_user
+        if 'company_name' not in update_data:
+            update_data['company_name'] = "Firma Adı"
+        await db.settings.insert_one(update_data)
+    else:
+        await db.settings.update_one(
+            {"user_id": current_user},
+            {"$set": update_data}
+        )
     
-    settings = await db.settings.find_one({"id": "company_settings"}, {"_id": 0})
+    settings = await db.settings.find_one({"user_id": current_user}, {"_id": 0})
     if isinstance(settings['updated_at'], str):
         settings['updated_at'] = datetime.fromisoformat(settings['updated_at'])
     return settings

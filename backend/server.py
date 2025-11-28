@@ -262,8 +262,8 @@ async def delete_product(product_id: str, current_user: str = Depends(get_curren
 # Quote endpoints
 @api_router.post("/quotes", response_model=Quote)
 async def create_quote(quote: QuoteCreate, current_user: str = Depends(get_current_user)):
-    # Get last quote number
-    last_quote = await db.quotes.find_one({}, {"_id": 0, "quote_number": 1}, sort=[("created_at", -1)])
+    # Get last quote number for this user
+    last_quote = await db.quotes.find_one({"user_id": current_user}, {"_id": 0, "quote_number": 1}, sort=[("created_at", -1)])
     if last_quote and last_quote.get("quote_number"):
         last_num = int(last_quote["quote_number"].split("-")[-1])
         quote_number = f"FT-{last_num + 1:05d}"

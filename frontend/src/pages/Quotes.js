@@ -146,7 +146,7 @@ export default function Quotes() {
       discountAmount = formData.discount_value;
     }
     const afterDiscount = subtotal - discountAmount;
-    const vatAmount = afterDiscount * (formData.vat_rate / 100);
+    const vatAmount = includeVAT ? afterDiscount * (formData.vat_rate / 100) : 0;
     const total = afterDiscount + vatAmount;
 
     return { subtotal, discountAmount, vatAmount, total };

@@ -444,11 +444,18 @@ async def get_quote_pdf(quote_id: str, current_user: str = Depends(get_current_u
     
     # Totals
     totals_data = [
-        ['Ara Toplam:', f"{quote['subtotal']:.2f} {quote['currency']}"],
-        ['İndirim:', f"-{quote['discount_amount']:.2f} {quote['currency']}"],
-        ['KDV (%{:.0f})'.format(quote['vat_rate']), f"{quote['vat_amount']:.2f} {quote['currency']}"],
-        ['GENEL TOPLAM:', f"{quote['total']:.2f} {quote['currency']}"],
+        ['Ara Toplam:', f"{quote['subtotal']:.2f} {quote['currency']}"]
     ]
+    
+    # İndirim varsa ekle
+    if quote['discount_amount'] > 0:
+        totals_data.append(['İndirim:', f"-{quote['discount_amount']:.2f} {quote['currency']}"])
+    
+    # KDV varsa ekle
+    if quote['vat_amount'] > 0:
+        totals_data.append(['KDV (%{:.0f})'.format(quote['vat_rate']), f"{quote['vat_amount']:.2f} {quote['currency']}"])
+    
+    totals_data.append(['GENEL TOPLAM:', f"{quote['total']:.2f} {quote['currency']}"])
     
     totals_table = Table(totals_data, colWidths=[13*cm, 3*cm])
     totals_table.setStyle(TableStyle([

@@ -103,6 +103,7 @@ class QuoteItem(BaseModel):
 class Quote(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
     quote_number: str
     quote_date: datetime
     validity_date: datetime

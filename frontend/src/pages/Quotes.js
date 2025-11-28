@@ -550,14 +550,18 @@ export default function Quotes() {
                     <span className="text-gray-600">Ara Toplam:</span>
                     <span className="font-medium">{totals.subtotal.toFixed(2)} {formData.currency}</span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">İndirim:</span>
-                    <span className="font-medium text-red-600">-{totals.discountAmount.toFixed(2)} {formData.currency}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">KDV ({formData.vat_rate}%):</span>
-                    <span className="font-medium">{totals.vatAmount.toFixed(2)} {formData.currency}</span>
-                  </div>
+                  {formData.discount_value > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">İndirim:</span>
+                      <span className="font-medium text-red-600">-{totals.discountAmount.toFixed(2)} {formData.currency}</span>
+                    </div>
+                  )}
+                  {includeVAT && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">KDV ({formData.vat_rate}%):</span>
+                      <span className="font-medium">{totals.vatAmount.toFixed(2)} {formData.currency}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-lg font-bold border-t pt-2">
                     <span>Genel Toplam:</span>
                     <span className="text-blue-600" data-testid="quote-total">{totals.total.toFixed(2)} {formData.currency}</span>

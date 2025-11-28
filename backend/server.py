@@ -283,6 +283,7 @@ async def create_quote(quote: QuoteCreate, current_user: str = Depends(get_curre
     total = subtotal_after_discount + vat_amount
     
     quote_obj = Quote(
+        user_id=current_user,
         quote_number=quote_number,
         quote_date=datetime.fromisoformat(quote.quote_date),
         validity_date=datetime.fromisoformat(quote.validity_date),

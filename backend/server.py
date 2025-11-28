@@ -413,11 +413,13 @@ async def get_quote_pdf(quote_id: str, current_user: str = Depends(get_current_u
     # Items table
     table_data = [['Ürün Adı', 'Ürün Kodu', 'Birim', 'Miktar', 'Birim Fiyat', 'Toplam']]
     for item in quote['items']:
+        # Display text varsa onu kullan, yoksa sadece miktar
+        quantity_display = item.get('display_text', str(item['quantity']))
         table_data.append([
             item['product_name'],
             item['product_code'],
             item['unit'],
-            str(item['quantity']),
+            quantity_display,
             f"{item['unit_price']:.2f} {quote['currency']}",
             f"{item['subtotal']:.2f} {quote['currency']}"
         ])

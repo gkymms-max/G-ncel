@@ -456,18 +456,15 @@ export default function Quotes() {
                               <div>
                                 <div className="font-medium">{item.product_name}</div>
                                 <div className="text-xs text-gray-500">{item.product_code}</div>
+                                {item.display_text && (
+                                  <div className="text-xs text-blue-600 mt-0.5">{item.display_text}</div>
+                                )}
                               </div>
                             </div>
                           </TableCell>
                           <TableCell>{item.unit}</TableCell>
                           <TableCell>
-                            <Input
-                              type="number"
-                              step="0.01"
-                              value={item.quantity}
-                              onChange={(e) => updateItemQuantity(index, parseFloat(e.target.value) || 0)}
-                              className="w-20"
-                            />
+                            <div className="text-sm">{item.quantity}</div>
                           </TableCell>
                           <TableCell>
                             <Input

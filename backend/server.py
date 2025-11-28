@@ -337,7 +337,7 @@ async def get_quote(quote_id: str, current_user: str = Depends(get_current_user)
 
 @api_router.delete("/quotes/{quote_id}")
 async def delete_quote(quote_id: str, current_user: str = Depends(get_current_user)):
-    result = await db.quotes.delete_one({"id": quote_id})
+    result = await db.quotes.delete_one({"id": quote_id, "user_id": current_user})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Quote not found")
     return {"message": "Quote deleted successfully"}

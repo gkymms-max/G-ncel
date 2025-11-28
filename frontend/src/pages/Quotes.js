@@ -367,51 +367,66 @@ export default function Quotes() {
               {/* Add Items */}
               <div className="border-b pb-4">
                 <h3 className="font-semibold mb-3 text-gray-700">Ürün Ekle</h3>
-                <div className="grid grid-cols-5 gap-3">
-                  <div className="col-span-2">
-                    <Label htmlFor="product">Ürün</Label>
-                    <Select value={newItem.product_id} onValueChange={(value) => {
-                      const product = products.find(p => p.id === value);
-                      setNewItem({ ...newItem, product_id: value, unit_price: product?.unit_price || 0 });
-                    }}>
-                      <SelectTrigger data-testid="product-select">
-                        <SelectValue placeholder="Ürün seçin" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {products.map(product => (
-                          <SelectItem key={product.id} value={product.id}>
-                            {product.name} ({product.code})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                <div className="space-y-3">
+                  <div className="grid grid-cols-5 gap-3">
+                    <div className="col-span-2">
+                      <Label htmlFor="product">Ürün</Label>
+                      <Select value={newItem.product_id} onValueChange={(value) => {
+                        const product = products.find(p => p.id === value);
+                        setNewItem({ ...newItem, product_id: value, unit_price: product?.unit_price || 0 });
+                      }}>
+                        <SelectTrigger data-testid="product-select">
+                          <SelectValue placeholder="Ürün seçin" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {products.map(product => (
+                            <SelectItem key={product.id} value={product.id}>
+                              {product.name} ({product.code})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="quantity">{newItem.use_package ? "Paket Adedi" : "Miktar"}</Label>
+                      <Input
+                        id="quantity"
+                        type="number"
+                        step="0.01"
+                        value={newItem.quantity}
+                        onChange={(e) => setNewItem({ ...newItem, quantity: parseFloat(e.target.value) || 0 })}
+                        data-testid="item-quantity-input"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="item_price">Birim Fiyat</Label>
+                      <Input
+                        id="item_price"
+                        type="number"
+                        step="0.01"
+                        value={newItem.unit_price}
+                        onChange={(e) => setNewItem({ ...newItem, unit_price: parseFloat(e.target.value) || 0 })}
+                        data-testid="item-price-input"
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <Button type="button" onClick={addItemToQuote} className="w-full" data-testid="add-item-button">
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <div>
-                    <Label htmlFor="quantity">Miktar</Label>
-                    <Input
-                      id="quantity"
-                      type="number"
-                      step="0.01"
-                      value={newItem.quantity}
-                      onChange={(e) => setNewItem({ ...newItem, quantity: parseFloat(e.target.value) || 0 })}
-                      data-testid="item-quantity-input"
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="use_package"
+                      checked={newItem.use_package}
+                      onChange={(e) => setNewItem({ ...newItem, use_package: e.target.checked })}
+                      className="h-4 w-4 rounded border-gray-300"
+                      data-testid="use-package-checkbox"
                     />
-                  </div>
-                  <div>
-                    <Label htmlFor="item_price">Birim Fiyat</Label>
-                    <Input
-                      id="item_price"
-                      type="number"
-                      step="0.01"
-                      value={newItem.unit_price}
-                      onChange={(e) => setNewItem({ ...newItem, unit_price: parseFloat(e.target.value) || 0 })}
-                      data-testid="item-price-input"
-                    />
-                  </div>
-                  <div className="flex items-end">
-                    <Button type="button" onClick={addItemToQuote} className="w-full" data-testid="add-item-button">
-                      <Plus className="h-4 w-4" />
-                    </Button>
+                    <Label htmlFor="use_package" className="text-sm font-normal cursor-pointer">
+                      Paket bazlı hesapla (ürünün paket bilgisini kullan)
+                    </Label>
                   </div>
                 </div>
               </div>

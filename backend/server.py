@@ -137,7 +137,8 @@ class QuoteCreate(BaseModel):
 
 class Settings(BaseModel):
     model_config = ConfigDict(extra="ignore")
-    id: str = Field(default="company_settings")
+    id: str
+    user_id: str
     company_name: str
     company_address: Optional[str] = None
     company_phone: Optional[str] = None

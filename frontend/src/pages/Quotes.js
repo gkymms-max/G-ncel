@@ -240,6 +240,7 @@ export default function Quotes() {
           <DialogContent className="max-w-5xl max-h-[95vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Yeni Fiyat Teklifi</DialogTitle>
+              <p className="text-sm text-gray-500">Müşteriniz için yeni bir fiyat teklifi oluşturun</p>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Customer Info */}

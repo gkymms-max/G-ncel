@@ -207,6 +207,7 @@ export default function Products() {
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingProduct ? "Ürün Düzenle" : "Yeni Ürün Ekle"}</DialogTitle>
+              <p className="text-sm text-gray-500">{editingProduct ? "Ürün bilgilerini güncelleyin" : "Yeni bir ürün eklemek için formu doldurun"}</p>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">

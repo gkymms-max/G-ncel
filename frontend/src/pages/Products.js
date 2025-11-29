@@ -219,7 +219,10 @@ export default function Products() {
           <Button
             variant={viewMode === "grid" ? "default" : "outline"}
             size="icon"
-            onClick={() => setViewMode("grid")}
+            onClick={() => {
+              setViewMode("grid");
+              localStorage.setItem('productViewMode', 'grid');
+            }}
             data-testid="grid-view-button"
           >
             <LayoutGrid className="h-4 w-4" />
@@ -227,7 +230,10 @@ export default function Products() {
           <Button
             variant={viewMode === "list" ? "default" : "outline"}
             size="icon"
-            onClick={() => setViewMode("list")}
+            onClick={() => {
+              setViewMode("list");
+              localStorage.setItem('productViewMode', 'list');
+            }}
             data-testid="list-view-button"
           >
             <List className="h-4 w-4" />

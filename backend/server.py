@@ -248,7 +248,7 @@ async def login(user: UserLogin):
         raise HTTPException(status_code=401, detail="Invalid username or password")
     
     access_token = create_access_token(data={"sub": user.username})
-    return Token(access_token=access_token, token_type="bearer")
+    return Token(access_token=access_token, token_type="bearer", role=db_user.get("role", "user"))
 
 # Product endpoints
 @api_router.post("/products", response_model=Product)

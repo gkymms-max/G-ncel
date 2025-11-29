@@ -662,7 +662,7 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
             actual_quantity = str(item['quantity'])
         
         table_data.append([
-            item['product_name'],
+            item['product_name'][:25] + ("..." if len(item['product_name']) > 25 else ""),  # Limit product name length
             unit,
             package_info,
             f"{item['unit_price']:.2f}",

@@ -481,7 +481,7 @@ export default function Products() {
                     <Badge variant="outline">{product.category}</Badge>
                   </TableCell>
                   <TableCell>{product.unit}</TableCell>
-                  <TableCell className="font-bold text-blue-600">{product.unit_price.toFixed(2)} €</TableCell>
+                  <TableCell className="font-bold text-blue-600">{product.unit_price.toFixed(2)} {product.currency || 'EUR'}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
                       <Button

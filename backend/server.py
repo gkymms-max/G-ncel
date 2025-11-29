@@ -624,15 +624,14 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
     story.append(info_table)
     story.append(Spacer(1, 0.5*cm))
     
-    # Items table
+    # Items table - first get all products for lookup
+    all_products = await db.products.find({}, {"_id": 0}).to_list(1000)
+    product_lookup = {p['id']: p for p in all_products}
+    
     table_data = [['Ürün Adı', 'Birim', 'Koli/PK', 'Birim Fiyat', 'Miktar', 'Tutar']]
     for item in quote['items']:
-        # Get product details to determine package info
-        product = None
-        for p in await db.products.find({}, {"_id": 0}).to_list(1000):
-            if p['id'] == item['product_id']:
-                product = p
-                break
+        # Get product details
+        product = product_lookup.get(item['product_id'])
         
         # Calculate package info and actual quantity
         package_info = "-"

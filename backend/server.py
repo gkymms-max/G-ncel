@@ -225,16 +225,21 @@ async def register(user: UserRegister):
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already exists")
     
+    # Check if this is the first user
+    user_count = await db.users.count_documents({})
+    role = "admin" if user_count == 0 else "user"
+    
     user_obj = User(
         username=user.username,
-        password_hash=hash_password(user.password)
+        password_hash=hash_password(user.password),
+        role=role
     )
     doc = user_obj.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.users.insert_one(doc)
     
     access_token = create_access_token(data={"sub": user.username})
-    return Token(access_token=access_token, token_type="bearer")
+    return Token(access_token=access_token, token_type="bearer", role=role)
 
 @api_router.post("/auth/login", response_model=Token)
 async def login(user: UserLogin):

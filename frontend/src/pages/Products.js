@@ -25,7 +25,10 @@ export default function Products() {
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
-  const [viewMode, setViewMode] = useState("grid"); // grid or list
+  const [viewMode, setViewMode] = useState(() => {
+    // Load saved view mode from localStorage
+    return localStorage.getItem('productViewMode') || 'grid';
+  });
   const [formData, setFormData] = useState({
     code: "",
     name: "",

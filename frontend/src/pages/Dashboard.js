@@ -61,30 +61,33 @@ export default function Dashboard({ setIsAuthenticated }) {
         <nav className="flex-1 p-4 space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
+            const active = isActive(item.path);
             return (
-              <Button
+              <button
                 key={item.path}
-                variant={isActive(item.path) ? "default" : "ghost"}
-                className="w-full justify-start"
+                className={`w-full flex items-center px-4 py-3 rounded-lg transition-all ${
+                  active 
+                    ? 'bg-white text-indigo-700 shadow-md font-medium' 
+                    : 'text-indigo-100 hover:bg-indigo-700 hover:text-white'
+                }`}
                 onClick={() => navigate(item.path)}
                 data-testid={`nav-${item.label.toLowerCase()}`}
               >
-                <Icon className="mr-2 h-4 w-4" />
+                <Icon className="mr-3 h-5 w-5" />
                 {item.label}
-              </Button>
+              </button>
             );
           })}
         </nav>
-        <div className="p-4 border-t border-gray-200">
-          <Button
-            variant="outline"
-            className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+        <div className="p-4 border-t border-indigo-500">
+          <button
+            className="w-full flex items-center px-4 py-3 rounded-lg text-indigo-100 hover:bg-red-500 hover:text-white transition-all"
             onClick={handleLogout}
             data-testid="logout-button"
           >
-            <LogOut className="mr-2 h-4 w-4" />
+            <LogOut className="mr-3 h-5 w-5" />
             Çıkış Yap
-          </Button>
+          </button>
         </div>
       </div>
 

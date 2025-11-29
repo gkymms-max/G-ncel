@@ -558,7 +558,7 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
     
     info_table = Table(info_data, colWidths=[3*cm, 5*cm, 3*cm, 5*cm])
     info_table.setStyle(TableStyle([
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTNAME', (0, 0), (-1, -1), font_name),
         ('FONTSIZE', (0, 0), (-1, -1), 9),
         ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#6b7280')),
         ('TEXTCOLOR', (2, 0), (2, -1), colors.HexColor('#6b7280')),

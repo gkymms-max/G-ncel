@@ -522,32 +522,64 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
     heading_style = ParagraphStyle('CustomHeading', parent=styles['Heading2'], fontName=font_bold, fontSize=12, textColor=colors.HexColor('#374151'), spaceAfter=6)
     normal_style = ParagraphStyle('CustomNormal', parent=styles['Normal'], fontName=font_name, fontSize=9, textColor=colors.HexColor('#4b5563'))
     
-    # Logo and company info
-    if settings and settings.get('logo'):
-        try:
-            logo_data = base64.b64decode(settings['logo'].split(',')[1] if ',' in settings['logo'] else settings['logo'])
-            logo_img = RLImage(io.BytesIO(logo_data), width=3*cm, height=3*cm)
-            story.append(logo_img)
-        except:
-            pass
+    # Logo and company info header
+    header_data = []
     
+    # Company info section
     if settings:
-        story.append(Paragraph(settings.get('company_name', 'Firma Adı'), title_style))
+        company_info = []
+        if settings.get('company_name'):
+            company_info.append([Paragraph(settings['company_name'], title_style)])
         if settings.get('company_address'):
-            story.append(Paragraph(settings['company_address'], normal_style))
-        info_parts = []
+            company_info.append([Paragraph(settings['company_address'], normal_style)])
+        
+        contact_info = []
         if settings.get('company_phone'):
-            info_parts.append(f"Tel: {settings['company_phone']}")
+            contact_info.append(f"Tel: {settings['company_phone']}")
         if settings.get('company_email'):
-            info_parts.append(f"E-posta: {settings['company_email']}")
+            contact_info.append(f"E-posta: {settings['company_email']}")
         if settings.get('company_website'):
-            info_parts.append(f"Web: {settings['company_website']}")
-        if info_parts:
-            story.append(Paragraph(" | ".join(info_parts), normal_style))
+            contact_info.append(f"Web: {settings['company_website']}")
+        
+        if contact_info:
+            company_info.append([Paragraph(" | ".join(contact_info), normal_style)])
+        
+        # Create header layout
+        if settings.get('logo'):
+            try:
+                logo_data = base64.b64decode(settings['logo'].split(',')[1] if ',' in settings['logo'] else settings['logo'])
+                logo_img = RLImage(io.BytesIO(logo_data), width=4*cm, height=3*cm)
+                
+                # Create header table with logo and company info side by side
+                header_table_data = [[logo_img, company_info]]
+                header_table = Table(header_table_data, colWidths=[5*cm, 11*cm])
+                header_table.setStyle(TableStyle([
+                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                    ('ALIGN', (0, 0), (0, 0), 'LEFT'),
+                    ('ALIGN', (1, 0), (1, 0), 'LEFT'),
+                    ('LEFTPADDING', (1, 0), (1, 0), 20),
+                ]))
+                story.append(header_table)
+            except:
+                # If logo fails, just add company info
+                for info in company_info:
+                    story.append(info[0])
+        else:
+            # No logo, just company info
+            for info in company_info:
+                story.append(info[0])
+    else:
+        story.append(Paragraph("Firma Adı", title_style))
     
+    story.append(Spacer(1, 0.8*cm))
+    
+    # Quote title
+    quote_title = Paragraph("FİYAT TEKLİFİ", 
+                           ParagraphStyle('QuoteTitle', parent=title_style, 
+                                        fontSize=24, textColor=colors.HexColor('#1e40af'), 
+                                        alignment=1, spaceAfter=20))
+    story.append(quote_title)
     story.append(Spacer(1, 0.5*cm))
-    story.append(Paragraph("FİYAT TEKLİFİ", title_style))
-    story.append(Spacer(1, 0.3*cm))
     
     # Quote info
     info_data = [

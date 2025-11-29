@@ -422,7 +422,7 @@ export default function Products() {
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Fiyat:</span>
-                    <span className="font-bold text-blue-600">{product.unit_price.toFixed(2)} €</span>
+                    <span className="font-bold text-blue-600">{product.unit_price.toFixed(2)} {product.currency || 'EUR'}</span>
                   </div>
                   {product.description && (
                     <p className="text-xs text-gray-500 line-clamp-2 mt-2">{product.description}</p>

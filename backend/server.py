@@ -670,7 +670,7 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
             f"{item['subtotal']:.2f} {quote['currency']}"
         ])
     
-    items_table = Table(table_data, colWidths=[6*cm, 2*cm, 2*cm, 2.5*cm, 2.5*cm, 3*cm])
+    items_table = Table(table_data, colWidths=[7*cm, 1.8*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2.5*cm])
     items_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor(theme["primary"])),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -682,7 +682,7 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
         ('FONTNAME', (0, 0), (-1, 0), font_bold),
         ('FONTSIZE', (0, 0), (-1, 0), 8),       # Header font size
         ('FONTNAME', (0, 1), (-1, -1), font_name),
-        ('FONTSIZE', (0, 1), (-1, -1), 7),      # Content font size smaller
+        ('FONTSIZE', (0, 1), (-1, -1), 7),      # Content font size
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f9fafb')]),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#d1d5db')),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
@@ -690,7 +690,8 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
         ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
         ('LEFTPADDING', (0, 0), (-1, -1), 4),
         ('RIGHTPADDING', (0, 0), (-1, -1), 4),
-        ('WORDWRAP', (0, 1), (0, -1), 'LTR'),  # Wrap text in product name column
+        # Allow text wrapping in product name column for long names
+        ('WORDWRAP', (0, 1), (0, -1), 'CJK'),
     ]))
     story.append(items_table)
     story.append(Spacer(1, 0.3*cm))

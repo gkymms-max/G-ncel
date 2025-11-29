@@ -24,6 +24,7 @@ export default function Login({ setIsAuthenticated }) {
       const response = await axios.post(endpoint, { username, password });
       
       localStorage.setItem('token', response.data.access_token);
+      localStorage.setItem('role', response.data.role);
       setIsAuthenticated(true);
       toast.success(isLogin ? "Giriş başarılı!" : "Kayıt başarılı!");
     } catch (error) {

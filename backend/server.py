@@ -485,11 +485,11 @@ async def delete_quote(quote_id: str, current_user: dict = Depends(get_current_u
 
 @api_router.get("/quotes/{quote_id}/pdf")
 async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_user)):
-    quote = await db.quotes.find_one({"id": quote_id, "user_id": current_user}, {"_id": 0})
+    quote = await db.quotes.find_one({"id": quote_id, "user_id": current_user["username"]}, {"_id": 0})
     if not quote:
         raise HTTPException(status_code=404, detail="Quote not found")
     
-    settings = await db.settings.find_one({"user_id": current_user}, {"_id": 0})
+    settings = await db.settings.find_one({"user_id": current_user["username"]}, {"_id": 0})
     
     # Convert datetime strings
     if isinstance(quote['quote_date'], str):

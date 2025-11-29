@@ -191,6 +191,12 @@ class SettingsUpdate(BaseModel):
     logo: Optional[str] = None
     default_currency: Optional[str] = None
     default_vat_rate: Optional[float] = None
+    # PDF Settings
+    pdf_show_product_code: Optional[bool] = None
+    pdf_show_unit: Optional[bool] = None
+    pdf_theme: Optional[Literal["blue", "green", "purple", "orange"]] = None
+    # UI Theme
+    ui_theme: Optional[Literal["light", "dark"]] = None
 
 # Auth helpers
 def hash_password(password: str) -> str:

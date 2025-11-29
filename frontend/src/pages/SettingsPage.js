@@ -72,7 +72,7 @@ export default function SettingsPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Space Grotesk' }}>Ayarlar</h1>
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2" style={{ fontFamily: 'Space Grotesk' }}>Ayarlar</h1>
         <p className="text-gray-600">Firma bilgilerinizi ve varsayılan ayarları yönetin</p>
       </div>
 

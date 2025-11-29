@@ -290,17 +290,33 @@ export default function Products() {
                 </div>
               </div>
 
-              <div>
-                <Label htmlFor="unit_price">Birim Fiyat *</Label>
-                <Input
-                  id="unit_price"
-                  type="number"
-                  step="0.01"
-                  value={formData.unit_price}
-                  onChange={(e) => setFormData({ ...formData, unit_price: parseFloat(e.target.value) })}
-                  required
-                  data-testid="product-price-input"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="unit_price">Birim Fiyat *</Label>
+                  <Input
+                    id="unit_price"
+                    type="number"
+                    step="0.01"
+                    value={formData.unit_price}
+                    onChange={(e) => setFormData({ ...formData, unit_price: parseFloat(e.target.value) })}
+                    required
+                    data-testid="product-price-input"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="currency">Para Birimi *</Label>
+                  <Select value={formData.currency} onValueChange={(value) => setFormData({ ...formData, currency: value })}>
+                    <SelectTrigger data-testid="product-currency-select">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="EUR">EUR (€)</SelectItem>
+                      <SelectItem value="USD">USD ($)</SelectItem>
+                      <SelectItem value="TL">TL (₺)</SelectItem>
+                      <SelectItem value="GBP">GBP (£)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               <div className="border-t pt-4">

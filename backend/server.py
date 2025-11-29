@@ -174,6 +174,12 @@ class Settings(BaseModel):
     logo: Optional[str] = None
     default_currency: str = "EUR"
     default_vat_rate: float = 18.0
+    # PDF Settings
+    pdf_show_product_code: bool = False
+    pdf_show_unit: bool = False
+    pdf_theme: Literal["blue", "green", "purple", "orange"] = "blue"
+    # UI Theme
+    ui_theme: Literal["light", "dark"] = "light"
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class SettingsUpdate(BaseModel):

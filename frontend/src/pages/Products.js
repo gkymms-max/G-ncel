@@ -102,9 +102,12 @@ export default function Products() {
     }
   };
 
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
+    setLoading(true);
 
     try {
       if (editingProduct) {
@@ -123,6 +126,8 @@ export default function Products() {
       fetchProducts();
     } catch (error) {
       toast.error(error.response?.data?.detail || "Bir hata oluştu");
+    } finally {
+      setLoading(false);
     }
   };
 

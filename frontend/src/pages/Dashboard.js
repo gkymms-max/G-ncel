@@ -46,10 +46,17 @@ export default function Dashboard({ setIsAuthenticated }) {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-      <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        <div className="p-6 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-gray-800" style={{ fontFamily: 'Space Grotesk' }}>Fiyat Teklifi</h1>
-          <p className="text-sm text-gray-500 mt-1">Yönetim Paneli</p>
+      <div className="w-64 bg-gradient-to-b from-indigo-600 to-indigo-800 flex flex-col shadow-xl">
+        <div className="p-6 border-b border-indigo-500">
+          <h1 className="text-2xl font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>Fiyat Teklifi</h1>
+          <p className="text-sm text-indigo-200 mt-1">Yönetim Paneli</p>
+          {isAdmin && (
+            <div className="mt-3">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500 text-white">
+                Admin
+              </span>
+            </div>
+          )}
         </div>
         <nav className="flex-1 p-4 space-y-2">
           {menuItems.map((item) => {

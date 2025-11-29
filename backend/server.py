@@ -529,8 +529,19 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
         font_name = 'Helvetica'
         font_bold = 'Helvetica-Bold'
     
+    # Theme colors based on settings
+    theme_colors = {
+        "blue": {"primary": "#1e40af", "secondary": "#3b82f6"},
+        "green": {"primary": "#059669", "secondary": "#10b981"},
+        "purple": {"primary": "#7c3aed", "secondary": "#8b5cf6"},
+        "orange": {"primary": "#ea580c", "secondary": "#f97316"}
+    }
+    
+    pdf_theme = settings.get('pdf_theme', 'blue') if settings else 'blue'
+    theme = theme_colors.get(pdf_theme, theme_colors["blue"])
+    
     styles = getSampleStyleSheet()
-    title_style = ParagraphStyle('CustomTitle', parent=styles['Heading1'], fontName=font_bold, fontSize=20, textColor=colors.HexColor('#1e40af'), spaceAfter=12)
+    title_style = ParagraphStyle('CustomTitle', parent=styles['Heading1'], fontName=font_bold, fontSize=20, textColor=colors.HexColor(theme["primary"]), spaceAfter=12)
     heading_style = ParagraphStyle('CustomHeading', parent=styles['Heading2'], fontName=font_bold, fontSize=12, textColor=colors.HexColor('#374151'), spaceAfter=6)
     normal_style = ParagraphStyle('CustomNormal', parent=styles['Normal'], fontName=font_name, fontSize=9, textColor=colors.HexColor('#4b5563'))
     

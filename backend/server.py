@@ -638,9 +638,9 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
     
     items_table = Table(table_data, colWidths=[7*cm, 3*cm, 3*cm, 3*cm])
     items_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e40af')),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor(theme["primary"])),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (3, 0), (-1, -1), 'RIGHT'),
+        ('ALIGN', (1, 0), (-1, -1), 'RIGHT'),
         ('FONTNAME', (0, 0), (-1, 0), font_bold),
         ('FONTSIZE', (0, 0), (-1, 0), 9),
         ('FONTNAME', (0, 1), (-1, -1), font_name),

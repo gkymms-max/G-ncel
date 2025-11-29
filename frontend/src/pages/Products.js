@@ -379,60 +379,117 @@ export default function Products() {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredProducts.map(product => (
-          <Card key={product.id} className="hover:shadow-lg transition-shadow" data-testid="product-card">
-            <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <CardTitle className="text-lg mb-1">{product.name}</CardTitle>
-                  <p className="text-sm text-gray-500">Kod: {product.code}</p>
+      {viewMode === "grid" ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredProducts.map(product => (
+            <Card key={product.id} className="hover:shadow-lg transition-shadow" data-testid="product-card">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <CardTitle className="text-lg mb-1">{product.name}</CardTitle>
+                    <p className="text-sm text-gray-500">Kod: {product.code}</p>
+                  </div>
+                  {product.image && (
+                    <img src={product.image} alt={product.name} className="h-16 w-16 object-cover rounded ml-2" />
+                  )}
                 </div>
-                {product.image && (
-                  <img src={product.image} alt={product.name} className="h-16 w-16 object-cover rounded ml-2" />
-                )}
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Badge variant="outline">{product.category}</Badge>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Birim:</span>
-                  <span className="font-medium">{product.unit}</span>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Badge variant="outline">{product.category}</Badge>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">Birim:</span>
+                    <span className="font-medium">{product.unit}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">Fiyat:</span>
+                    <span className="font-bold text-blue-600">{product.unit_price.toFixed(2)} €</span>
+                  </div>
+                  {product.description && (
+                    <p className="text-xs text-gray-500 line-clamp-2 mt-2">{product.description}</p>
+                  )}
+                  <div className="flex gap-2 mt-4">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => openEditDialog(product)}
+                      data-testid="edit-product-button"
+                    >
+                      <Edit className="h-3 w-3 mr-1" />
+                      Düzenle
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-red-600 hover:bg-red-50"
+                      onClick={() => handleDelete(product.id)}
+                      data-testid="delete-product-button"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Fiyat:</span>
-                  <span className="font-bold text-blue-600">{product.unit_price.toFixed(2)} €</span>
-                </div>
-                {product.description && (
-                  <p className="text-xs text-gray-500 line-clamp-2 mt-2">{product.description}</p>
-                )}
-                <div className="flex gap-2 mt-4">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex-1"
-                    onClick={() => openEditDialog(product)}
-                    data-testid="edit-product-button"
-                  >
-                    <Edit className="h-3 w-3 mr-1" />
-                    Düzenle
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="text-red-600 hover:bg-red-50"
-                    onClick={() => handleDelete(product.id)}
-                    data-testid="delete-product-button"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="border rounded-lg">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-16"></TableHead>
+                <TableHead>Ürün Adı</TableHead>
+                <TableHead>Ürün Kodu</TableHead>
+                <TableHead>Kategori</TableHead>
+                <TableHead>Birim</TableHead>
+                <TableHead>Birim Fiyat</TableHead>
+                <TableHead className="w-32">İşlemler</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredProducts.map(product => (
+                <TableRow key={product.id} data-testid="product-row">
+                  <TableCell>
+                    {product.image && (
+                      <img src={product.image} alt={product.name} className="h-12 w-12 object-cover rounded" />
+                    )}
+                  </TableCell>
+                  <TableCell className="font-medium">{product.name}</TableCell>
+                  <TableCell>{product.code}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{product.category}</Badge>
+                  </TableCell>
+                  <TableCell>{product.unit}</TableCell>
+                  <TableCell className="font-bold text-blue-600">{product.unit_price.toFixed(2)} €</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => openEditDialog(product)}
+                        data-testid="edit-product-button"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-red-600 hover:bg-red-50"
+                        onClick={() => handleDelete(product.id)}
+                        data-testid="delete-product-button"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
 
       {filteredProducts.length === 0 && (
         <div className="text-center py-16">

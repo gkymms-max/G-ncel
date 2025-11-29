@@ -464,6 +464,7 @@ export default function Products() {
                 <TableHead>Kategori</TableHead>
                 <TableHead>Birim</TableHead>
                 <TableHead>Birim Fiyat</TableHead>
+                <TableHead>Para Birimi</TableHead>
                 <TableHead className="w-32">İşlemler</TableHead>
               </TableRow>
             </TableHeader>
@@ -481,7 +482,10 @@ export default function Products() {
                     <Badge variant="outline">{product.category}</Badge>
                   </TableCell>
                   <TableCell>{product.unit}</TableCell>
-                  <TableCell className="font-bold text-blue-600">{product.unit_price.toFixed(2)} {product.currency || 'EUR'}</TableCell>
+                  <TableCell className="font-bold text-blue-600">{product.unit_price.toFixed(2)}</TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">{product.currency || 'EUR'}</Badge>
+                  </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
                       <Button

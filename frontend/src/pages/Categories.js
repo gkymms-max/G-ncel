@@ -86,7 +86,7 @@ export default function Categories() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Space Grotesk' }}>Kategori Yönetimi</h1>
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent mb-2" style={{ fontFamily: 'Space Grotesk' }}>Kategori Yönetimi</h1>
         <p className="text-gray-600">Ürün kategorilerini ekleyin ve yönetin</p>
       </div>
 

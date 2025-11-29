@@ -674,15 +674,20 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
     items_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor(theme["primary"])),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (2, 0), (-1, -1), 'CENTER'),  # Koli/PK, Birim Fiyat, Miktar, Tutar columns centered
-        ('ALIGN', (5, 0), (5, -1), 'RIGHT'),   # Tutar column right aligned
+        ('ALIGN', (1, 0), (1, -1), 'CENTER'),   # Birim column centered
+        ('ALIGN', (2, 0), (2, -1), 'CENTER'),   # Koli/PK column centered
+        ('ALIGN', (3, 0), (3, -1), 'RIGHT'),    # Birim Fiyat column right
+        ('ALIGN', (4, 0), (4, -1), 'CENTER'),   # Miktar column centered
+        ('ALIGN', (5, 0), (5, -1), 'RIGHT'),    # Tutar column right aligned
         ('FONTNAME', (0, 0), (-1, 0), font_bold),
-        ('FONTSIZE', (0, 0), (-1, 0), 8),
+        ('FONTSIZE', (0, 0), (-1, 0), 9),       # Header font size increased
         ('FONTNAME', (0, 1), (-1, -1), font_name),
-        ('FONTSIZE', (0, 1), (-1, -1), 7),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
-        ('TOPPADDING', (0, 1), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 4),
+        ('FONTSIZE', (0, 1), (-1, -1), 8),      # Content font size increased
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ('TOPPADDING', (0, 1), (-1, -1), 5),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 5),
+        ('LEFTPADDING', (0, 0), (-1, -1), 3),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 3),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#d1d5db')),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f9fafb')]),
     ]))

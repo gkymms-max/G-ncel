@@ -322,7 +322,34 @@ async def delete_category(category_id: str, current_user: dict = Depends(get_adm
         raise HTTPException(status_code=404, detail="Category not found")
     return {"message": "Category deleted successfully"}
 
-# User Management endpoints (Admin only)
+class UserCreateByAdmin(BaseModel):
+    username: str
+    password: str
+    role: Literal["admin", "user"] = "user"
+
+# Contact Channels endpoints (Admin only)
+@api_router.get("/contact-channels", response_model=List[ContactChannel])
+async def get_contact_channels(current_user: dict = Depends(get_current_user)):
+    channels = await db.contact_channels.find({}, {"_id": 0}).to_list(1000)
+    for channel in channels:
+        if isinstance(channel['created_at'], str):
+            channel['created_at'] = datetime.fromisoformat(channel['created_at'])
+    return channels
+
+@api_router.post("/contact-channels", response_model=ContactChannel)
+async def create_contact_channel(channel: ContactChannelCreate, current_user: dict = Depends(get_admin_user)):
+    channel_obj = ContactChannel(**channel.model_dump())
+    doc = channel_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.contact_channels.insert_one(doc)
+    return channel_obj
+
+@api_router.delete("/contact-channels/{channel_id}")
+async def delete_contact_channel(channel_id: str, current_user: dict = Depends(get_admin_user)):
+    result = await db.contact_channels.delete_one({"id": channel_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Contact channel not found")
+    return {"message": "Contact channel deleted successfully"}
 @api_router.get("/users", response_model=List[UserResponse])
 async def get_users(current_user: dict = Depends(get_admin_user)):
     users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)

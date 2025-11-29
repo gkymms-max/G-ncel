@@ -465,7 +465,7 @@ async def get_quotes(current_user: dict = Depends(get_current_user)):
 
 @api_router.get("/quotes/{quote_id}", response_model=Quote)
 async def get_quote(quote_id: str, current_user: dict = Depends(get_current_user)):
-    quote = await db.quotes.find_one({"id": quote_id, "user_id": current_user}, {"_id": 0})
+    quote = await db.quotes.find_one({"id": quote_id, "user_id": current_user["username"]}, {"_id": 0})
     if not quote:
         raise HTTPException(status_code=404, detail="Quote not found")
     if isinstance(quote['quote_date'], str):

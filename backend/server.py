@@ -80,10 +80,20 @@ class UserResponse(BaseModel):
     role: str
     created_at: datetime
 
-class UserCreateByAdmin(BaseModel):
-    username: str
-    password: str
-    role: Literal["admin", "user"] = "user"
+class ContactChannel(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    type: Literal["whatsapp", "instagram", "facebook", "linkedin", "twitter", "website", "email", "phone"]
+    title: str  # Görünen isim
+    value: str  # Numara, URL, email
+    icon: Optional[str] = None  # Icon class
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ContactChannelCreate(BaseModel):
+    type: Literal["whatsapp", "instagram", "facebook", "linkedin", "twitter", "website", "email", "phone"]
+    title: str
+    value: str
+    icon: Optional[str] = None
 
 class Product(BaseModel):
     model_config = ConfigDict(extra="ignore")

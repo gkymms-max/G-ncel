@@ -371,7 +371,7 @@ async def get_products(current_user: dict = Depends(get_current_user)):
     return products
 
 @api_router.get("/products/{product_id}", response_model=Product)
-async def get_product(product_id: str, current_user: str = Depends(get_current_user)):
+async def get_product(product_id: str, current_user: dict = Depends(get_current_user)):
     product = await db.products.find_one({"id": product_id}, {"_id": 0})
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -380,7 +380,7 @@ async def get_product(product_id: str, current_user: str = Depends(get_current_u
     return product
 
 @api_router.put("/products/{product_id}", response_model=Product)
-async def update_product(product_id: str, product: ProductCreate, current_user: str = Depends(get_current_user)):
+async def update_product(product_id: str, product: ProductCreate, current_user: dict = Depends(get_current_user)):
     existing_product = await db.products.find_one({"id": product_id}, {"_id": 0})
     if not existing_product:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -394,7 +394,7 @@ async def update_product(product_id: str, product: ProductCreate, current_user: 
     return updated_product
 
 @api_router.delete("/products/{product_id}")
-async def delete_product(product_id: str, current_user: str = Depends(get_current_user)):
+async def delete_product(product_id: str, current_user: dict = Depends(get_current_user)):
     result = await db.products.delete_one({"id": product_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -402,7 +402,7 @@ async def delete_product(product_id: str, current_user: str = Depends(get_curren
 
 # Quote endpoints
 @api_router.post("/quotes", response_model=Quote)
-async def create_quote(quote: QuoteCreate, current_user: str = Depends(get_current_user)):
+async def create_quote(quote: QuoteCreate, current_user: dict = Depends(get_current_user)):
     # Get last quote number for this user
     last_quote = await db.quotes.find_one({"user_id": current_user}, {"_id": 0, "quote_number": 1}, sort=[("created_at", -1)])
     if last_quote and last_quote.get("quote_number"):
@@ -452,7 +452,7 @@ async def create_quote(quote: QuoteCreate, current_user: str = Depends(get_curre
     return quote_obj
 
 @api_router.get("/quotes", response_model=List[Quote])
-async def get_quotes(current_user: str = Depends(get_current_user)):
+async def get_quotes(current_user: dict = Depends(get_current_user)):
     quotes = await db.quotes.find({"user_id": current_user}, {"_id": 0}).to_list(1000)
     for quote in quotes:
         if isinstance(quote['quote_date'], str):
@@ -464,7 +464,7 @@ async def get_quotes(current_user: str = Depends(get_current_user)):
     return quotes
 
 @api_router.get("/quotes/{quote_id}", response_model=Quote)
-async def get_quote(quote_id: str, current_user: str = Depends(get_current_user)):
+async def get_quote(quote_id: str, current_user: dict = Depends(get_current_user)):
     quote = await db.quotes.find_one({"id": quote_id, "user_id": current_user}, {"_id": 0})
     if not quote:
         raise HTTPException(status_code=404, detail="Quote not found")
@@ -477,14 +477,14 @@ async def get_quote(quote_id: str, current_user: str = Depends(get_current_user)
     return quote
 
 @api_router.delete("/quotes/{quote_id}")
-async def delete_quote(quote_id: str, current_user: str = Depends(get_current_user)):
+async def delete_quote(quote_id: str, current_user: dict = Depends(get_current_user)):
     result = await db.quotes.delete_one({"id": quote_id, "user_id": current_user})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Quote not found")
     return {"message": "Quote deleted successfully"}
 
 @api_router.get("/quotes/{quote_id}/pdf")
-async def get_quote_pdf(quote_id: str, current_user: str = Depends(get_current_user)):
+async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_user)):
     quote = await db.quotes.find_one({"id": quote_id, "user_id": current_user}, {"_id": 0})
     if not quote:
         raise HTTPException(status_code=404, detail="Quote not found")
@@ -631,7 +631,7 @@ async def get_quote_pdf(quote_id: str, current_user: str = Depends(get_current_u
 
 # Settings endpoints
 @api_router.get("/settings", response_model=Settings)
-async def get_settings(current_user: str = Depends(get_current_user)):
+async def get_settings(current_user: dict = Depends(get_current_user)):
     settings = await db.settings.find_one({"user_id": current_user}, {"_id": 0})
     if not settings:
         # Create default settings for this user
@@ -654,7 +654,7 @@ async def get_settings(current_user: str = Depends(get_current_user)):
     return settings
 
 @api_router.put("/settings", response_model=Settings)
-async def update_settings(settings_update: SettingsUpdate, current_user: str = Depends(get_current_user)):
+async def update_settings(settings_update: SettingsUpdate, current_user: dict = Depends(get_current_user)):
     update_data = {k: v for k, v in settings_update.model_dump().items() if v is not None}
     update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
     

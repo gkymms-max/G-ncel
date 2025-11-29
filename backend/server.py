@@ -250,9 +250,112 @@ async def login(user: UserLogin):
     access_token = create_access_token(data={"sub": user.username})
     return Token(access_token=access_token, token_type="bearer", role=db_user.get("role", "user"))
 
+# Category endpoints (Admin only)
+@api_router.get("/categories", response_model=List[Category])
+async def get_categories(current_user: dict = Depends(get_current_user)):
+    categories = await db.categories.find({}, {"_id": 0}).to_list(1000)
+    for cat in categories:
+        if isinstance(cat['created_at'], str):
+            cat['created_at'] = datetime.fromisoformat(cat['created_at'])
+    return categories
+
+@api_router.post("/categories", response_model=Category)
+async def create_category(category: CategoryCreate, current_user: dict = Depends(get_admin_user)):
+    # Check if category already exists
+    existing = await db.categories.find_one({"name": category.name}, {"_id": 0})
+    if existing:
+        raise HTTPException(status_code=400, detail="Category already exists")
+    
+    cat_obj = Category(name=category.name)
+    doc = cat_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.categories.insert_one(doc)
+    return cat_obj
+
+@api_router.put("/categories/{category_id}", response_model=Category)
+async def update_category(category_id: str, category: CategoryCreate, current_user: dict = Depends(get_admin_user)):
+    existing = await db.categories.find_one({"id": category_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Category not found")
+    
+    # Check if new name already exists (excluding current category)
+    name_exists = await db.categories.find_one({"name": category.name, "id": {"$ne": category_id}}, {"_id": 0})
+    if name_exists:
+        raise HTTPException(status_code=400, detail="Category name already exists")
+    
+    await db.categories.update_one({"id": category_id}, {"$set": {"name": category.name}})
+    updated = await db.categories.find_one({"id": category_id}, {"_id": 0})
+    if isinstance(updated['created_at'], str):
+        updated['created_at'] = datetime.fromisoformat(updated['created_at'])
+    return updated
+
+@api_router.delete("/categories/{category_id}")
+async def delete_category(category_id: str, current_user: dict = Depends(get_admin_user)):
+    result = await db.categories.delete_one({"id": category_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Category not found")
+    return {"message": "Category deleted successfully"}
+
+# User Management endpoints (Admin only)
+@api_router.get("/users", response_model=List[UserResponse])
+async def get_users(current_user: dict = Depends(get_admin_user)):
+    users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)
+    for user in users:
+        if isinstance(user['created_at'], str):
+            user['created_at'] = datetime.fromisoformat(user['created_at'])
+    return users
+
+@api_router.post("/users", response_model=UserResponse)
+async def create_user_by_admin(user: UserCreateByAdmin, current_user: dict = Depends(get_admin_user)):
+    existing = await db.users.find_one({"username": user.username}, {"_id": 0})
+    if existing:
+        raise HTTPException(status_code=400, detail="Username already exists")
+    
+    user_obj = User(
+        username=user.username,
+        password_hash=hash_password(user.password),
+        role=user.role
+    )
+    doc = user_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.users.insert_one(doc)
+    
+    return UserResponse(
+        id=user_obj.id,
+        username=user_obj.username,
+        role=user_obj.role,
+        created_at=user_obj.created_at
+    )
+
+@api_router.delete("/users/{user_id}")
+async def delete_user(user_id: str, current_user: dict = Depends(get_admin_user)):
+    # Don't allow deleting yourself
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if user and user["username"] == current_user["username"]:
+        raise HTTPException(status_code=400, detail="Cannot delete your own account")
+    
+    result = await db.users.delete_one({"id": user_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"message": "User deleted successfully"}
+
+@api_router.put("/users/{user_id}/password")
+async def reset_user_password(user_id: str, password_data: dict, current_user: dict = Depends(get_admin_user)):
+    new_password = password_data.get("password")
+    if not new_password or len(new_password) < 4:
+        raise HTTPException(status_code=400, detail="Password must be at least 4 characters")
+    
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"password_hash": hash_password(new_password)}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"message": "Password reset successfully"}
+
 # Product endpoints
 @api_router.post("/products", response_model=Product)
-async def create_product(product: ProductCreate, current_user: str = Depends(get_current_user)):
+async def create_product(product: ProductCreate, current_user: dict = Depends(get_current_user)):
     product_obj = Product(**product.model_dump())
     doc = product_obj.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()

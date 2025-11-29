@@ -670,7 +670,7 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
             f"{item['subtotal']:.2f} {quote['currency']}"
         ])
     
-    items_table = Table(table_data, colWidths=[4*cm, 1.5*cm, 1.5*cm, 2*cm, 2*cm, 2.5*cm])
+    items_table = Table(table_data, colWidths=[5*cm, 1.8*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2.5*cm])
     items_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor(theme["primary"])),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),

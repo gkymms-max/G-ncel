@@ -363,7 +363,7 @@ async def create_product(product: ProductCreate, current_user: dict = Depends(ge
     return product_obj
 
 @api_router.get("/products", response_model=List[Product])
-async def get_products(current_user: str = Depends(get_current_user)):
+async def get_products(current_user: dict = Depends(get_current_user)):
     products = await db.products.find({}, {"_id": 0}).to_list(1000)
     for product in products:
         if isinstance(product['created_at'], str):

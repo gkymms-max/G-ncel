@@ -570,20 +570,18 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
     story.append(Spacer(1, 0.5*cm))
     
     # Items table
-    table_data = [['Ürün Adı', 'Ürün Kodu', 'Birim', 'Miktar', 'Birim Fiyat', 'Toplam']]
+    table_data = [['Ürün Adı', 'Miktar', 'Birim Fiyat', 'Toplam']]
     for item in quote['items']:
         # Display text varsa onu kullan, yoksa sadece miktar
         quantity_display = item.get('display_text', str(item['quantity']))
         table_data.append([
             item['product_name'],
-            item['product_code'],
-            item['unit'],
             quantity_display,
             f"{item['unit_price']:.2f} {quote['currency']}",
             f"{item['subtotal']:.2f} {quote['currency']}"
         ])
     
-    items_table = Table(table_data, colWidths=[5*cm, 3*cm, 2*cm, 2*cm, 3*cm, 3*cm])
+    items_table = Table(table_data, colWidths=[7*cm, 3*cm, 3*cm, 3*cm])
     items_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e40af')),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),

@@ -42,7 +42,20 @@ export default function Products() {
 
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/categories`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Kategoriler yüklenemedi", error);
+    }
+  };
 
   useEffect(() => {
     filterProducts();

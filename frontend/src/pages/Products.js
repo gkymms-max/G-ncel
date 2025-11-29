@@ -168,6 +168,7 @@ export default function Products() {
       category: "",
       unit: "Adet",
       unit_price: 0,
+      currency: "EUR",
       package_kg: null,
       package_m2: null,
       package_length: null,

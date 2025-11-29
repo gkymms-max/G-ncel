@@ -101,7 +101,7 @@ export default function Users() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Space Grotesk' }}>Kullanıcı Yönetimi</h1>
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent mb-2" style={{ fontFamily: 'Space Grotesk' }}>Kullanıcı Yönetimi</h1>
         <p className="text-gray-600">Pazarlamacı personelleri yönetin</p>
       </div>
 

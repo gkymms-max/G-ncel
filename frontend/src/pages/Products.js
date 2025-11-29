@@ -395,8 +395,10 @@ export default function Products() {
               </div>
 
               <div className="flex gap-2 justify-end">
-                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>İptal</Button>
-                <Button type="submit" data-testid="save-product-button">Kaydet</Button>
+                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)} disabled={loading}>İptal</Button>
+                <Button type="submit" data-testid="save-product-button" disabled={loading}>
+                  {loading ? "Kaydediliyor..." : "Kaydet"}
+                </Button>
               </div>
             </form>
           </DialogContent>

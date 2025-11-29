@@ -269,9 +269,11 @@ export default function Products() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="category">Kategori *</Label>
-                  <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                  <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })} required>
                     <SelectTrigger data-testid="product-category-select">
-                      <SelectValue placeholder="Kategori seçin" />
+                      <SelectValue placeholder="Kategori seçin">
+                        {formData.category || "Kategori seçin"}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map(cat => (
@@ -279,6 +281,9 @@ export default function Products() {
                       ))}
                     </SelectContent>
                   </Select>
+                  {formData.category && (
+                    <p className="text-xs text-gray-500 mt-1">Seçili: {formData.category}</p>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="unit">Birim *</Label>

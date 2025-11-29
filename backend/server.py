@@ -60,6 +60,28 @@ class UserRegister(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    role: str
+
+class Category(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class CategoryCreate(BaseModel):
+    name: str
+
+class UserResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    username: str
+    role: str
+    created_at: datetime
+
+class UserCreateByAdmin(BaseModel):
+    username: str
+    password: str
+    role: Literal["admin", "user"] = "user"
 
 class Product(BaseModel):
     model_config = ConfigDict(extra="ignore")

@@ -106,6 +106,7 @@ class ProductCreate(BaseModel):
     category: str
     unit: Literal["KG", "Metre", "m²", "Adet"]
     unit_price: float
+    currency: str = "EUR"
     package_kg: Optional[float] = None
     package_m2: Optional[float] = None
     package_length: Optional[float] = None

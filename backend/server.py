@@ -453,7 +453,7 @@ async def create_quote(quote: QuoteCreate, current_user: dict = Depends(get_curr
 
 @api_router.get("/quotes", response_model=List[Quote])
 async def get_quotes(current_user: dict = Depends(get_current_user)):
-    quotes = await db.quotes.find({"user_id": current_user}, {"_id": 0}).to_list(1000)
+    quotes = await db.quotes.find({"user_id": current_user["username"]}, {"_id": 0}).to_list(1000)
     for quote in quotes:
         if isinstance(quote['quote_date'], str):
             quote['quote_date'] = datetime.fromisoformat(quote['quote_date'])

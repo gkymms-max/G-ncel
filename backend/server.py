@@ -625,18 +625,53 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
     story.append(Spacer(1, 0.5*cm))
     
     # Items table
-    table_data = [['Ürün Adı', 'Miktar', 'Birim Fiyat', 'Toplam']]
+    table_data = [['Ürün Adı', 'Birim', 'Koli/PK', 'Birim Fiyat', 'Miktar', 'Tutar']]
     for item in quote['items']:
-        # Display text varsa onu kullan, yoksa sadece miktar
-        quantity_display = item.get('display_text', str(item['quantity']))
+        # Get product details to determine package info
+        product = None
+        for p in await db.products.find({}, {"_id": 0}).to_list(1000):
+            if p['id'] == item['product_id']:
+                product = p
+                break
+        
+        # Calculate package info and actual quantity
+        package_info = "-"
+        actual_quantity = item['quantity']
+        unit = item['unit']
+        
+        if product:
+            # Determine package size based on unit
+            if unit == "KG" and product.get('package_kg'):
+                package_info = f"{product['package_kg']}"
+            elif unit == "m²" and product.get('package_m2'):
+                package_info = f"{product['package_m2']}"
+            elif unit == "Metre" and product.get('package_length'):
+                package_info = f"{product['package_length']}"
+            elif unit == "Adet" and product.get('package_count'):
+                package_info = f"{product['package_count']}"
+        
+        # Format quantity display
+        if item.get('display_text'):
+            # If we have display text, extract the calculated amount
+            # Example: "2 paket (100 m²)" -> show "100"
+            if '(' in item['display_text'] and ')' in item['display_text']:
+                calc_part = item['display_text'].split('(')[1].split(')')[0]
+                actual_quantity = calc_part.split(' ')[0]
+            else:
+                actual_quantity = str(item['quantity'])
+        else:
+            actual_quantity = str(item['quantity'])
+        
         table_data.append([
             item['product_name'],
-            quantity_display,
-            f"{item['unit_price']:.2f} {quote['currency']}",
+            unit,
+            package_info,
+            f"{item['unit_price']:.2f}",
+            actual_quantity,
             f"{item['subtotal']:.2f} {quote['currency']}"
         ])
     
-    items_table = Table(table_data, colWidths=[7*cm, 3*cm, 3*cm, 3*cm])
+    items_table = Table(table_data, colWidths=[4*cm, 1.5*cm, 1.5*cm, 2*cm, 2*cm, 2.5*cm])
     items_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor(theme["primary"])),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),

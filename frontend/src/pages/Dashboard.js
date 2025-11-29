@@ -1,26 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Package, FileText, Settings } from "lucide-react";
+import { LogOut, Package, FileText, Settings, FolderOpen, Users } from "lucide-react";
 import Products from "./Products";
 import Quotes from "./Quotes";
 import SettingsPage from "./SettingsPage";
+import Categories from "./Categories";
+import UsersPage from "./Users";
 
 export default function Dashboard({ setIsAuthenticated }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const role = localStorage.getItem('role');
+    setIsAdmin(role === 'admin');
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     setIsAuthenticated(false);
     navigate('/login');
   };
 
-  const menuItems = [
+  const userMenuItems = [
     { path: "/", icon: Package, label: "Ürünler" },
     { path: "/quotes", icon: FileText, label: "Teklifler" },
     { path: "/settings", icon: Settings, label: "Ayarlar" },
   ];
+
+  const adminMenuItems = [
+    { path: "/categories", icon: FolderOpen, label: "Kategoriler" },
+    { path: "/users", icon: Users, label: "Kullanıcılar" },
+  ];
+
+  const menuItems = isAdmin ? [...userMenuItems, ...adminMenuItems] : userMenuItems;
 
   const isActive = (path) => {
     if (path === "/") return location.pathname === "/";

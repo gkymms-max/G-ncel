@@ -110,8 +110,8 @@ export default function ContactChannels() {
 
   const handleAddChannel = (type) => {
     if (type === "whatsapp") {
-      // Direkt WhatsApp Web'i aç
-      window.open("https://web.whatsapp.com", "_blank");
+      // Aynı sekmede WhatsApp Web'i aç
+      window.location.href = "https://web.whatsapp.com";
     } else {
       setFormData({ type, title: "", value: "" });
       setActiveTab(type);

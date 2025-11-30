@@ -93,7 +93,30 @@ export default function Categories() {
         <p className="text-gray-600">Ürün kategorilerini ekleyin ve yönetin</p>
       </div>
 
-      <div className="flex justify-end mb-6">
+      <div className="flex justify-between mb-6">
+        <div className="flex gap-2">
+          <Button
+            variant={viewMode === "grid" ? "default" : "outline"}
+            size="icon"
+            onClick={() => {
+              setViewMode("grid");
+              localStorage.setItem('categoryViewMode', 'grid');
+            }}
+          >
+            <LayoutGrid className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={viewMode === "list" ? "default" : "outline"}
+            size="icon"
+            onClick={() => {
+              setViewMode("list");
+              localStorage.setItem('categoryViewMode', 'list');
+            }}
+          >
+            <List className="h-4 w-4" />
+          </Button>
+        </div>
+        
         <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
           <DialogTrigger asChild>
             <Button data-testid="add-category-button">

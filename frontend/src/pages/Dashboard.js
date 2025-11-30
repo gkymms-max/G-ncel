@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Package, FileText, Settings, FolderOpen, Users } from "lucide-react";
+import { LogOut, Package, FileText, Settings, FolderOpen, Users, Globe, MessageCircle } from "lucide-react";
 import Products from "./Products";
 import Quotes from "./Quotes";
 import SettingsPage from "./SettingsPage";
 import Categories from "./Categories";
 import UsersPage from "./Users";
+import ContactChannels from "./ContactChannels";
 
 export default function Dashboard({ setIsAuthenticated }) {
   const navigate = useNavigate();

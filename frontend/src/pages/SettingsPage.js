@@ -28,9 +28,18 @@ export default function SettingsPage() {
     ui_theme: "light"
   });
   const [loading, setLoading] = useState(false);
+  const [roles, setRoles] = useState([]);
+  const [roleDialogOpen, setRoleDialogOpen] = useState(false);
+  const [newRole, setNewRole] = useState({ name: "", display_name: "" });
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     fetchSettings();
+    const role = localStorage.getItem('role');
+    setIsAdmin(role === 'admin');
+    if (role === 'admin') {
+      fetchRoles();
+    }
   }, []);
 
   useEffect(() => {
@@ -41,6 +50,50 @@ export default function SettingsPage() {
       document.documentElement.classList.remove('dark');
     }
   }, [settings.ui_theme]);
+
+  const fetchRoles = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/roles`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setRoles(response.data);
+    } catch (error) {
+      console.error("Roller yüklenemedi:", error);
+    }
+  };
+
+  const handleAddRole = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+
+    try {
+      await axios.post(`${API}/roles`, newRole, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success("Rol eklendi");
+      setRoleDialogOpen(false);
+      setNewRole({ name: "", display_name: "" });
+      fetchRoles();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || "Rol eklenemedi");
+    }
+  };
+
+  const handleDeleteRole = async (roleId) => {
+    if (!window.confirm("Bu rolü silmek istediğinize emin misiniz?")) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/roles/${roleId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success("Rol silindi");
+      fetchRoles();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || "Rol silinemedi");
+    }
+  };
 
   const fetchSettings = async () => {
     try {

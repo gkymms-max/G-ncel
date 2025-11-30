@@ -1,0 +1,66 @@
+const { app, BrowserWindow, session } = require('electron');
+const path = require('path');
+const isDev = require('electron-is-dev');
+
+let mainWindow;
+
+function createWindow() {
+  // Create the browser window
+  mainWindow = new BrowserWindow({
+    width: 1400,
+    height: 900,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      webSecurity: false, // Bu WhatsApp/Instagram için gerekli
+      enableRemoteModule: false,
+    },
+    icon: path.join(__dirname, 'frontend/public/op.png'),
+    title: 'Fiyat Teklifi Yönetim Sistemi'
+  });
+
+  // Disable X-Frame-Options for WhatsApp, Instagram, etc.
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'X-Frame-Options': null,
+        'Content-Security-Policy': null
+      }
+    });
+  });
+
+  // Load the app
+  const startUrl = isDev 
+    ? 'http://localhost:3000' 
+    : `file://${path.join(__dirname, 'frontend/build/index.html')}`;
+  
+  mainWindow.loadURL(startUrl);
+
+  // Open DevTools in development
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+}
+
+// This method will be called when Electron has finished initialization
+app.whenReady().then(() => {
+  createWindow();
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+});
+
+// Quit when all windows are closed
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});

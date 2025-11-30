@@ -109,8 +109,13 @@ export default function ContactChannels() {
   };
 
   const handleAddChannel = (type) => {
-    setFormData({ type, title: "", value: type === "whatsapp" ? "https://web.whatsapp.com" : "" });
-    setActiveTab(type);
+    if (type === "whatsapp") {
+      // Direkt WhatsApp Web'i aç
+      window.open("https://web.whatsapp.com", "_blank");
+    } else {
+      setFormData({ type, title: "", value: "" });
+      setActiveTab(type);
+    }
   };
 
   return (

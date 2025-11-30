@@ -96,6 +96,30 @@ export default function Users() {
     setPasswordDialogOpen(true);
   };
 
+  const openRoleDialog = (user) => {
+    setSelectedUser(user);
+    setNewRole(user.role);
+    setRoleDialogOpen(true);
+  };
+
+  const handleUpdateRole = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+
+    try {
+      await axios.put(`${API}/users/${selectedUser.id}/role`, 
+        { role: newRole },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Rol güncellendi");
+      setRoleDialogOpen(false);
+      setSelectedUser(null);
+      fetchUsers();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || "Rol güncellenemedi");
+    }
+  };
+
   const resetForm = () => {
     setFormData({ username: "", password: "", role: "user" });
   };

@@ -23,9 +23,7 @@ export default function SettingsPage() {
     company_website: "",
     logo: null,
     default_currency: "EUR",
-    default_vat_rate: 18,
-    // UI Theme
-    ui_theme: "light"
+    default_vat_rate: 18
   });
   const [loading, setLoading] = useState(false);
   const [roles, setRoles] = useState([]);

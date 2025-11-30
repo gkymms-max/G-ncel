@@ -287,6 +287,41 @@ async def login(user: UserLogin):
     access_token = create_access_token(data={"sub": user.username})
     return Token(access_token=access_token, token_type="bearer", role=db_user.get("role", "user"))
 
+
+# Role endpoints (Admin only)
+@api_router.get("/roles", response_model=List[Role])
+async def get_roles(current_user: dict = Depends(get_admin_user)):
+    roles = await db.roles.find({}, {"_id": 0}).to_list(1000)
+    for role in roles:
+        if isinstance(role['created_at'], str):
+            role['created_at'] = datetime.fromisoformat(role['created_at'])
+    return roles
+
+@api_router.post("/roles", response_model=Role)
+async def create_role(role: RoleCreate, current_user: dict = Depends(get_admin_user)):
+    # Check if role name already exists
+    existing = await db.roles.find_one({"name": role.name}, {"_id": 0})
+    if existing:
+        raise HTTPException(status_code=400, detail="Role name already exists")
+    
+    role_obj = Role(**role.model_dump())
+    doc = role_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.roles.insert_one(doc)
+    return role_obj
+
+@api_router.delete("/roles/{role_id}")
+async def delete_role(role_id: str, current_user: dict = Depends(get_admin_user)):
+    # Don't allow deletion of default roles
+    role = await db.roles.find_one({"id": role_id}, {"_id": 0})
+    if role and role.get('name') in ['admin', 'user']:
+        raise HTTPException(status_code=400, detail="Cannot delete default roles")
+    
+    result = await db.roles.delete_one({"id": role_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Role not found")
+    return {"message": "Role deleted successfully"}
+
 # Category endpoints (Admin only)
 @api_router.get("/categories", response_model=List[Category])
 async def get_categories(current_user: dict = Depends(get_current_user)):

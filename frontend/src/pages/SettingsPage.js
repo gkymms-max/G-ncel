@@ -91,13 +91,6 @@ export default function SettingsPage() {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSettings(response.data);
-      
-      // Apply theme immediately after fetching
-      if (response.data.ui_theme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
     } catch (error) {
       toast.error("Ayarlar yüklenemedi");
     }

@@ -16,6 +16,9 @@ export default function Categories() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [categoryName, setCategoryName] = useState("");
+  const [viewMode, setViewMode] = useState(() => {
+    return localStorage.getItem('categoryViewMode') || 'grid';
+  });
 
   useEffect(() => {
     fetchCategories();

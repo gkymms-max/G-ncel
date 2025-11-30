@@ -22,10 +22,6 @@ export default function SettingsPage() {
     logo: null,
     default_currency: "EUR",
     default_vat_rate: 18,
-    // PDF Settings
-    pdf_show_product_code: false,
-    pdf_show_unit: false,
-    pdf_theme: "blue",
     // UI Theme
     ui_theme: "light"
   });
@@ -34,6 +30,15 @@ export default function SettingsPage() {
   useEffect(() => {
     fetchSettings();
   }, []);
+
+  useEffect(() => {
+    // Apply theme to document
+    if (settings.ui_theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [settings.ui_theme]);
 
   const fetchSettings = async () => {
     try {

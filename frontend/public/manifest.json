@@ -1,0 +1,24 @@
+{
+  "short_name": "Fiyat Teklifi",
+  "name": "Fiyat Teklifi Yönetim Sistemi",
+  "description": "Kurumsal Fiyat Teklifi Uygulaması - Ürün yönetimi, teklif oluşturma ve sosyal medya hub",
+  "icons": [
+    {
+      "src": "op.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "op.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#4F46E5",
+  "background_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["business", "productivity"]
+}

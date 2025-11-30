@@ -80,17 +80,28 @@ class UserResponse(BaseModel):
     role: str
     created_at: datetime
 
+class Role(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    display_name: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class RoleCreate(BaseModel):
+    name: str
+    display_name: str
+
 class ContactChannel(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    type: Literal["whatsapp", "instagram", "facebook", "linkedin", "twitter", "website", "email", "phone"]
+    type: Literal["whatsapp", "instagram", "facebook", "tiktok", "website"]
     title: str  # Görünen isim
     value: str  # Numara, URL, email
     icon: Optional[str] = None  # Icon class
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class ContactChannelCreate(BaseModel):
-    type: Literal["whatsapp", "instagram", "facebook", "linkedin", "twitter", "website", "email", "phone"]
+    type: Literal["whatsapp", "instagram", "facebook", "tiktok", "website"]
     title: str
     value: str
     icon: Optional[str] = None

@@ -246,22 +246,6 @@ export default function SettingsPage() {
               </div>
 
               <div className="border-t pt-6">
-                <h3 className="font-semibold mb-4 text-gray-700">Arayüz Ayarları</h3>
-                <div>
-                  <Label htmlFor="ui_theme">Tema</Label>
-                  <select
-                    id="ui_theme"
-                    value={settings.ui_theme || "light"}
-                    onChange={(e) => setSettings({ ...settings, ui_theme: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
-                  >
-                    <option value="light">Açık Tema</option>
-                    <option value="dark">Koyu Tema</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="border-t pt-6">
                 <h3 className="font-semibold mb-4 text-gray-700">Varsayılan Değerler</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>

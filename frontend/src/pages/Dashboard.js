@@ -32,10 +32,6 @@ export default function Dashboard({ setIsAuthenticated }) {
     { path: "/settings", icon: Settings, label: "Ayarlar" },
   ];
 
-  const portalMenuItem = [
-    { path: "/portal", icon: Globe, label: "Portal" },
-  ];
-
   const adminMenuItems = [
     { path: "/categories", icon: FolderOpen, label: "Kategoriler" },
     { path: "/users", icon: Users, label: "Kullanıcılar" },
@@ -43,8 +39,8 @@ export default function Dashboard({ setIsAuthenticated }) {
   ];
 
   const menuItems = isAdmin 
-    ? [...userMenuItems, ...portalMenuItem, ...adminMenuItems] 
-    : [...userMenuItems, ...portalMenuItem];
+    ? [...userMenuItems, ...adminMenuItems] 
+    : userMenuItems;
 
   const isActive = (path) => {
     if (path === "/") return location.pathname === "/";

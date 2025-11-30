@@ -134,6 +134,14 @@ export default function SettingsPage() {
       await axios.put(`${API}/settings`, settings, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
+      // Apply theme immediately after saving
+      if (settings.ui_theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      
       toast.success("Ayarlar kaydedildi");
     } catch (error) {
       toast.error(error.response?.data?.detail || "Bir hata oluştu");

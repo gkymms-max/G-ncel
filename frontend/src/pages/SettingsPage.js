@@ -40,15 +40,6 @@ export default function SettingsPage() {
     }
   }, []);
 
-  useEffect(() => {
-    // Apply theme to document
-    if (settings.ui_theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [settings.ui_theme]);
-
   const fetchRoles = async () => {
     try {
       const token = localStorage.getItem('token');

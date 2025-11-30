@@ -240,6 +240,34 @@ export default function Users() {
         ))}
       </div>
 
+      {/* Role Edit Dialog */}
+      <Dialog open={roleDialogOpen} onOpenChange={setRoleDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Rol Düzenle</DialogTitle>
+            <p className="text-sm text-gray-500">{selectedUser?.username} için rol seçin</p>
+          </DialogHeader>
+          <form onSubmit={handleUpdateRole} className="space-y-4">
+            <div>
+              <Label htmlFor="role_select">Rol *</Label>
+              <Select value={newRole} onValueChange={setNewRole}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="user">Pazarlamacı</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex gap-2 justify-end">
+              <Button type="button" variant="outline" onClick={() => setRoleDialogOpen(false)}>İptal</Button>
+              <Button type="submit">Güncelle</Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
       {/* Password Reset Dialog */}
       <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
         <DialogContent>

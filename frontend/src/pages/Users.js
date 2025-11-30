@@ -209,6 +209,15 @@ export default function Users() {
                 <Button
                   size="sm"
                   variant="outline"
+                  onClick={() => openRoleDialog(user)}
+                  data-testid="edit-role-button"
+                >
+                  <Edit className="h-3 w-3 mr-1" />
+                  Rol Düzenle
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
                   onClick={() => openPasswordDialog(user)}
                   data-testid="reset-password-button"
                 >

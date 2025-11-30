@@ -149,23 +149,64 @@ export default function Categories() {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {categories.map(category => (
-          <Card key={category.id} data-testid="category-card">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <FolderOpen className="h-5 w-5 text-blue-600" />
-                  <CardTitle className="text-lg">{category.name}</CardTitle>
+      {viewMode === "grid" ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categories.map(category => (
+            <Card key={category.id} data-testid="category-card">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FolderOpen className="h-5 w-5 text-blue-600" />
+                    <CardTitle className="text-lg">{category.name}</CardTitle>
+                  </div>
                 </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => openEditDialog(category)}
+                    data-testid="edit-category-button"
+                  >
+                    <Edit className="h-3 w-3 mr-1" />
+                    Düzenle
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-red-600 hover:bg-red-50"
+                    onClick={() => handleDelete(category.id)}
+                    data-testid="delete-category-button"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+          <div className="grid grid-cols-3 gap-4 p-4 font-semibold text-gray-600 bg-gray-50 border-b text-sm">
+            <div>Kategori Adı</div>
+            <div>Oluşturulma Tarihi</div>
+            <div className="text-right">İşlemler</div>
+          </div>
+          {categories.map(category => (
+            <div key={category.id} className="grid grid-cols-3 gap-4 p-4 border-b border-gray-100 hover:bg-gray-50 items-center">
+              <div className="flex items-center gap-3">
+                <FolderOpen className="h-5 w-5 text-blue-600" />
+                <span className="font-medium">{category.name}</span>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-2">
+              <div className="text-sm text-gray-600">
+                {new Date(category.created_at).toLocaleDateString('tr-TR')}
+              </div>
+              <div className="flex gap-2 justify-end">
                 <Button
                   size="sm"
                   variant="outline"
-                  className="flex-1"
                   onClick={() => openEditDialog(category)}
                   data-testid="edit-category-button"
                 >
@@ -182,10 +223,10 @@ export default function Categories() {
                   <Trash2 className="h-3 w-3" />
                 </Button>
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {categories.length === 0 && (
         <div className="text-center py-16">

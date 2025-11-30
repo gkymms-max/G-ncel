@@ -406,6 +406,21 @@ async def reset_user_password(user_id: str, password_data: dict, current_user: d
         raise HTTPException(status_code=404, detail="User not found")
     return {"message": "Password reset successfully"}
 
+@api_router.put("/users/{user_id}/role")
+async def update_user_role(user_id: str, role_data: dict, current_user: dict = Depends(get_admin_user)):
+    new_role = role_data.get("role")
+    if new_role not in ["admin", "user"]:
+        raise HTTPException(status_code=400, detail="Invalid role. Must be 'admin' or 'user'")
+    
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"role": new_role}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"message": "Role updated successfully"}
+
+
 # Product endpoints
 @api_router.post("/products", response_model=Product)
 async def create_product(product: ProductCreate, current_user: dict = Depends(get_current_user)):

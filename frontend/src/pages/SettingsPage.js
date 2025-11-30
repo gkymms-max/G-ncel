@@ -176,52 +176,6 @@ export default function SettingsPage() {
               </div>
 
               <div className="border-t pt-6">
-                <h3 className="font-semibold mb-4 text-gray-700">PDF Ayarları</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      id="pdf_show_product_code"
-                      checked={settings.pdf_show_product_code || false}
-                      onChange={(e) => setSettings({ ...settings, pdf_show_product_code: e.target.checked })}
-                      className="h-4 w-4 rounded border-gray-300"
-                    />
-                    <Label htmlFor="pdf_show_product_code" className="text-sm font-normal cursor-pointer">
-                      PDF'de Ürün Kodunu Göster
-                    </Label>
-                  </div>
-                  
-                  <div className="flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      id="pdf_show_unit"
-                      checked={settings.pdf_show_unit || false}
-                      onChange={(e) => setSettings({ ...settings, pdf_show_unit: e.target.checked })}
-                      className="h-4 w-4 rounded border-gray-300"
-                    />
-                    <Label htmlFor="pdf_show_unit" className="text-sm font-normal cursor-pointer">
-                      PDF'de Birim Sütununu Göster
-                    </Label>
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="pdf_theme">PDF Tema Rengi</Label>
-                    <select
-                      id="pdf_theme"
-                      value={settings.pdf_theme || "blue"}
-                      onChange={(e) => setSettings({ ...settings, pdf_theme: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
-                    >
-                      <option value="blue">Mavi</option>
-                      <option value="green">Yeşil</option>
-                      <option value="purple">Mor</option>
-                      <option value="orange">Turuncu</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t pt-6">
                 <h3 className="font-semibold mb-4 text-gray-700">Arayüz Ayarları</h3>
                 <div>
                   <Label htmlFor="ui_theme">Tema</Label>

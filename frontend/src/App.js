@@ -29,6 +29,10 @@ function App() {
             element={!isAuthenticated ? <Login setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} 
           />
           <Route 
+            path="/portal/*" 
+            element={isAuthenticated ? <Portal setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} 
+          />
+          <Route 
             path="/*" 
             element={isAuthenticated ? <Dashboard setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} 
           />

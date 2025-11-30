@@ -19,9 +19,11 @@ export default function Users() {
   const [users, setUsers] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const [roleDialogOpen, setRoleDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({ username: "", password: "", role: "user" });
   const [newPassword, setNewPassword] = useState("");
+  const [newRole, setNewRole] = useState("user");
 
   useEffect(() => {
     fetchUsers();

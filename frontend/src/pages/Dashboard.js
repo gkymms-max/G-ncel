@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Package, FileText, Settings, FolderOpen, Users, MessageCircle, UserCheck } from "lucide-react";
+import { LogOut, Package, FileText, Settings, FolderOpen, Users, MessageCircle, UserCheck, TrendingUp } from "lucide-react";
 import Products from "./Products";
 import Quotes from "./Quotes";
 import SettingsPage from "./SettingsPage";
@@ -9,6 +9,7 @@ import Categories from "./Categories";
 import UsersPage from "./Users";
 import ContactChannels from "./ContactChannels";
 import Customers from "./Customers";
+import MarketWatch from "./MarketWatch";
 
 export default function Dashboard({ setIsAuthenticated }) {
   const navigate = useNavigate();

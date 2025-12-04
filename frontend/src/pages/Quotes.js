@@ -545,9 +545,9 @@ export default function Quotes() {
                         <SelectContent>
                           {products
                             .filter(p => 
-                              productSearchTerm === "" || 
-                              p.name.toLowerCase().includes(productSearchTerm.toLowerCase()) ||
-                              p.code.toLowerCase().includes(productSearchTerm.toLowerCase())
+                              selectedCategory === "" || 
+                              selectedCategory === "all" ||
+                              p.category === selectedCategory
                             )
                             .map(product => (
                               <SelectItem key={product.id} value={product.id}>

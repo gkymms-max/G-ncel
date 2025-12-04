@@ -330,7 +330,7 @@ export default function Quotes() {
                       <SelectValue placeholder="Müşteri seçin veya manuel girin" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Manuel Gir</SelectItem>
+                      <SelectItem value="manual">Manuel Gir</SelectItem>
                       {customers.map(customer => (
                         <SelectItem key={customer.id} value={customer.id}>
                           {customer.name} {customer.company ? `(${customer.company})` : ""}

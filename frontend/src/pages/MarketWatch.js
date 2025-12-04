@@ -29,10 +29,10 @@ const markets = [
     widget: "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=tr#%7B%22symbol%22%3A%22TVC%3ASILVER%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22dateRange%22%3A%221D%22%2C%22colorTheme%22%3A%22light%22%2C%22trendLineColor%22%3A%22rgba(192%2C%20192%2C%20192%2C%201)%22%2C%22underLineColor%22%3A%22rgba(192%2C%20192%2C%20192%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(192%2C%20192%2C%20192%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22largeChartUrl%22%3A%22%22%2C%22chartOnly%22%3Afalse%2C%22noTimeScale%22%3Afalse%7D"
   },
   {
-    id: "aluminum",
-    name: "Alüminyum (LME)",
+    id: "copper",
+    name: "Bakır (COMEX)",
     icon: TrendingUp,
-    widget: "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=tr#%7B%22symbol%22%3A%22LME%3AAH1!%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22dateRange%22%3A%221D%22%2C%22colorTheme%22%3A%22light%22%2C%22trendLineColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%201)%22%2C%22underLineColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22largeChartUrl%22%3A%22%22%2C%22chartOnly%22%3Afalse%2C%22noTimeScale%22%3Afalse%7D"
+    widget: "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=tr#%7B%22symbol%22%3A%22COMEX%3AHG1!%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22dateRange%22%3A%221D%22%2C%22colorTheme%22%3A%22light%22%2C%22trendLineColor%22%3A%22rgba(220%2C%20120%2C%2070%2C%201)%22%2C%22underLineColor%22%3A%22rgba(220%2C%20120%2C%2070%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(220%2C%20120%2C%2070%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22largeChartUrl%22%3A%22%22%2C%22chartOnly%22%3Afalse%2C%22noTimeScale%22%3Afalse%7D"
   }
 ];
 

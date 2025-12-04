@@ -236,24 +236,31 @@ export default function Quotes() {
     }
   };
 
+  const handlePreview = (quoteId) => {
+    setPreviewQuoteId(quoteId);
+    setPreviewDialogOpen(true);
+  };
+
   const resetForm = () => {
     setFormData({
       quote_date: new Date().toISOString().split('T')[0],
       validity_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      customer_id: "",
       customer_name: "",
       customer_email: "",
       customer_phone: "",
-      currency: "EUR",
+      currency: "TL",
       items: [],
       discount_type: "percentage",
       discount_value: 0,
       vat_rate: 18,
+      vat_included: false,
       notes: ""
     });
     setQuoteDate(new Date());
     setValidityDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
     setNewItem({ product_id: "", quantity: 0, unit_price: 0, note: "", use_package: false });
-    setIncludeVAT(false);
+    setProductSearchTerm("");
   };
 
   const updateItemQuantity = (index, quantity) => {

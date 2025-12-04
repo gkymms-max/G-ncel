@@ -39,12 +39,9 @@ function createWindow() {
     });
   });
 
-  // Load the app
-  const startUrl = isDev 
-    ? 'http://localhost:3000' 
-    : `file://${path.join(__dirname, 'build/index.html')}`;
-  
-  mainWindow.loadURL(startUrl);
+  // Load the app - ONLINE MODE (always connects to your server)
+  const serverUrl = 'https://bizquoter-1.preview.emergentagent.com';
+  mainWindow.loadURL(serverUrl);
 
   // Open DevTools in development only
   if (isDev) {

@@ -687,16 +687,8 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
         font_name = 'Helvetica'
         font_bold = 'Helvetica-Bold'
     
-    # Theme colors based on settings
-    theme_colors = {
-        "blue": {"primary": "#1e40af", "secondary": "#3b82f6"},
-        "green": {"primary": "#059669", "secondary": "#10b981"},
-        "purple": {"primary": "#7c3aed", "secondary": "#8b5cf6"},
-        "orange": {"primary": "#ea580c", "secondary": "#f97316"}
-    }
-    
-    pdf_theme = settings.get('pdf_theme', 'blue') if settings else 'blue'
-    theme = theme_colors.get(pdf_theme, theme_colors["blue"])
+    # Get theme color from settings (hex color format)
+    theme_color = settings.get('theme_color', '#4F46E5') if settings else '#4F46E5'
     
     styles = getSampleStyleSheet()
     title_style = ParagraphStyle('CustomTitle', parent=styles['Heading1'], fontName=font_bold, fontSize=20, textColor=colors.HexColor(theme["primary"]), spaceAfter=12)

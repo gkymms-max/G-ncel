@@ -8,35 +8,35 @@
   "scripts": {
     "electron": "electron .",
     "electron-dev": "concurrently \"cd frontend && yarn start\" \"wait-on http://localhost:3000 && electron .\"",
-    "electron-build": "cd frontend && yarn build && cd .. && electron-builder",
-    "electron-build-win": "cd frontend && yarn build && cd .. && electron-builder --win",
-    "electron-build-mac": "cd frontend && yarn build && cd .. && electron-builder --mac",
-    "electron-build-linux": "cd frontend && yarn build && cd .. && electron-builder --linux"
+    "build-frontend": "cd frontend && yarn build && cd ..",
+    "electron-build-win": "yarn build-frontend && electron-builder --win --x64"
   },
   "build": {
     "appId": "com.fiyatteklifi.app",
     "productName": "Fiyat Teklifi",
     "files": [
       "electron-main.js",
-      "frontend/build/**/*",
-      "node_modules/**/*"
+      "build/**/*"
     ],
     "directories": {
-      "buildResources": "frontend/public"
+      "buildResources": "build",
+      "output": "dist"
     },
     "win": {
-      "target": ["nsis"],
-      "icon": "frontend/public/op.png"
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.png"
     },
-    "mac": {
-      "target": ["dmg"],
-      "icon": "frontend/public/op.png",
-      "category": "public.app-category.business"
-    },
-    "linux": {
-      "target": ["AppImage", "deb"],
-      "icon": "frontend/public/op.png",
-      "category": "Office"
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Fiyat Teklifi"
     }
   },
   "devDependencies": {

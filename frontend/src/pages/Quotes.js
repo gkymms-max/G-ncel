@@ -824,11 +824,11 @@ export default function Quotes() {
 
       {/* PDF Preview Dialog */}
       <Dialog open={previewDialogOpen} onOpenChange={setPreviewDialogOpen}>
-        <DialogContent className="max-w-4xl h-[90vh]">
-          <DialogHeader>
+        <DialogContent className="max-w-[95vw] w-full h-[95vh] p-0">
+          <DialogHeader className="px-6 py-4 border-b">
             <DialogTitle>Teklif Önizleme</DialogTitle>
           </DialogHeader>
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden h-[calc(95vh-70px)] px-6 pb-6">
             {previewQuoteId && (
               <PDFPreview quoteId={previewQuoteId} />
             )}

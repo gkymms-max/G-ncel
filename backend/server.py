@@ -265,7 +265,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         if not user:
             raise HTTPException(status_code=401, detail="User not found")
         
-        return {"username": username, "role": user.get("role", "user")}
+        return {"id": user.get("id"), "username": username, "role": user.get("role", "user")}
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expired")
     except jwt.InvalidTokenError:

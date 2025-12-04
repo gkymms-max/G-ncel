@@ -68,11 +68,21 @@ function PDFPreview({ quoteId }) {
   }
 
   return (
-    <iframe
-      src={pdfUrl}
-      className="w-full h-full border-0"
-      title="PDF Önizleme"
-    />
+    <object
+      data={pdfUrl}
+      type="application/pdf"
+      className="w-full h-full"
+      aria-label="PDF Önizleme"
+    >
+      <div className="flex items-center justify-center h-full">
+        <div className="text-gray-600">
+          PDF görüntülenemiyor. 
+          <a href={pdfUrl} download className="text-blue-600 underline ml-2">
+            İndir
+          </a>
+        </div>
+      </div>
+    </object>
   );
 }
 

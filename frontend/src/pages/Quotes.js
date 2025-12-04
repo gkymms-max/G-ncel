@@ -127,6 +127,7 @@ export default function Quotes() {
     fetchQuotes();
     fetchProducts();
     fetchCustomers();
+    fetchCategories();
   }, []);
 
   const fetchQuotes = async () => {

@@ -48,6 +48,36 @@ export default function MarketWatch() {
         <p className="text-gray-600">Döviz kurları ve emtia fiyatlarını canlı takip edin</p>
       </div>
 
+      {/* Quick Overview Cards */}
+      <div className="grid grid-cols-5 gap-4 mb-8">
+        {markets.map(market => (
+          <Card key={market.id} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveTab(market.id)}>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between mb-2">
+                <market.icon className="h-5 w-5 text-gray-600" />
+              </div>
+              <div className="text-xs text-gray-500 mb-1">{market.name}</div>
+              <div className="relative w-full h-[80px]">
+                {market.widget ? (
+                  <iframe
+                    src={market.widget}
+                    className="w-full h-full border-0"
+                    title={`${market.name} mini`}
+                    frameBorder="0"
+                    allowTransparency="true"
+                    scrolling="no"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-xs text-gray-500">
+                    Canlı
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-5">
           {markets.map(market => (

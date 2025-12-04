@@ -575,7 +575,7 @@ export default function Quotes() {
                       <span className="font-medium text-red-600">-{totals.discountAmount.toFixed(2)} {formData.currency}</span>
                     </div>
                   )}
-                  {includeVAT && (
+                  {formData.vat_included && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">KDV ({formData.vat_rate}%):</span>
                       <span className="font-medium">{totals.vatAmount.toFixed(2)} {formData.currency}</span>

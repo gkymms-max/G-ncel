@@ -31,11 +31,12 @@ export default function Quotes() {
     customer_name: "",
     customer_email: "",
     customer_phone: "",
-    currency: "EUR",
+    currency: "TL",
     items: [],
     discount_type: "percentage",
     discount_value: 0,
     vat_rate: 18,
+    vat_included: false,
     notes: ""
   });
   const [quoteDate, setQuoteDate] = useState(new Date());

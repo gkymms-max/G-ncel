@@ -749,7 +749,7 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
     # Quote title
     quote_title = Paragraph("FİYAT TEKLİFİ", 
                            ParagraphStyle('QuoteTitle', parent=title_style, 
-                                        fontSize=24, textColor=colors.HexColor(theme["primary"]), 
+                                        fontSize=24, textColor=colors.HexColor(theme_color), 
                                         alignment=1, spaceAfter=20))
     story.append(quote_title)
     story.append(Spacer(1, 0.5*cm))

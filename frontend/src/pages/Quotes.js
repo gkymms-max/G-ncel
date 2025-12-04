@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Plus, FileText, Download, Trash2, Calendar } from "lucide-react";
+import { Plus, FileText, Download, Trash2, Calendar, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { tr } from "date-fns/locale";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";

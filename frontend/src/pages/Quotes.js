@@ -84,6 +84,18 @@ export default function Quotes() {
     }
   };
 
+  const fetchCustomers = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/customers`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCustomers(response.data);
+    } catch (error) {
+      console.error("Müşteriler yüklenemedi");
+    }
+  };
+
   const addItemToQuote = () => {
     if (!newItem.product_id) {
       toast.error("Lütfen bir ürün seçin");

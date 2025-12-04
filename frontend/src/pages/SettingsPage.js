@@ -23,7 +23,8 @@ export default function SettingsPage() {
     company_website: "",
     logo: null,
     default_currency: "EUR",
-    default_vat_rate: 18
+    default_vat_rate: 18,
+    theme_color: "#4F46E5"
   });
   const [loading, setLoading] = useState(false);
   const [roles, setRoles] = useState([]);

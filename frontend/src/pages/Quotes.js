@@ -294,6 +294,44 @@ export default function Quotes() {
               {/* Customer Info */}
               <div className="border-b pb-4">
                 <h3 className="font-semibold mb-3 text-gray-700">Müşteri Bilgileri</h3>
+                <div className="mb-4">
+                  <Label htmlFor="customer_select">Kayıtlı Müşteri Seç (Opsiyonel)</Label>
+                  <Select 
+                    value={formData.customer_id} 
+                    onValueChange={(value) => {
+                      const selectedCustomer = customers.find(c => c.id === value);
+                      if (selectedCustomer) {
+                        setFormData({
+                          ...formData,
+                          customer_id: value,
+                          customer_name: selectedCustomer.name,
+                          customer_email: selectedCustomer.email || "",
+                          customer_phone: selectedCustomer.phone || ""
+                        });
+                      } else {
+                        setFormData({
+                          ...formData,
+                          customer_id: "",
+                          customer_name: "",
+                          customer_email: "",
+                          customer_phone: ""
+                        });
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Müşteri seçin veya manuel girin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Manuel Gir</SelectItem>
+                      {customers.map(customer => (
+                        <SelectItem key={customer.id} value={customer.id}>
+                          {customer.name} {customer.company ? `(${customer.company})` : ""}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="customer_name">Müşteri Adı / Firma *</Label>

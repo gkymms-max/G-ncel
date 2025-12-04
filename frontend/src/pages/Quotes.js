@@ -49,7 +49,7 @@ function PDFPreview({ quoteId }) {
         window.URL.revokeObjectURL(pdfUrl);
       }
     };
-  }, [quoteId, pdfUrl]);
+  }, [quoteId]);
 
   if (loading) {
     return (

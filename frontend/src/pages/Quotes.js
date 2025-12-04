@@ -539,8 +539,8 @@ export default function Quotes() {
                   <input
                     type="checkbox"
                     id="include_vat"
-                    checked={includeVAT}
-                    onChange={(e) => setIncludeVAT(e.target.checked)}
+                    checked={formData.vat_included}
+                    onChange={(e) => setFormData({ ...formData, vat_included: e.target.checked })}
                     className="h-4 w-4 rounded border-gray-300"
                     data-testid="include-vat-checkbox"
                   />
@@ -549,7 +549,7 @@ export default function Quotes() {
                   </Label>
                 </div>
                 
-                {includeVAT && (
+                {formData.vat_included && (
                   <div className="mb-4">
                     <Label htmlFor="vat_rate">KDV Oranı (%)</Label>
                     <Input

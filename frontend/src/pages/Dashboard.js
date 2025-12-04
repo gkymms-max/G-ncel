@@ -39,6 +39,7 @@ export default function Dashboard({ setIsAuthenticated }) {
     { path: "/categories", icon: FolderOpen, label: "Kategoriler" },
     { path: "/users", icon: Users, label: "Kullanıcılar" },
     { path: "/contact-channels", icon: MessageCircle, label: "İletişim Kanalları" },
+    { path: "/market-watch", icon: TrendingUp, label: "Borsa Takibi" },
   ];
 
   const menuItems = isAdmin 

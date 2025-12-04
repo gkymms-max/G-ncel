@@ -24,10 +24,15 @@ const currencies = ["EUR", "USD", "TL"];
 export default function Quotes() {
   const [quotes, setQuotes] = useState([]);
   const [products, setProducts] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
+  const [previewQuoteId, setPreviewQuoteId] = useState(null);
+  const [productSearchTerm, setProductSearchTerm] = useState("");
   const [formData, setFormData] = useState({
     quote_date: new Date().toISOString().split('T')[0],
     validity_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    customer_id: "",
     customer_name: "",
     customer_email: "",
     customer_phone: "",
@@ -48,11 +53,11 @@ export default function Quotes() {
     note: "",
     use_package: false
   });
-  const [includeVAT, setIncludeVAT] = useState(false);
 
   useEffect(() => {
     fetchQuotes();
     fetchProducts();
+    fetchCustomers();
   }, []);
 
   const fetchQuotes = async () => {

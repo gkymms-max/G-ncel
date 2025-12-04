@@ -763,11 +763,7 @@ export default function Quotes() {
           </DialogHeader>
           <div className="flex-1 overflow-hidden">
             {previewQuoteId && (
-              <iframe
-                src={`${API}/quotes/${previewQuoteId}/pdf`}
-                className="w-full h-full border-0"
-                title="PDF Önizleme"
-              />
+              <PDFPreview quoteId={previewQuoteId} />
             )}
           </div>
         </DialogContent>

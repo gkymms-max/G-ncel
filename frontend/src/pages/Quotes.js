@@ -752,6 +752,24 @@ export default function Quotes() {
           ))
         )}
       </div>
+
+      {/* PDF Preview Dialog */}
+      <Dialog open={previewDialogOpen} onOpenChange={setPreviewDialogOpen}>
+        <DialogContent className="max-w-4xl h-[90vh]">
+          <DialogHeader>
+            <DialogTitle>Teklif Önizleme</DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 overflow-hidden">
+            {previewQuoteId && (
+              <iframe
+                src={`${API}/quotes/${previewQuoteId}/pdf`}
+                className="w-full h-full border-0"
+                title="PDF Önizleme"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

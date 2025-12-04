@@ -84,12 +84,12 @@ export default function MarketWatch() {
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mt-6">
         <TabsList className="grid w-full grid-cols-5">
           {markets.map(market => (
             <TabsTrigger key={market.id} value={market.id} className="flex items-center gap-2">
               <market.icon className="h-4 w-4" />
-              {market.name.split(' ')[0]}
+              {market.name}
             </TabsTrigger>
           ))}
         </TabsList>
@@ -100,7 +100,7 @@ export default function MarketWatch() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <market.icon className="h-5 w-5" />
-                  {market.name}
+                  {market.name} ({market.symbol})
                 </CardTitle>
               </CardHeader>
               <CardContent>

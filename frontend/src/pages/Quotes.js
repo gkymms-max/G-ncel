@@ -588,18 +588,37 @@ export default function Quotes() {
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-2 mb-4">
-                  <input
-                    type="checkbox"
-                    id="include_vat"
-                    checked={formData.vat_included}
-                    onChange={(e) => setFormData({ ...formData, vat_included: e.target.checked })}
-                    className="h-4 w-4 rounded border-gray-300"
-                    data-testid="include-vat-checkbox"
-                  />
-                  <Label htmlFor="include_vat" className="text-sm font-normal cursor-pointer">
-                    KDV Dahil Et
-                  </Label>
+                <div className="mb-4">
+                  <Label className="mb-2 block">KDV Durumu</Label>
+                  <div className="flex gap-6">
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        id="vat_excluded"
+                        name="vat_type"
+                        checked={!formData.vat_included}
+                        onChange={() => setFormData({ ...formData, vat_included: false })}
+                        className="h-4 w-4"
+                      />
+                      <Label htmlFor="vat_excluded" className="text-sm font-normal cursor-pointer">
+                        KDV Hariç (+ olarak ekle)
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        id="vat_included"
+                        name="vat_type"
+                        checked={formData.vat_included}
+                        onChange={() => setFormData({ ...formData, vat_included: true })}
+                        className="h-4 w-4"
+                        data-testid="include-vat-checkbox"
+                      />
+                      <Label htmlFor="vat_included" className="text-sm font-normal cursor-pointer">
+                        KDV Dahil
+                      </Label>
+                    </div>
+                  </div>
                 </div>
                 
                 {formData.vat_included && (

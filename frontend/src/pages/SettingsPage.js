@@ -117,6 +117,10 @@ export default function SettingsPage() {
       await axios.put(`${API}/settings`, settings, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
+      // Apply theme color immediately
+      document.documentElement.style.setProperty('--theme-color', settings.theme_color);
+      
       toast.success("Ayarlar kaydedildi");
     } catch (error) {
       toast.error(error.response?.data?.detail || "Bir hata oluştu");

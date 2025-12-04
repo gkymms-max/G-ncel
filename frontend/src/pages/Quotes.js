@@ -722,6 +722,14 @@ export default function Quotes() {
                 <div className="flex gap-2">
                   <Button
                     size="sm"
+                    variant="outline"
+                    onClick={() => handlePreview(quote.id)}
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    Önizle
+                  </Button>
+                  <Button
+                    size="sm"
                     onClick={() => handleDownloadPDF(quote.id)}
                     data-testid="download-pdf-button"
                   >

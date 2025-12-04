@@ -425,6 +425,15 @@ export default function Quotes() {
               <div className="border-b pb-4">
                 <h3 className="font-semibold mb-3 text-gray-700">Ürün Ekle</h3>
                 <div className="space-y-3">
+                  <div className="mb-3">
+                    <Label htmlFor="product_search">Ürün Ara</Label>
+                    <Input
+                      id="product_search"
+                      placeholder="Ürün adı veya kodu ile ara..."
+                      value={productSearchTerm}
+                      onChange={(e) => setProductSearchTerm(e.target.value)}
+                    />
+                  </div>
                   <div className="grid grid-cols-5 gap-3">
                     <div className="col-span-2">
                       <Label htmlFor="product">Ürün</Label>
@@ -436,11 +445,17 @@ export default function Quotes() {
                           <SelectValue placeholder="Ürün seçin" />
                         </SelectTrigger>
                         <SelectContent>
-                          {products.map(product => (
-                            <SelectItem key={product.id} value={product.id}>
-                              {product.name} ({product.code})
-                            </SelectItem>
-                          ))}
+                          {products
+                            .filter(p => 
+                              productSearchTerm === "" || 
+                              p.name.toLowerCase().includes(productSearchTerm.toLowerCase()) ||
+                              p.code.toLowerCase().includes(productSearchTerm.toLowerCase())
+                            )
+                            .map(product => (
+                              <SelectItem key={product.id} value={product.id}>
+                                {product.name} ({product.code})
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
                     </div>

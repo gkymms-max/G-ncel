@@ -92,9 +92,11 @@ export default function Quotes() {
   const [quotes, setQuotes] = useState([]);
   const [products, setProducts] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
   const [previewQuoteId, setPreviewQuoteId] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [productSearchTerm, setProductSearchTerm] = useState("");
   const [formData, setFormData] = useState({
     quote_date: new Date().toISOString().split('T')[0],

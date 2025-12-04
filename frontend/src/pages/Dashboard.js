@@ -102,6 +102,7 @@ export default function Dashboard({ setIsAuthenticated }) {
         <Routes>
           <Route path="/" element={<Products />} />
           <Route path="/quotes" element={<Quotes />} />
+          <Route path="/customers" element={<Customers />} />
           <Route path="/settings" element={<SettingsPage />} />
           {isAdmin && <Route path="/categories" element={<Categories />} />}
           {isAdmin && <Route path="/users" element={<UsersPage />} />}

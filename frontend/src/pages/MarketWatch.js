@@ -98,27 +98,16 @@ export default function MarketWatch() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {market.widget ? (
-                  <div className="relative w-full h-[500px]">
-                    <iframe
-                      src={market.widget}
-                      className="w-full h-full border-0"
-                      title={market.name}
-                      frameBorder="0"
-                      allowTransparency="true"
-                      scrolling="no"
-                    />
-                  </div>
-                ) : (
-                  <div className="relative w-full h-[600px]">
-                    <iframe
-                      src={market.iframe}
-                      className="w-full h-full border rounded-lg"
-                      title={market.name}
-                      sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-                    />
-                  </div>
-                )}
+                <div className="relative w-full h-[500px]">
+                  <iframe
+                    src={market.widget}
+                    className="w-full h-full border-0"
+                    title={market.name}
+                    frameBorder="0"
+                    allowTransparency="true"
+                    scrolling="no"
+                  />
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

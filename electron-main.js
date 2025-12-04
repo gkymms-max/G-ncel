@@ -9,17 +9,26 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
+    minWidth: 1024,
+    minHeight: 768,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      webSecurity: false, // Bu WhatsApp/Instagram için gerekli
+      webSecurity: false,
       enableRemoteModule: false,
     },
-    icon: path.join(__dirname, 'frontend/public/op.png'),
-    title: 'Fiyat Teklifi Yönetim Sistemi'
+    icon: path.join(__dirname, 'build/icon.png'),
+    title: 'Fiyat Teklifi Yönetim Sistemi',
+    backgroundColor: '#ffffff',
+    show: false // Don't show until ready
   });
 
-  // Disable X-Frame-Options for WhatsApp, Instagram, etc.
+  // Show window when ready
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
+
+  // Disable X-Frame-Options for TradingView widgets
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {
@@ -33,11 +42,11 @@ function createWindow() {
   // Load the app
   const startUrl = isDev 
     ? 'http://localhost:3000' 
-    : `file://${path.join(__dirname, 'frontend/build/index.html')}`;
+    : `file://${path.join(__dirname, 'build/index.html')}`;
   
   mainWindow.loadURL(startUrl);
 
-  // Open DevTools in development
+  // Open DevTools in development only
   if (isDev) {
     mainWindow.webContents.openDevTools();
   }

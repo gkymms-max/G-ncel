@@ -391,26 +391,43 @@ class UserCreateByAdmin(BaseModel):
     password: str
     role: Literal["admin", "user"] = "user"
 
-# Contact Channels endpoints (Admin only)
+# Contact Channels endpoints (User specific)
 @api_router.get("/contact-channels", response_model=List[ContactChannel])
 async def get_contact_channels(current_user: dict = Depends(get_current_user)):
-    channels = await db.contact_channels.find({}, {"_id": 0}).to_list(1000)
+    channels = await db.contact_channels.find({"user_id": current_user["username"]}, {"_id": 0}).to_list(1000)
     for channel in channels:
         if isinstance(channel['created_at'], str):
             channel['created_at'] = datetime.fromisoformat(channel['created_at'])
+    # Sort by order
+    channels.sort(key=lambda x: x.get('order', 0))
     return channels
 
 @api_router.post("/contact-channels", response_model=ContactChannel)
-async def create_contact_channel(channel: ContactChannelCreate, current_user: dict = Depends(get_admin_user)):
-    channel_obj = ContactChannel(**channel.model_dump())
-    doc = channel_obj.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    await db.contact_channels.insert_one(doc)
-    return channel_obj
+async def create_contact_channel(channel: ContactChannelCreate, current_user: dict = Depends(get_current_user)):
+    channel_dict = channel.model_dump()
+    channel_dict['user_id'] = current_user["username"]
+    channel_dict['id'] = str(uuid.uuid4())
+    channel_dict['created_at'] = datetime.now(timezone.utc).isoformat()
+    await db.contact_channels.insert_one(channel_dict)
+    channel_dict['created_at'] = datetime.fromisoformat(channel_dict['created_at'])
+    return ContactChannel(**channel_dict)
+
+@api_router.put("/contact-channels/{channel_id}", response_model=ContactChannel)
+async def update_contact_channel(channel_id: str, channel: ContactChannelCreate, current_user: dict = Depends(get_current_user)):
+    result = await db.contact_channels.update_one(
+        {"id": channel_id, "user_id": current_user["username"]},
+        {"$set": channel.model_dump()}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Contact channel not found")
+    updated = await db.contact_channels.find_one({"id": channel_id}, {"_id": 0})
+    if isinstance(updated['created_at'], str):
+        updated['created_at'] = datetime.fromisoformat(updated['created_at'])
+    return ContactChannel(**updated)
 
 @api_router.delete("/contact-channels/{channel_id}")
-async def delete_contact_channel(channel_id: str, current_user: dict = Depends(get_admin_user)):
-    result = await db.contact_channels.delete_one({"id": channel_id})
+async def delete_contact_channel(channel_id: str, current_user: dict = Depends(get_current_user)):
+    result = await db.contact_channels.delete_one({"id": channel_id, "user_id": current_user["username"]})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Contact channel not found")
     return {"message": "Contact channel deleted successfully"}

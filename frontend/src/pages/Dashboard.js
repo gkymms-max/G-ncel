@@ -109,6 +109,7 @@ export default function Dashboard({ setIsAuthenticated }) {
           {isAdmin && <Route path="/categories" element={<Categories />} />}
           {isAdmin && <Route path="/users" element={<UsersPage />} />}
           {isAdmin && <Route path="/contact-channels" element={<ContactChannels />} />}
+          {isAdmin && <Route path="/market-watch" element={<MarketWatch />} />}
         </Routes>
       </div>
     </div>

@@ -19,6 +19,63 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+function PDFPreview({ quoteId }) {
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPDF = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${API}/quotes/${quoteId}/pdf`, {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: 'blob'
+        });
+        
+        const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+        setPdfUrl(url);
+        setLoading(false);
+      } catch (error) {
+        console.error("PDF yüklenemedi:", error);
+        toast.error("PDF yüklenemedi");
+        setLoading(false);
+      }
+    };
+
+    fetchPDF();
+
+    return () => {
+      if (pdfUrl) {
+        window.URL.revokeObjectURL(pdfUrl);
+      }
+    };
+  }, [quoteId]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-gray-600">PDF yükleniyor...</div>
+      </div>
+    );
+  }
+
+  if (!pdfUrl) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-red-600">PDF yüklenemedi</div>
+      </div>
+    );
+  }
+
+  return (
+    <iframe
+      src={pdfUrl}
+      className="w-full h-full border-0"
+      title="PDF Önizleme"
+    />
+  );
+}
+
 const currencies = ["EUR", "USD", "TL"];
 
 export default function Quotes() {

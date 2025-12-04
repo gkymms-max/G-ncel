@@ -94,17 +94,18 @@ class RoleCreate(BaseModel):
 class ContactChannel(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    type: Literal["whatsapp", "instagram", "facebook", "tiktok", "website"]
-    title: str  # Görünen isim
-    value: str  # Numara, URL, email
-    icon: Optional[str] = None  # Icon class
+    user_id: str
+    type: Literal["whatsapp", "instagram", "facebook", "tiktok", "website", "other"]
+    title: str  # Görünen isim (örn: "WhatsApp İş", "Instagram Kişisel")
+    url: str  # URL
+    order: int = 0  # Sıralama
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class ContactChannelCreate(BaseModel):
-    type: Literal["whatsapp", "instagram", "facebook", "tiktok", "website"]
+    type: Literal["whatsapp", "instagram", "facebook", "tiktok", "website", "other"]
     title: str
-    value: str
-    icon: Optional[str] = None
+    url: str
+    order: Optional[int] = 0
 
 class Customer(BaseModel):
     model_config = ConfigDict(extra="ignore")

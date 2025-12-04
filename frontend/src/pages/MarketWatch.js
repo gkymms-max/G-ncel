@@ -51,43 +51,37 @@ export default function MarketWatch() {
 
   return (
     <div className="p-8">
-      <div className="mb-8">
+      <div className="mb-4">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2" style={{ fontFamily: 'Space Grotesk' }}>
           Canlı Borsa Takibi
         </h1>
-        <p className="text-gray-600">Döviz kurları ve emtia fiyatlarını canlı takip edin</p>
-      </div>
-
-      {/* Quick Overview Cards */}
-      <div className="grid grid-cols-5 gap-4 mb-8">
-        {markets.map(market => (
-          <Card key={market.id} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveTab(market.id)}>
-            <CardContent className="pt-4 pb-4">
-              <div className="flex flex-col items-center">
-                <div className="flex items-center gap-2 mb-3">
-                  <market.icon className="h-4 w-4 text-gray-600" />
-                  <div className="text-xs font-medium text-gray-700">{market.name.split(' ')[0]}</div>
-                </div>
-                <div className="relative w-full h-[60px]">
-                  {market.widget ? (
-                    <iframe
-                      src={market.widget}
-                      className="w-full h-full border-0"
-                      title={`${market.name} mini`}
-                      frameBorder="0"
-                      allowTransparency="true"
-                      scrolling="no"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full text-xs text-gray-500">
-                      Canlı
-                    </div>
-                  )}
-                </div>
+        <p className="text-gray-600 mb-4">Döviz kurları ve emtia fiyatlarını canlı takip edin</p>
+        
+        {/* Compact Live Price Bar - Right under the title */}
+        <div className="flex gap-3 py-3 px-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-blue-100 overflow-x-auto">
+          {markets.map(market => (
+            <div 
+              key={market.id} 
+              className="flex items-center gap-2 px-3 py-2 bg-white rounded-md shadow-sm hover:shadow-md transition-shadow cursor-pointer min-w-fit"
+              onClick={() => setActiveTab(market.id)}
+            >
+              <market.icon className="h-4 w-4 text-gray-600" />
+              <div className="flex flex-col">
+                <span className="text-xs font-semibold text-gray-700">{market.name}</span>
+                <span className="text-xs text-gray-500">{market.symbol}</span>
               </div>
-            </CardContent>
-          </Card>
-        ))}
+              <div className="h-8 w-16 ml-2">
+                <iframe
+                  src={`https://s.tradingview.com/embed-widget/single-quote/?locale=tr#%7B%22symbol%22%3A%22${market.tvSymbol}%22%2C%22width%22%3A%2270%22%2C%22height%22%3A%2235%22%2C%22colorTheme%22%3A%22light%22%2C%22isTransparent%22%3Atrue%7D`}
+                  className="w-full h-full border-0"
+                  title={`${market.name} live`}
+                  frameBorder="0"
+                  scrolling="no"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

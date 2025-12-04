@@ -30,6 +30,7 @@ export default function Dashboard({ setIsAuthenticated }) {
   const userMenuItems = [
     { path: "/", icon: Package, label: "Ürünler" },
     { path: "/quotes", icon: FileText, label: "Teklifler" },
+    { path: "/customers", icon: UserCheck, label: "Müşteriler" },
     { path: "/settings", icon: Settings, label: "Ayarlar" },
   ];
 

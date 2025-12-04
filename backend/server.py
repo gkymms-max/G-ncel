@@ -497,6 +497,45 @@ async def create_product(product: ProductCreate, current_user: dict = Depends(ge
     await db.products.insert_one(doc)
     return product_obj
 
+
+# Customer endpoints
+@api_router.get("/customers", response_model=List[Customer])
+async def get_customers(current_user: dict = Depends(get_current_user)):
+    customers = await db.customers.find({"user_id": current_user['id']}, {"_id": 0}).to_list(1000)
+    for customer in customers:
+        if isinstance(customer['created_at'], str):
+            customer['created_at'] = datetime.fromisoformat(customer['created_at'])
+    return customers
+
+@api_router.post("/customers", response_model=Customer)
+async def create_customer(customer: CustomerCreate, current_user: dict = Depends(get_current_user)):
+    customer_obj = Customer(**customer.model_dump(), user_id=current_user['id'])
+    doc = customer_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.customers.insert_one(doc)
+    return customer_obj
+
+@api_router.put("/customers/{customer_id}", response_model=Customer)
+async def update_customer(customer_id: str, customer: CustomerCreate, current_user: dict = Depends(get_current_user)):
+    result = await db.customers.update_one(
+        {"id": customer_id, "user_id": current_user['id']},
+        {"$set": customer.model_dump()}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    updated = await db.customers.find_one({"id": customer_id}, {"_id": 0})
+    if isinstance(updated['created_at'], str):
+        updated['created_at'] = datetime.fromisoformat(updated['created_at'])
+    return Customer(**updated)
+
+@api_router.delete("/customers/{customer_id}")
+async def delete_customer(customer_id: str, current_user: dict = Depends(get_current_user)):
+    result = await db.customers.delete_one({"id": customer_id, "user_id": current_user['id']})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    return {"message": "Customer deleted successfully"}
+
 @api_router.get("/products", response_model=List[Product])
 async def get_products(current_user: dict = Depends(get_current_user)):
     products = await db.products.find({}, {"_id": 0}).to_list(1000)

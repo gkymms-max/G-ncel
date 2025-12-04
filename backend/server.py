@@ -868,8 +868,8 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
         ('FONTSIZE', (0, 0), (-1, 2), 9),
         ('FONTNAME', (0, 3), (-1, 3), font_bold),
         ('FONTSIZE', (0, 3), (-1, 3), 11),
-        ('TEXTCOLOR', (0, 3), (-1, 3), colors.HexColor(theme["primary"])),
-        ('LINEABOVE', (0, 3), (-1, 3), 1.5, colors.HexColor(theme["primary"])),
+        ('TEXTCOLOR', (0, 3), (-1, 3), colors.HexColor(theme_color)),
+        ('LINEABOVE', (0, 3), (-1, 3), 1.5, colors.HexColor(theme_color)),
         ('TOPPADDING', (0, 0), (-1, -1), 6),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
     ]))

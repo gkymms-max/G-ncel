@@ -304,18 +304,9 @@ export default function Quotes() {
                 <div className="mb-4">
                   <Label htmlFor="customer_select">Kayıtlı Müşteri Seç (Opsiyonel)</Label>
                   <Select 
-                    value={formData.customer_id} 
+                    value={formData.customer_id || "manual"} 
                     onValueChange={(value) => {
-                      const selectedCustomer = customers.find(c => c.id === value);
-                      if (selectedCustomer) {
-                        setFormData({
-                          ...formData,
-                          customer_id: value,
-                          customer_name: selectedCustomer.name,
-                          customer_email: selectedCustomer.email || "",
-                          customer_phone: selectedCustomer.phone || ""
-                        });
-                      } else {
+                      if (value === "manual") {
                         setFormData({
                           ...formData,
                           customer_id: "",
@@ -323,6 +314,17 @@ export default function Quotes() {
                           customer_email: "",
                           customer_phone: ""
                         });
+                      } else {
+                        const selectedCustomer = customers.find(c => c.id === value);
+                        if (selectedCustomer) {
+                          setFormData({
+                            ...formData,
+                            customer_id: value,
+                            customer_name: selectedCustomer.name,
+                            customer_email: selectedCustomer.email || "",
+                            customer_phone: selectedCustomer.phone || ""
+                          });
+                        }
                       }
                     }}
                   >

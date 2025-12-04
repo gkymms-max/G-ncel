@@ -252,6 +252,85 @@ export default function SettingsPage() {
                 </div>
               </div>
 
+              <div className="border-t pt-6">
+                <h3 className="font-semibold mb-4 text-gray-700">Tema Ayarları</h3>
+                <div>
+                  <Label htmlFor="theme_color">Tema Rengi</Label>
+                  <div className="flex gap-4 mt-2">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        id="theme_indigo"
+                        name="theme_color"
+                        checked={settings.theme_color === "#4F46E5"}
+                        onChange={() => setSettings({ ...settings, theme_color: "#4F46E5" })}
+                        className="h-4 w-4"
+                      />
+                      <Label htmlFor="theme_indigo" className="flex items-center gap-2 cursor-pointer">
+                        <div className="w-6 h-6 rounded-full bg-indigo-600"></div>
+                        İndigo
+                      </Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        id="theme_blue"
+                        name="theme_color"
+                        checked={settings.theme_color === "#3B82F6"}
+                        onChange={() => setSettings({ ...settings, theme_color: "#3B82F6" })}
+                        className="h-4 w-4"
+                      />
+                      <Label htmlFor="theme_blue" className="flex items-center gap-2 cursor-pointer">
+                        <div className="w-6 h-6 rounded-full bg-blue-600"></div>
+                        Mavi
+                      </Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        id="theme_green"
+                        name="theme_color"
+                        checked={settings.theme_color === "#10B981"}
+                        onChange={() => setSettings({ ...settings, theme_color: "#10B981" })}
+                        className="h-4 w-4"
+                      />
+                      <Label htmlFor="theme_green" className="flex items-center gap-2 cursor-pointer">
+                        <div className="w-6 h-6 rounded-full bg-green-600"></div>
+                        Yeşil
+                      </Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        id="theme_purple"
+                        name="theme_color"
+                        checked={settings.theme_color === "#8B5CF6"}
+                        onChange={() => setSettings({ ...settings, theme_color: "#8B5CF6" })}
+                        className="h-4 w-4"
+                      />
+                      <Label htmlFor="theme_purple" className="flex items-center gap-2 cursor-pointer">
+                        <div className="w-6 h-6 rounded-full bg-purple-600"></div>
+                        Mor
+                      </Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        id="theme_orange"
+                        name="theme_color"
+                        checked={settings.theme_color === "#F97316"}
+                        onChange={() => setSettings({ ...settings, theme_color: "#F97316" })}
+                        className="h-4 w-4"
+                      />
+                      <Label htmlFor="theme_orange" className="flex items-center gap-2 cursor-pointer">
+                        <div className="w-6 h-6 rounded-full bg-orange-600"></div>
+                        Turuncu
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="flex justify-end">
                 <Button type="submit" disabled={loading} data-testid="save-settings-button">
                   {loading ? "Kaydediliyor..." : "Ayarları Kaydet"}

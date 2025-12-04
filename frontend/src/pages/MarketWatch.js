@@ -118,8 +118,20 @@ export default function MarketWatch() {
 
       <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <p className="text-sm text-blue-800">
-          <strong>Not:</strong> Fiyatlar TradingView ve Investing.com'dan canlı olarak çekilmektedir. 
+          <strong>Not:</strong> Fiyatlar TradingView'dan canlı olarak çekilmektedir. 
           Gerçek zamanlı veriler için sayfayı yenileyin.
+        </p>
+        <p className="text-sm text-blue-600 mt-2">
+          <strong>Bakır widget gösterilemiyor:</strong> TradingView'in widget sınırlamaları nedeniyle, 
+          detaylı Bakır fiyatlarını görmek için{" "}
+          <a 
+            href="https://www.tradingview.com/symbols/COMEX-HG1!/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="underline font-semibold"
+          >
+            buraya tıklayın
+          </a>.
         </p>
       </div>
     </div>

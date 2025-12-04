@@ -691,7 +691,7 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
     theme_color = settings.get('theme_color', '#4F46E5') if settings else '#4F46E5'
     
     styles = getSampleStyleSheet()
-    title_style = ParagraphStyle('CustomTitle', parent=styles['Heading1'], fontName=font_bold, fontSize=20, textColor=colors.HexColor(theme["primary"]), spaceAfter=12)
+    title_style = ParagraphStyle('CustomTitle', parent=styles['Heading1'], fontName=font_bold, fontSize=20, textColor=colors.HexColor(theme_color), spaceAfter=12)
     heading_style = ParagraphStyle('CustomHeading', parent=styles['Heading2'], fontName=font_bold, fontSize=12, textColor=colors.HexColor('#374151'), spaceAfter=6)
     normal_style = ParagraphStyle('CustomNormal', parent=styles['Normal'], fontName=font_name, fontSize=9, textColor=colors.HexColor('#4b5563'))
     

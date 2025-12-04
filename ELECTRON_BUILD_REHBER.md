@@ -120,7 +120,7 @@ dist/
 ### ⚙️ Backend Bağlantısı:
 Electron uygulaması şu anda **production backend**'e bağlı:
 ```
-https://quotemakr.preview.emergentagent.com/api
+https://bizquoter-1.preview.emergentagent.com/api
 ```
 
 Kendi backend'inizi kullanmak isterseniz:

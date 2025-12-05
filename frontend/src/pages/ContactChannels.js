@@ -266,8 +266,9 @@ export default function ContactChannels() {
                   src={`${API}/proxy/${channel.id}?url=${encodeURIComponent(channel.url)}`}
                   className="w-full h-full border-0"
                   title={channel.title}
-                  sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals allow-downloads"
-                  allow="microphone; camera; geolocation; clipboard-read; clipboard-write; autoplay"
+                  sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals allow-downloads allow-storage-access-by-user-activation"
+                  allow="microphone; camera; geolocation; clipboard-read; clipboard-write; autoplay; storage-access"
+                  data-channel-id={channel.id}
                 />
               </div>
             ))}

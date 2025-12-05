@@ -259,7 +259,7 @@ export default function ContactChannels() {
           <div className="w-full h-full bg-white">
             <iframe
               key={activeChannel.id}
-              src={activeChannel.url}
+              src={`${API}/proxy?url=${encodeURIComponent(activeChannel.url)}`}
               className="w-full h-full border-0"
               title={activeChannel.title}
               sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals"

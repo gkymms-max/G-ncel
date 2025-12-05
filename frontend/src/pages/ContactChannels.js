@@ -256,53 +256,15 @@ export default function ContactChannels() {
       {/* Content */}
       <div className="flex-1 bg-gray-100">
         {activeChannel ? (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
-            <Card className="max-w-2xl w-full mx-8">
-              <CardContent className="pt-8 pb-8 text-center">
-                {(() => {
-                  const ChannelIcon = channelIcons[activeChannel.type];
-                  return <ChannelIcon className="h-20 w-20 text-blue-500 mx-auto mb-6" />;
-                })()}
-                <h2 className="text-3xl font-bold mb-3 text-gray-800">{activeChannel.title}</h2>
-                <p className="text-gray-600 mb-6">
-                  {activeChannel.type === 'whatsapp' && 'WhatsApp Web hesabınızı ayrı pencerede açmak için butona tıklayın'}
-                  {activeChannel.type === 'instagram' && 'Instagram Direct hesabınızı ayrı pencerede açmak için butona tıklayın'}
-                  {activeChannel.type === 'facebook' && 'Facebook Messenger hesabınızı ayrı pencerede açmak için butona tıklayın'}
-                  {activeChannel.type === 'tiktok' && 'TikTok hesabınızı ayrı pencerede açmak için butona tıklayın'}
-                  {!['whatsapp', 'instagram', 'facebook', 'tiktok'].includes(activeChannel.type) && 'Bu kanalı ayrı pencerede açmak için butona tıklayın'}
-                </p>
-                <Button 
-                  onClick={() => {
-                    // Open in new popup window
-                    const width = 1200;
-                    const height = 800;
-                    const left = (window.screen.width - width) / 2;
-                    const top = (window.screen.height - height) / 2;
-                    
-                    window.open(
-                      activeChannel.url,
-                      `channel_${activeChannel.id}`,
-                      `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes,status=yes,menubar=no,toolbar=no,location=no`
-                    );
-                    
-                    toast.success(`${activeChannel.title} yeni pencerede açıldı!`);
-                  }}
-                  size="lg"
-                  className="text-lg px-8 py-6"
-                >
-                  <Globe className="h-5 w-5 mr-2" />
-                  {activeChannel.title} - Pencere Aç
-                </Button>
-                <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <p className="text-sm text-blue-800">
-                    💡 <strong>İpucu:</strong> Her kanal için ayrı pencere açılır. Böylece birden fazla hesabı aynı anda kullanabilirsiniz!
-                  </p>
-                </div>
-                <div className="mt-4 text-xs text-gray-500">
-                  <strong>URL:</strong> {activeChannel.url}
-                </div>
-              </CardContent>
-            </Card>
+          <div className="w-full h-full bg-white">
+            <iframe
+              key={activeChannel.id}
+              src={`${API}/proxy/${activeChannel.id}?url=${encodeURIComponent(activeChannel.url)}`}
+              className="w-full h-full border-0"
+              title={activeChannel.title}
+              sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals allow-downloads"
+              allow="microphone; camera; geolocation; clipboard-read; clipboard-write; autoplay"
+            />
           </div>
         ) : (
           <div className="flex items-center justify-center h-full">

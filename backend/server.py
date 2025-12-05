@@ -494,6 +494,20 @@ async def proxy_channel(channel_id: str, request: Request):
         
         response = await client.get(url, headers=headers)
         
+        # Save updated cookies to database
+        updated_cookies = {}
+        for cookie in client.cookies.jar:
+            updated_cookies[cookie.name] = cookie.value
+        
+        if updated_cookies:
+            channel_cookies[channel_id] = updated_cookies
+            # Save to database (async, don't wait)
+            await db.channel_sessions.update_one(
+                {"channel_id": channel_id},
+                {"$set": {"channel_id": channel_id, "cookies": updated_cookies, "updated_at": datetime.now(timezone.utc).isoformat()}},
+                upsert=True
+            )
+        
         # Remove blocking headers
         clean_headers = {}
         blocked_headers = {
@@ -512,8 +526,10 @@ async def proxy_channel(channel_id: str, request: Request):
         clean_headers['Access-Control-Allow-Methods'] = '*'
         clean_headers['Access-Control-Allow-Headers'] = '*'
         
-        # Add cache headers for faster loading
-        clean_headers['Cache-Control'] = 'public, max-age=3600'
+        # Disable cache for dynamic content
+        clean_headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        clean_headers['Pragma'] = 'no-cache'
+        clean_headers['Expires'] = '0'
         
         return Response(
             content=response.content,

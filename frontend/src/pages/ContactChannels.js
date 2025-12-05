@@ -253,19 +253,25 @@ export default function ContactChannels() {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 bg-gray-100">
-        {activeChannel ? (
-          <div className="w-full h-full bg-white">
-            <iframe
-              key={activeChannel.id}
-              src={`${API}/proxy/${activeChannel.id}?url=${encodeURIComponent(activeChannel.url)}`}
-              className="w-full h-full border-0"
-              title={activeChannel.title}
-              sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals allow-downloads"
-              allow="microphone; camera; geolocation; clipboard-read; clipboard-write; autoplay"
-            />
-          </div>
+      {/* Content - All iframes loaded, only active one visible */}
+      <div className="flex-1 bg-gray-100 relative">
+        {channels.length > 0 ? (
+          <>
+            {channels.map(channel => (
+              <div
+                key={channel.id}
+                className={`absolute inset-0 bg-white ${activeChannelId === channel.id ? 'block' : 'hidden'}`}
+              >
+                <iframe
+                  src={`${API}/proxy/${channel.id}?url=${encodeURIComponent(channel.url)}`}
+                  className="w-full h-full border-0"
+                  title={channel.title}
+                  sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals allow-downloads"
+                  allow="microphone; camera; geolocation; clipboard-read; clipboard-write; autoplay"
+                />
+              </div>
+            ))}
+          </>
         ) : (
           <div className="flex items-center justify-center h-full">
             <Card>

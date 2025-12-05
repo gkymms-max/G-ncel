@@ -433,56 +433,79 @@ async def delete_contact_channel(channel_id: str, current_user: dict = Depends(g
         raise HTTPException(status_code=404, detail="Contact channel not found")
     return {"message": "Contact channel deleted successfully"}
 
-# Proxy endpoint for bypassing iframe restrictions (No auth required for iframe access)
-@api_router.get("/proxy")
-async def proxy_url(url: str):
+# Session storage for each channel (simulates separate browsers)
+channel_sessions = {}
+
+@api_router.get("/proxy/{channel_id}")
+async def proxy_channel(channel_id: str, request: Request):
     """
-    Proxy endpoint to bypass X-Frame-Options and other iframe restrictions
-    Usage: /api/proxy?url=https://web.whatsapp.com
+    Proxy with session isolation per channel
+    Each channel_id maintains its own cookies/session
+    Usage: /api/proxy/channel123?url=https://web.whatsapp.com
     """
+    url = request.query_params.get('url')
+    if not url:
+        raise HTTPException(status_code=400, detail="url parameter required")
+    
     try:
-        async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as client:
-            # Fetch the target URL
-            response = await client.get(
-                url,
-                headers={
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                    'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
-                }
+        # Get or create session for this channel
+        if channel_id not in channel_sessions:
+            channel_sessions[channel_id] = httpx.AsyncClient(
+                follow_redirects=True,
+                timeout=30.0,
+                cookies=httpx.Cookies()
             )
-            
-            # Get content type
-            content_type = response.headers.get('content-type', 'text/html')
-            
-            # Remove problematic headers
-            headers_to_remove = [
-                'x-frame-options',
-                'content-security-policy',
-                'content-security-policy-report-only',
-                'x-content-security-policy',
-                'strict-transport-security'
-            ]
-            
-            response_headers = {
-                k: v for k, v in response.headers.items() 
-                if k.lower() not in headers_to_remove
-            }
-            
-            # Add permissive headers
-            response_headers['Access-Control-Allow-Origin'] = '*'
-            response_headers['Access-Control-Allow-Methods'] = '*'
-            response_headers['Access-Control-Allow-Headers'] = '*'
-            
-            return Response(
-                content=response.content,
-                status_code=response.status_code,
-                headers=response_headers,
-                media_type=content_type
-            )
-            
+        
+        client = channel_sessions[channel_id]
+        
+        # Forward request with realistic headers
+        headers = {
+            'User-Agent': f'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Channel-{channel_id}',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Cache-Control': 'max-age=0',
+        }
+        
+        # Forward any cookies from original request
+        if 'cookie' in request.headers:
+            headers['Cookie'] = request.headers['cookie']
+        
+        response = await client.get(url, headers=headers)
+        
+        # Remove blocking headers
+        clean_headers = {}
+        blocked_headers = {
+            'x-frame-options', 'content-security-policy', 
+            'content-security-policy-report-only', 'x-content-security-policy',
+            'strict-transport-security', 'x-xss-protection'
+        }
+        
+        for k, v in response.headers.items():
+            if k.lower() not in blocked_headers:
+                clean_headers[k] = v
+        
+        # Add permissive CORS headers
+        clean_headers['Access-Control-Allow-Origin'] = '*'
+        clean_headers['Access-Control-Allow-Credentials'] = 'true'
+        clean_headers['Access-Control-Allow-Methods'] = '*'
+        clean_headers['Access-Control-Allow-Headers'] = '*'
+        
+        return Response(
+            content=response.content,
+            status_code=response.status_code,
+            headers=clean_headers,
+            media_type=response.headers.get('content-type', 'text/html')
+        )
+        
     except Exception as e:
-        logger.error(f"Proxy error: {str(e)}")
+        logger.error(f"Proxy error for channel {channel_id}: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Proxy error: {str(e)}")
 
 @api_router.get("/users", response_model=List[UserResponse])

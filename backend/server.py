@@ -433,9 +433,9 @@ async def delete_contact_channel(channel_id: str, current_user: dict = Depends(g
         raise HTTPException(status_code=404, detail="Contact channel not found")
     return {"message": "Contact channel deleted successfully"}
 
-# Proxy endpoint for bypassing iframe restrictions
+# Proxy endpoint for bypassing iframe restrictions (No auth required for iframe access)
 @api_router.get("/proxy")
-async def proxy_url(url: str, current_user: dict = Depends(get_current_user)):
+async def proxy_url(url: str):
     """
     Proxy endpoint to bypass X-Frame-Options and other iframe restrictions
     Usage: /api/proxy?url=https://web.whatsapp.com

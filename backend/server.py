@@ -435,12 +435,13 @@ async def delete_contact_channel(channel_id: str, current_user: dict = Depends(g
 
 # Session storage for each channel (simulates separate browsers)
 channel_sessions = {}
+channel_cookies = {}
 
 @api_router.get("/proxy/{channel_id}")
 async def proxy_channel(channel_id: str, request: Request):
     """
     Proxy with session isolation per channel
-    Each channel_id maintains its own cookies/session
+    Each channel_id maintains its own cookies/session in database
     Usage: /api/proxy/channel123?url=https://web.whatsapp.com
     """
     url = request.query_params.get('url')
@@ -448,12 +449,26 @@ async def proxy_channel(channel_id: str, request: Request):
         raise HTTPException(status_code=400, detail="url parameter required")
     
     try:
-        # Get or create session for this channel
+        # Load or create persistent cookies for this channel
+        if channel_id not in channel_cookies:
+            # Try to load from database
+            stored_session = await db.channel_sessions.find_one({"channel_id": channel_id}, {"_id": 0})
+            if stored_session and 'cookies' in stored_session:
+                channel_cookies[channel_id] = stored_session['cookies']
+            else:
+                channel_cookies[channel_id] = {}
+        
+        # Get or create httpx client for this channel
         if channel_id not in channel_sessions:
+            cookies_dict = channel_cookies.get(channel_id, {})
+            client_cookies = httpx.Cookies()
+            for name, value in cookies_dict.items():
+                client_cookies.set(name, value)
+            
             channel_sessions[channel_id] = httpx.AsyncClient(
                 follow_redirects=True,
                 timeout=30.0,
-                cookies=httpx.Cookies()
+                cookies=client_cookies
             )
         
         client = channel_sessions[channel_id]

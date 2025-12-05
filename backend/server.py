@@ -432,6 +432,59 @@ async def delete_contact_channel(channel_id: str, current_user: dict = Depends(g
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Contact channel not found")
     return {"message": "Contact channel deleted successfully"}
+
+# Proxy endpoint for bypassing iframe restrictions
+@api_router.get("/proxy")
+async def proxy_url(url: str, current_user: dict = Depends(get_current_user)):
+    """
+    Proxy endpoint to bypass X-Frame-Options and other iframe restrictions
+    Usage: /api/proxy?url=https://web.whatsapp.com
+    """
+    try:
+        async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as client:
+            # Fetch the target URL
+            response = await client.get(
+                url,
+                headers={
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                    'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
+                }
+            )
+            
+            # Get content type
+            content_type = response.headers.get('content-type', 'text/html')
+            
+            # Remove problematic headers
+            headers_to_remove = [
+                'x-frame-options',
+                'content-security-policy',
+                'content-security-policy-report-only',
+                'x-content-security-policy',
+                'strict-transport-security'
+            ]
+            
+            response_headers = {
+                k: v for k, v in response.headers.items() 
+                if k.lower() not in headers_to_remove
+            }
+            
+            # Add permissive headers
+            response_headers['Access-Control-Allow-Origin'] = '*'
+            response_headers['Access-Control-Allow-Methods'] = '*'
+            response_headers['Access-Control-Allow-Headers'] = '*'
+            
+            return Response(
+                content=response.content,
+                status_code=response.status_code,
+                headers=response_headers,
+                media_type=content_type
+            )
+            
+    except Exception as e:
+        logger.error(f"Proxy error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Proxy error: {str(e)}")
+
 @api_router.get("/users", response_model=List[UserResponse])
 async def get_users(current_user: dict = Depends(get_admin_user)):
     users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)

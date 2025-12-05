@@ -497,6 +497,9 @@ async def proxy_channel(channel_id: str, request: Request):
         clean_headers['Access-Control-Allow-Methods'] = '*'
         clean_headers['Access-Control-Allow-Headers'] = '*'
         
+        # Add cache headers for faster loading
+        clean_headers['Cache-Control'] = 'public, max-age=3600'
+        
         return Response(
             content=response.content,
             status_code=response.status_code,

@@ -552,6 +552,39 @@ async def proxy_channel(channel_id: str, request: Request):
         configurable: false
     }});
     
+    // Override sessionStorage
+    const originalSessionStorage = window.sessionStorage;
+    const channelSessionStorage = {{
+        getItem: function(key) {{
+            return originalSessionStorage.getItem(PREFIX + key);
+        }},
+        setItem: function(key, value) {{
+            return originalSessionStorage.setItem(PREFIX + key, value);
+        }},
+        removeItem: function(key) {{
+            return originalSessionStorage.removeItem(PREFIX + key);
+        }},
+        clear: function() {{
+            Object.keys(originalSessionStorage).forEach(key => {{
+                if (key.startsWith(PREFIX)) {{
+                    originalSessionStorage.removeItem(key);
+                }}
+            }});
+        }},
+        get length() {{
+            return Object.keys(originalSessionStorage).filter(k => k.startsWith(PREFIX)).length;
+        }},
+        key: function(index) {{
+            const keys = Object.keys(originalSessionStorage).filter(k => k.startsWith(PREFIX));
+            return keys[index] ? keys[index].substring(PREFIX.length) : null;
+        }}
+    }};
+    
+    Object.defineProperty(window, 'sessionStorage', {{
+        get: function() {{ return channelSessionStorage; }},
+        configurable: false
+    }});
+    
     // Override IndexedDB
     const originalIndexedDB = window.indexedDB;
     const wrappedIndexedDB = {{
@@ -575,7 +608,44 @@ async def proxy_channel(channel_id: str, request: Request):
         configurable: false
     }});
     
-    console.log('Storage isolated for channel:', CHANNEL_ID);
+    // Override BroadcastChannel
+    const OriginalBroadcastChannel = window.BroadcastChannel;
+    window.BroadcastChannel = function(name) {{
+        return new OriginalBroadcastChannel(PREFIX + name);
+    }};
+    window.BroadcastChannel.prototype = OriginalBroadcastChannel.prototype;
+    
+    // Override SharedWorker
+    if (window.SharedWorker) {{
+        const OriginalSharedWorker = window.SharedWorker;
+        window.SharedWorker = function(scriptURL, options) {{
+            if (typeof options === 'string') {{
+                return new OriginalSharedWorker(scriptURL, PREFIX + options);
+            }} else if (options && options.name) {{
+                options.name = PREFIX + options.name;
+                return new OriginalSharedWorker(scriptURL, options);
+            }}
+            return new OriginalSharedWorker(scriptURL, {{ name: PREFIX + 'default' }});
+        }};
+        window.SharedWorker.prototype = OriginalSharedWorker.prototype;
+    }}
+    
+    // Block ServiceWorker registration (causes conflicts)
+    if ('serviceWorker' in navigator) {{
+        Object.defineProperty(navigator, 'serviceWorker', {{
+            get: function() {{
+                return {{
+                    register: function() {{ return Promise.reject(new Error('Service Worker blocked for isolation')); }},
+                    ready: Promise.reject(new Error('Service Worker blocked')),
+                    controller: null,
+                    getRegistration: function() {{ return Promise.resolve(undefined); }},
+                    getRegistrations: function() {{ return Promise.resolve([]); }}
+                }};
+            }}
+        }});
+    }}
+    
+    console.log('✅ Full storage isolation for channel:', CHANNEL_ID);
 }})();
 </script>
 '''

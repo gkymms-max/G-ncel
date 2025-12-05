@@ -508,6 +508,90 @@ async def proxy_channel(channel_id: str, request: Request):
                 upsert=True
             )
         
+        # Inject storage isolation script for HTML content
+        content = response.content
+        content_type = response.headers.get('content-type', '')
+        
+        if 'text/html' in content_type:
+            storage_script = f'''
+<script>
+(function() {{
+    const CHANNEL_ID = '{channel_id}';
+    const PREFIX = 'channel_' + CHANNEL_ID + '_';
+    
+    // Override localStorage
+    const originalLocalStorage = window.localStorage;
+    const channelStorage = {{
+        getItem: function(key) {{
+            return originalLocalStorage.getItem(PREFIX + key);
+        }},
+        setItem: function(key, value) {{
+            return originalLocalStorage.setItem(PREFIX + key, value);
+        }},
+        removeItem: function(key) {{
+            return originalLocalStorage.removeItem(PREFIX + key);
+        }},
+        clear: function() {{
+            Object.keys(originalLocalStorage).forEach(key => {{
+                if (key.startsWith(PREFIX)) {{
+                    originalLocalStorage.removeItem(key);
+                }}
+            }});
+        }},
+        get length() {{
+            return Object.keys(originalLocalStorage).filter(k => k.startsWith(PREFIX)).length;
+        }},
+        key: function(index) {{
+            const keys = Object.keys(originalLocalStorage).filter(k => k.startsWith(PREFIX));
+            return keys[index] ? keys[index].substring(PREFIX.length) : null;
+        }}
+    }};
+    
+    Object.defineProperty(window, 'localStorage', {{
+        get: function() {{ return channelStorage; }},
+        configurable: false
+    }});
+    
+    // Override IndexedDB
+    const originalIndexedDB = window.indexedDB;
+    const wrappedIndexedDB = {{
+        open: function(name, version) {{
+            return originalIndexedDB.open(PREFIX + name, version);
+        }},
+        deleteDatabase: function(name) {{
+            return originalIndexedDB.deleteDatabase(PREFIX + name);
+        }},
+        databases: originalIndexedDB.databases ? function() {{
+            return originalIndexedDB.databases().then(dbs => 
+                dbs.filter(db => db.name.startsWith(PREFIX))
+                   .map(db => ({{ name: db.name.substring(PREFIX.length), version: db.version }}))
+            );
+        }} : undefined,
+        cmp: originalIndexedDB.cmp
+    }};
+    
+    Object.defineProperty(window, 'indexedDB', {{
+        get: function() {{ return wrappedIndexedDB; }},
+        configurable: false
+    }});
+    
+    console.log('Storage isolated for channel:', CHANNEL_ID);
+}})();
+</script>
+'''
+            try:
+                html_content = content.decode('utf-8')
+                # Inject script right after <head> tag
+                if '<head>' in html_content:
+                    html_content = html_content.replace('<head>', '<head>' + storage_script, 1)
+                elif '<html>' in html_content:
+                    html_content = html_content.replace('<html>', '<html>' + storage_script, 1)
+                else:
+                    html_content = storage_script + html_content
+                content = html_content.encode('utf-8')
+            except:
+                pass  # If decode fails, return original content
+        
         # Remove blocking headers
         clean_headers = {}
         blocked_headers = {
@@ -532,10 +616,10 @@ async def proxy_channel(channel_id: str, request: Request):
         clean_headers['Expires'] = '0'
         
         return Response(
-            content=response.content,
+            content=content,
             status_code=response.status_code,
             headers=clean_headers,
-            media_type=response.headers.get('content-type', 'text/html')
+            media_type=content_type
         )
         
     except Exception as e:

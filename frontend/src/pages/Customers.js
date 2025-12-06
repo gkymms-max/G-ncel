@@ -16,7 +16,10 @@ export default function Customers() {
   const [customers, setCustomers] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState(null);
-  const [viewMode, setViewMode] = useState("grid"); // "grid" or "list"
+  const [viewMode, setViewMode] = useState(() => {
+    // Load saved view mode from localStorage
+    return localStorage.getItem('customerViewMode') || 'grid';
+  }); // "grid" or "list"
   const [formData, setFormData] = useState({
     name: "",
     company: "",

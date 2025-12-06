@@ -227,7 +227,7 @@ export default function Quotes() {
     };
 
     setFormData({ ...formData, items: [...formData.items, item] });
-    setNewItem({ product_id: "", quantity: 0, unit_price: 0, note: "", use_package: false });
+    setNewItem({ product_id: "", quantity: 0, unit_price: 0, note: "" });
   };
 
   const removeItem = (index) => {

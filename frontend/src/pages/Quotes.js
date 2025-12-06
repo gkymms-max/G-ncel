@@ -119,8 +119,7 @@ export default function Quotes() {
     product_id: "",
     quantity: 0,
     unit_price: 0,
-    note: "",
-    use_package: false
+    note: ""
   });
 
   useEffect(() => {

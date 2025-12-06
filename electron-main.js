@@ -63,14 +63,14 @@ function createWindow() {
   });
 
   // Load the app
-  const serverUrl = isDev 
+  const serverUrl = !app.isPackaged 
     ? 'http://localhost:3000'
     : 'https://bizquoter-1.preview.emergentagent.com';
   
   mainWindow.loadURL(serverUrl);
 
   // Open DevTools in development only
-  if (isDev) {
+  if (!app.isPackaged) {
     mainWindow.webContents.openDevTools();
   }
 

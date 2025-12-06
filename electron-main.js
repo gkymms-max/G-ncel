@@ -91,10 +91,10 @@ function createWindow() {
     // Setup session for this view
     setupSession(`persist:channel_${channelId}`);
 
-    // Set bounds (will be updated by frontend)
+    // Set bounds - leave space for sidebar (200px) and header (120px)
     const { width, height } = mainWindow.getBounds();
-    view.setBounds({ x: 0, y: 0, width: width - 200, height: height });
-    view.setAutoResize({ width: true, height: true });
+    view.setBounds({ x: 200, y: 120, width: width - 200, height: height - 120 });
+    view.setAutoResize({ width: true, height: true, horizontal: { width: true } });
 
     // Load URL
     view.webContents.loadURL(url);

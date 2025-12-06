@@ -17,6 +17,7 @@
     "publish": null,
     "files": [
       "electron-main.js",
+      "preload.js",
       "build/**/*"
     ],
     "directories": {

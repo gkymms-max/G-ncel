@@ -141,7 +141,7 @@ export default function Customers() {
                 Yeni Müşteri Ekle
               </Button>
             </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>{editingCustomer ? "Müşteriyi Düzenle" : "Yeni Müşteri Ekle"}</DialogTitle>
             </DialogHeader>

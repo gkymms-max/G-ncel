@@ -214,8 +214,7 @@ export default function Customers() {
           <h3 className="text-lg font-medium text-gray-900 mb-2">Henüz müşteri eklenmemiş</h3>
           <p className="text-gray-500">Yeni müşteri eklemek için yukarıdaki butonu kullanın.</p>
         </div>
-      ) : (
-        viewMode === "list" ? (
+      ) : viewMode === "list" ? (
         <div className="bg-white rounded-lg border">
           <table className="w-full">
             <thead className="bg-gray-50 border-b">

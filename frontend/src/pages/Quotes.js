@@ -189,8 +189,8 @@ export default function Quotes() {
     let calculatedQuantity = newItem.quantity;
     let displayText = "";
     
-    // Paket bazlı hesaplama
-    if (newItem.use_package) {
+    // Paket bazlı hesaplama (ürünün is_package_based özelliğine göre otomatik)
+    if (product.is_package_based) {
       if (product.unit === "KG" && product.package_kg) {
         calculatedQuantity = newItem.quantity * product.package_kg;
         displayText = `${newItem.quantity} paket (${calculatedQuantity} KG)`;

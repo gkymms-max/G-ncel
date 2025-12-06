@@ -203,8 +203,8 @@ export default function Customers() {
                 <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>İptal</Button>
                 <Button type="submit">{editingCustomer ? "Güncelle" : "Ekle"}</Button>
               </div>
-            </form>
-          </DialogContent>
+              </form>
+            </DialogContent>
         </Dialog>
       </div>
 

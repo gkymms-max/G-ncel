@@ -159,6 +159,7 @@ export default function Products() {
       unit: product.unit,
       unit_price: product.unit_price,
       currency: product.currency || "EUR",
+      is_package_based: product.is_package_based || false,
       package_kg: product.package_kg,
       package_m2: product.package_m2,
       package_length: product.package_length,

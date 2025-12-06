@@ -11,12 +11,11 @@ function createWindow() {
     minWidth: 1024,
     minHeight: 768,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-      webSecurity: false,
-      enableRemoteModule: true,
+      nodeIntegration: false,
+      contextIsolation: true,
+      webSecurity: true,
       webviewTag: true,
-      partition: 'persist:main'
+      preload: path.join(__dirname, 'preload.js')
     },
     icon: path.join(__dirname, 'build/icon.png'),
     title: 'Fiyat Teklifi Yönetim Sistemi',

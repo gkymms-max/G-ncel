@@ -138,6 +138,7 @@ class Product(BaseModel):
     unit: Literal["KG", "Metre", "m²", "Adet"]
     unit_price: float
     currency: str = "EUR"
+    is_package_based: bool = False
     package_kg: Optional[float] = None
     package_m2: Optional[float] = None
     package_length: Optional[float] = None

@@ -15,6 +15,7 @@ function createWindow() {
       contextIsolation: false,
       webSecurity: false,
       enableRemoteModule: true,
+      webviewTag: true,
       partition: 'persist:main'
     },
     icon: path.join(__dirname, 'build/icon.png'),

@@ -340,6 +340,18 @@ export default function Products() {
 
               <div className="border-t pt-4">
                 <h4 className="font-medium mb-3 text-gray-700">Paket İçeriği (Opsiyonel)</h4>
+                <div className="mb-4 flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="is_package_based"
+                    checked={formData.is_package_based || false}
+                    onChange={(e) => setFormData({ ...formData, is_package_based: e.target.checked })}
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  <Label htmlFor="is_package_based" className="text-sm font-medium cursor-pointer">
+                    Bu ürün paket bazlı satılır (Teklifte otomatik olarak paket hesaplaması yapılacak)
+                  </Label>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="package_kg">Paket KG</Label>

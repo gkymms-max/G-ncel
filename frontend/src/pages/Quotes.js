@@ -557,7 +557,7 @@ export default function Quotes() {
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="quantity">{newItem.use_package ? "Paket Adedi" : "Miktar"}</Label>
+                      <Label htmlFor="quantity">Miktar</Label>
                       <Input
                         id="quantity"
                         type="number"

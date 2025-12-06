@@ -11,6 +11,7 @@ import ContactChannels from "./ContactChannels";
 import ContactChannelsElectron from "./ContactChannelsElectron";
 import Customers from "./Customers";
 import MarketWatch from "./MarketWatch";
+import SocialMediaPlanner from "./SocialMediaPlanner";
 
 export default function Dashboard({ setIsAuthenticated }) {
   const navigate = useNavigate();

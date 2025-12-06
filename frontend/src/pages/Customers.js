@@ -214,6 +214,72 @@ export default function Customers() {
           <h3 className="text-lg font-medium text-gray-900 mb-2">Henüz müşteri eklenmemiş</h3>
           <p className="text-gray-500">Yeni müşteri eklemek için yukarıdaki butonu kullanın.</p>
         </div>
+      ) : viewMode === "list" ? (
+        <div className="bg-white rounded-lg border">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Müşteri</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Firma</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İletişim</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">İşlemler</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {customers.map(customer => (
+                <tr key={customer.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <Users className="h-5 w-5 text-purple-600 mr-3" />
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">{customer.name}</div>
+                        {customer.tax_number && (
+                          <div className="text-xs text-gray-500">Vergi No: {customer.tax_number}</div>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{customer.company || '-'}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-gray-900 space-y-1">
+                      {customer.email && (
+                        <div className="flex items-center gap-1">
+                          <Mail className="h-3 w-3" />
+                          {customer.email}
+                        </div>
+                      )}
+                      {customer.phone && (
+                        <div className="flex items-center gap-1">
+                          <Phone className="h-3 w-3" />
+                          {customer.phone}
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => openEditDialog(customer)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-red-600 hover:bg-red-50 ml-2"
+                      onClick={() => handleDelete(customer.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {customers.map(customer => (

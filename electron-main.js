@@ -67,6 +67,76 @@ function createWindow() {
     setupSession(`persist:channel_${channelId}`);
   });
 
+  // Handle BrowserView creation for channels
+  ipcMain.on('create-browser-view', (event, { channelId, url }) => {
+    console.log('Creating BrowserView for channel:', channelId, url);
+    
+    // Remove existing view if any
+    if (browserViews[channelId]) {
+      mainWindow.removeBrowserView(browserViews[channelId]);
+      browserViews[channelId].webContents.destroy();
+      delete browserViews[channelId];
+    }
+
+    // Create new BrowserView with session partition
+    const view = new BrowserView({
+      webPreferences: {
+        partition: `persist:channel_${channelId}`,
+        nodeIntegration: false,
+        contextIsolation: true,
+        webSecurity: true
+      }
+    });
+
+    // Setup session for this view
+    setupSession(`persist:channel_${channelId}`);
+
+    // Set bounds (will be updated by frontend)
+    const { width, height } = mainWindow.getBounds();
+    view.setBounds({ x: 0, y: 0, width: width - 200, height: height });
+    view.setAutoResize({ width: true, height: true });
+
+    // Load URL
+    view.webContents.loadURL(url);
+
+    // Store view
+    browserViews[channelId] = view;
+    mainWindow.addBrowserView(view);
+
+    // Send ready event
+    event.reply('browser-view-ready', channelId);
+  });
+
+  // Handle BrowserView visibility toggle
+  ipcMain.on('show-browser-view', (event, channelId) => {
+    console.log('Showing BrowserView:', channelId);
+    
+    // Hide all views
+    Object.values(browserViews).forEach(view => {
+      mainWindow.removeBrowserView(view);
+    });
+
+    // Show requested view
+    if (browserViews[channelId]) {
+      mainWindow.addBrowserView(browserViews[channelId]);
+      
+      // Update bounds
+      const { width, height } = mainWindow.getBounds();
+      browserViews[channelId].setBounds({ x: 0, y: 60, width: width - 200, height: height - 60 });
+    }
+  });
+
+  // Handle BrowserView removal
+  ipcMain.on('remove-browser-view', (event, channelId) => {
+    console.log('Removing BrowserView:', channelId);
+    
+    if (browserViews[channelId]) {
+      mainWindow.removeBrowserView(browserViews[channelId]);
+      browserViews[channelId].webContents.destroy();
+      delete browserViews[channelId];
+    }
+  });
+
   // Load the app
   const serverUrl = !app.isPackaged 
     ? 'http://localhost:3000'

@@ -12,7 +12,7 @@ import { Plus, Edit, Trash2, Users, Mail, Phone, Building2, Grid3x3, List } from
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-export default function Customers() {
+function Customers() {
   const [customers, setCustomers] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState(null);

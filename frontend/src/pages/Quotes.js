@@ -340,7 +340,7 @@ export default function Quotes() {
     });
     setQuoteDate(new Date());
     setValidityDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
-    setNewItem({ product_id: "", quantity: 0, unit_price: 0, note: "", use_package: false });
+    setNewItem({ product_id: "", quantity: 0, unit_price: 0, note: "" });
     setProductSearchTerm("");
   };
 

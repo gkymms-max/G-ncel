@@ -114,6 +114,7 @@ export default function Dashboard({ setIsAuthenticated }) {
             typeof window !== 'undefined' && window.electron ? <ContactChannelsElectron /> : <ContactChannels />
           } />}
           {isAdmin && <Route path="/market-watch" element={<MarketWatch />} />}
+          <Route path="/social-media-planner" element={<SocialMediaPlanner />} />
         </Routes>
       </div>
     </div>

@@ -331,6 +331,21 @@ export default function SettingsPage() {
                         Turuncu
                       </Label>
                     </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        id="theme_brown"
+                        name="theme_color"
+                        checked={settings.theme_color === "#78350F"}
+                        onChange={() => setSettings({ ...settings, theme_color: "#78350F" })}
+                        className="h-4 w-4"
+                      />
+                      <Label htmlFor="theme_brown" className="flex items-center gap-2 cursor-pointer">
+                        <div className="w-6 h-6 rounded-full" style={{backgroundColor: "#78350F"}}></div>
+                        Kahve Tonu
+                      </Label>
+                    </div>
                   </div>
                 </div>
               </div>

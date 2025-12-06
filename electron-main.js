@@ -1,7 +1,8 @@
-const { app, BrowserWindow, session, ipcMain } = require('electron');
+const { app, BrowserWindow, BrowserView, session, ipcMain } = require('electron');
 const path = require('path');
 
 let mainWindow;
+let browserViews = {}; // Store browser views for each channel
 
 function createWindow() {
   // Create the browser window

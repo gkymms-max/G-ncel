@@ -112,7 +112,7 @@ export default function Dashboard({ setIsAuthenticated }) {
           {isAdmin && <Route path="/categories" element={<Categories />} />}
           {isAdmin && <Route path="/users" element={<UsersPage />} />}
           {isAdmin && <Route path="/contact-channels" element={
-            typeof window !== 'undefined' && window.electron ? <ContactChannelsElectron /> : <ContactChannels />
+            typeof window !== 'undefined' && window.electron ? <ContactChannelsBrowserView /> : <ContactChannels />
           } />}
           {isAdmin && <Route path="/market-watch" element={<MarketWatch />} />}
           <Route path="/social-media-planner" element={<SocialMediaPlanner />} />

@@ -1,6 +1,5 @@
 const { app, BrowserWindow, session, ipcMain } = require('electron');
 const path = require('path');
-const isDev = require('electron-is-dev');
 
 let mainWindow;
 

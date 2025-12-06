@@ -120,9 +120,9 @@ function createWindow() {
     if (browserViews[channelId]) {
       mainWindow.addBrowserView(browserViews[channelId]);
       
-      // Update bounds
+      // Update bounds - leave space for sidebar (200px) and header (120px)
       const { width, height } = mainWindow.getBounds();
-      browserViews[channelId].setBounds({ x: 0, y: 60, width: width - 200, height: height - 60 });
+      browserViews[channelId].setBounds({ x: 200, y: 120, width: width - 200, height: height - 120 });
     }
   });
 

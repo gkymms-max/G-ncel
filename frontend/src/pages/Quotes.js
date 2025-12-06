@@ -584,19 +584,11 @@ export default function Quotes() {
                       </Button>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="use_package"
-                      checked={newItem.use_package}
-                      onChange={(e) => setNewItem({ ...newItem, use_package: e.target.checked })}
-                      className="h-4 w-4 rounded border-gray-300"
-                      data-testid="use-package-checkbox"
-                    />
-                    <Label htmlFor="use_package" className="text-sm font-normal cursor-pointer">
-                      Paket bazlı hesapla (ürünün paket bilgisini kullan)
-                    </Label>
-                  </div>
+                  {newItem.product_id && products.find(p => p.id === newItem.product_id)?.is_package_based && (
+                    <div className="text-sm text-green-600 font-medium">
+                      ✓ Bu ürün paket bazlı hesaplanacak
+                    </div>
+                  )}
                 </div>
               </div>
 

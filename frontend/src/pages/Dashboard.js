@@ -8,7 +8,7 @@ import SettingsPage from "./SettingsPage";
 import Categories from "./Categories";
 import UsersPage from "./Users";
 import ContactChannels from "./ContactChannels";
-import ContactChannelsElectron from "./ContactChannelsElectron";
+import ContactChannelsBrowserView from "./ContactChannelsBrowserView";
 import Customers from "./Customers";
 import MarketWatch from "./MarketWatch";
 import SocialMediaPlanner from "./SocialMediaPlanner";

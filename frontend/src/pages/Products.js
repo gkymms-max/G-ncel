@@ -179,6 +179,7 @@ export default function Products() {
       unit: "Adet",
       unit_price: 0,
       currency: "EUR",
+      is_package_based: false,
       package_kg: null,
       package_m2: null,
       package_length: null,

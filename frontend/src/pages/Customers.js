@@ -124,14 +124,20 @@ export default function Customers() {
             <Button
               variant={viewMode === "grid" ? "default" : "ghost"}
               size="sm"
-              onClick={() => setViewMode("grid")}
+              onClick={() => {
+                setViewMode("grid");
+                localStorage.setItem('customerViewMode', 'grid');
+              }}
             >
               <Grid3x3 className="h-4 w-4" />
             </Button>
             <Button
               variant={viewMode === "list" ? "default" : "ghost"}
               size="sm"
-              onClick={() => setViewMode("list")}
+              onClick={() => {
+                setViewMode("list");
+                localStorage.setItem('customerViewMode', 'list');
+              }}
             >
               <List className="h-4 w-4" />
             </Button>

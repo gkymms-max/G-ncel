@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import base64
 
 class PriceQuoteAPITester:
-    def __init__(self, base_url="https://bizquoter-1.preview.emergentagent.com"):
+    def __init__(self, base_url="https://quote-desktop.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None

@@ -66,7 +66,7 @@ function createWindow() {
   // Load the app
   const serverUrl = !app.isPackaged 
     ? 'http://localhost:3000'
-    : 'https://bizquoter-1.preview.emergentagent.com';
+    : 'https://quote-desktop.preview.emergentagent.com';
   
   mainWindow.loadURL(serverUrl);
 

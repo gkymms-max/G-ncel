@@ -149,6 +149,14 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
   }
 
+  // Update BrowserView bounds on window resize
+  mainWindow.on('resize', () => {
+    const { width, height } = mainWindow.getBounds();
+    Object.values(browserViews).forEach(view => {
+      view.setBounds({ x: 200, y: 120, width: width - 200, height: height - 120 });
+    });
+  });
+
   mainWindow.on('closed', () => {
     mainWindow = null;
   });

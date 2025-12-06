@@ -333,7 +333,6 @@ export default function Customers() {
             </Card>
           ))}
         </div>
-        )
       )}
     </div>
   );

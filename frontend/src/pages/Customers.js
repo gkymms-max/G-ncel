@@ -205,7 +205,8 @@ export default function Customers() {
               </div>
               </form>
             </DialogContent>
-        </Dialog>
+          </Dialog>
+        </div>
       </div>
 
       {customers.length === 0 ? (

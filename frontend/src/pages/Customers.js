@@ -142,9 +142,9 @@ export default function Customers() {
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>{editingCustomer ? "Müşteriyi Düzenle" : "Yeni Müşteri Ekle"}</DialogTitle>
-            </DialogHeader>
+              <DialogHeader>
+                <DialogTitle>{editingCustomer ? "Müşteriyi Düzenle" : "Yeni Müşteri Ekle"}</DialogTitle>
+              </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>

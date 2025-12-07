@@ -19,6 +19,7 @@ const units = ["KG", "Metre", "m²", "Adet"];
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,6 +33,7 @@ export default function Products() {
   const [formData, setFormData] = useState({
     code: "",
     name: "",
+    group: "",
     category: "",
     unit: "Adet",
     unit_price: 0,
@@ -47,6 +49,7 @@ export default function Products() {
 
   useEffect(() => {
     fetchProducts();
+    fetchGroups();
     fetchCategories();
   }, []);
 

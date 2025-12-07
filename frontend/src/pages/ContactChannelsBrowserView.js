@@ -84,20 +84,22 @@ export default function ContactChannelsBrowserView() {
   };
 
   const handleAddChannel = () => {
-    setEditingChannel(null);
-    setFormData({
-      type: "whatsapp",
-      title: "",
-      url: defaultUrls.whatsapp,
-      order: channels.length
-    });
-    
-    // Hide BrowserViews when dialog opens
+    // Hide BrowserViews FIRST before opening dialog
     if (window.electron && window.electron.ipcRenderer) {
       window.electron.ipcRenderer.send('hide-all-browser-views');
     }
     
-    setDialogOpen(true);
+    // Small delay to ensure BrowserView is hidden
+    setTimeout(() => {
+      setEditingChannel(null);
+      setFormData({
+        type: "whatsapp",
+        title: "",
+        url: defaultUrls.whatsapp,
+        order: channels.length
+      });
+      setDialogOpen(true);
+    }, 50);
   };
 
   const handleEditChannel = (channel) => {

@@ -1228,16 +1228,16 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
         
         # Add items in this group
         for item in grouped_items[group_name]:
-        # Get product details
-        product = product_lookup.get(item['product_id'])
-        
-        # Calculate package count and actual quantity
-        package_count = "-"
-        actual_quantity = item['quantity']
-        unit = item['unit']
-        
-        # Format quantity display and extract package count
-        if item.get('display_text'):
+            # Get product details
+            product = product_lookup.get(item['product_id'])
+            
+            # Calculate package count and actual quantity
+            package_count = "-"
+            actual_quantity = item['quantity']
+            unit = item['unit']
+            
+            # Format quantity display and extract package count
+            if item.get('display_text'):
             # Example: "2 paket (100 m²)" or "2 Paket (100 Metre)"
             display_text_lower = item['display_text'].lower()
             

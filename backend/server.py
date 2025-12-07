@@ -1278,21 +1278,21 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
         # Create table for this group
         items_table = Table(table_data, colWidths=[7*cm, 1.8*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2.5*cm])
         items_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor(theme_color)),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (1, 0), (1, -1), 'CENTER'),   # Birim column centered
-        ('ALIGN', (2, 0), (2, -1), 'CENTER'),   # Koli/PK column centered
-        ('ALIGN', (3, 0), (3, -1), 'RIGHT'),    # Birim Fiyat column right
-        ('ALIGN', (4, 0), (4, -1), 'CENTER'),   # Miktar column centered
-        ('ALIGN', (5, 0), (5, -1), 'RIGHT'),    # Tutar column right aligned
-        ('FONTNAME', (0, 0), (-1, 0), font_bold),
-        ('FONTSIZE', (0, 0), (-1, 0), 8),       # Header font size
-        ('FONTNAME', (0, 1), (-1, -1), font_name),
-        ('FONTSIZE', (0, 1), (-1, -1), 7),      # Content font size
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f9fafb')]),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#d1d5db')),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor(theme_color)),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (1, 0), (1, -1), 'CENTER'),   # Birim column centered
+            ('ALIGN', (2, 0), (2, -1), 'CENTER'),   # Koli/PK column centered
+            ('ALIGN', (3, 0), (3, -1), 'RIGHT'),    # Birim Fiyat column right
+            ('ALIGN', (4, 0), (4, -1), 'CENTER'),   # Miktar column centered
+            ('ALIGN', (5, 0), (5, -1), 'RIGHT'),    # Tutar column right aligned
+            ('FONTNAME', (0, 0), (-1, 0), font_bold),
+            ('FONTSIZE', (0, 0), (-1, 0), 8),       # Header font size
+            ('FONTNAME', (0, 1), (-1, -1), font_name),
+            ('FONTSIZE', (0, 1), (-1, -1), 7),      # Content font size
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f9fafb')]),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#d1d5db')),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
         ('LEFTPADDING', (0, 0), (-1, -1), 4),
         ('RIGHTPADDING', (0, 0), (-1, -1), 4),

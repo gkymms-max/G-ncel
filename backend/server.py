@@ -1064,29 +1064,30 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
         # Get product details
         product = product_lookup.get(item['product_id'])
         
-        # Calculate package info and actual quantity
-        package_info = "-"
+        # Calculate package count and actual quantity
+        package_count = "-"
         actual_quantity = item['quantity']
         unit = item['unit']
         
-        if product:
-            # Determine package size based on unit
-            if unit == "KG" and product.get('package_kg'):
-                package_info = f"{product['package_kg']}"
-            elif unit == "m²" and product.get('package_m2'):
-                package_info = f"{product['package_m2']}"
-            elif unit == "Metre" and product.get('package_length'):
-                package_info = f"{product['package_length']}"
-            elif unit == "Adet" and product.get('package_count'):
-                package_info = f"{product['package_count']}"
-        
-        # Format quantity display
+        # Format quantity display and extract package count
         if item.get('display_text'):
-            # If we have display text, extract the calculated amount
-            # Example: "2 paket (100 m²)" -> show "100"
-            if '(' in item['display_text'] and ')' in item['display_text']:
-                calc_part = item['display_text'].split('(')[1].split(')')[0]
-                actual_quantity = calc_part.split(' ')[0]
+            # Example: "2 paket (100 m²)" 
+            # package_count should be "2"
+            # actual_quantity should be "100"
+            if 'paket' in item['display_text'].lower():
+                # Extract package count
+                package_part = item['display_text'].split('paket')[0].strip()
+                try:
+                    package_count = str(int(float(package_part)))
+                except:
+                    package_count = package_part
+                
+                # Extract calculated amount
+                if '(' in item['display_text'] and ')' in item['display_text']:
+                    calc_part = item['display_text'].split('(')[1].split(')')[0]
+                    actual_quantity = calc_part.split(' ')[0]
+                else:
+                    actual_quantity = str(item['quantity'])
             else:
                 actual_quantity = str(item['quantity'])
         else:

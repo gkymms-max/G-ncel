@@ -91,6 +91,12 @@ export default function ContactChannelsBrowserView() {
       url: defaultUrls.whatsapp,
       order: channels.length
     });
+    
+    // Hide BrowserViews when dialog opens
+    if (window.electron && window.electron.ipcRenderer) {
+      window.electron.ipcRenderer.send('hide-all-browser-views');
+    }
+    
     setDialogOpen(true);
   };
 

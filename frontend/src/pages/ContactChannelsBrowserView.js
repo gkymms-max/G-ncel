@@ -108,6 +108,12 @@ export default function ContactChannelsBrowserView() {
       url: channel.url,
       order: channel.order
     });
+    
+    // Hide BrowserViews when dialog opens
+    if (window.electron && window.electron.ipcRenderer) {
+      window.electron.ipcRenderer.send('hide-all-browser-views');
+    }
+    
     setDialogOpen(true);
   };
 

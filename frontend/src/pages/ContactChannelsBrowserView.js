@@ -183,7 +183,13 @@ export default function ContactChannelsBrowserView() {
             </h1>
             <p className="text-sm text-gray-600">Tüm sosyal medya hesaplarınızı tek yerden yönetin</p>
           </div>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <Dialog open={dialogOpen} onOpenChange={(open) => {
+            setDialogOpen(open);
+            // Restore BrowserViews when dialog closes
+            if (!open && window.electron && window.electron.ipcRenderer) {
+              window.electron.ipcRenderer.send('restore-browser-views', activeChannelId);
+            }
+          }}>
             <DialogTrigger asChild>
               <Button onClick={handleAddChannel} className="flex items-center gap-2">
                 <Plus className="h-4 w-4" />

@@ -45,6 +45,7 @@ export default function Dashboard({ setIsAuthenticated }) {
     { path: "/", icon: Package, label: "Ürünler" },
     { path: "/quotes", icon: FileText, label: "Teklifler" },
     { path: "/customers", icon: UserCheck, label: "Müşteriler" },
+    { path: "/reminders", icon: MessageCircle, label: "Hatırlatmalar" },
     { path: "/social-media-planner", icon: Calendar, label: "SM Planlama" },
     { path: "/settings", icon: Settings, label: "Ayarlar" },
   ];

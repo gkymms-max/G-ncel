@@ -169,6 +169,13 @@ export default function ContactChannelsBrowserView() {
         window.electron.ipcRenderer.send('remove-browser-view', channelId);
       }
       
+      // Remove from created views set
+      setCreatedViewIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(channelId);
+        return newSet;
+      });
+      
       await axios.delete(`${API}/contact-channels/${channelId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });

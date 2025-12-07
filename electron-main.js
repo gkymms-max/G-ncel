@@ -114,17 +114,17 @@ function createWindow() {
   ipcMain.on('show-browser-view', (event, channelId) => {
     console.log('Showing BrowserView:', channelId);
     
-    // Hide all views
-    Object.values(browserViews).forEach(view => {
-      mainWindow.removeBrowserView(view);
+    const { width, height } = mainWindow.getBounds();
+    
+    // Hide all views by moving them off-screen (preserve session)
+    Object.keys(browserViews).forEach(id => {
+      if (id !== channelId) {
+        browserViews[id].setBounds({ x: -5000, y: -5000, width: 1, height: 1 });
+      }
     });
 
-    // Show requested view
+    // Show requested view by moving it on-screen
     if (browserViews[channelId]) {
-      mainWindow.addBrowserView(browserViews[channelId]);
-      
-      // Update bounds - leave space for sidebar (256px = w-64) and header (120px)
-      const { width, height } = mainWindow.getBounds();
       browserViews[channelId].setBounds({ x: 256, y: 120, width: width - 256, height: height - 120 });
     }
   });

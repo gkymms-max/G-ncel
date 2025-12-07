@@ -170,6 +170,7 @@ export default function Products() {
     setFormData({
       code: product.code,
       name: product.name,
+      group: product.group || "",
       category: product.category,
       unit: product.unit,
       unit_price: product.unit_price,
@@ -190,6 +191,7 @@ export default function Products() {
     setFormData({
       code: "",
       name: "",
+      group: "",
       category: "",
       unit: "Adet",
       unit_price: 0,

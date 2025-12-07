@@ -153,7 +153,7 @@ function createWindow() {
   ipcMain.on('restore-browser-views', (event, activeChannelId) => {
     console.log('Restoring BrowserView:', activeChannelId);
     if (activeChannelId && browserViews[activeChannelId]) {
-      mainWindow.addBrowserView(browserViews[activeChannelId]);
+      // BrowserView is still attached, just move it back on-screen
       const { width, height } = mainWindow.getBounds();
       browserViews[activeChannelId].setBounds({ x: 256, y: 120, width: width - 256, height: height - 120 });
     }

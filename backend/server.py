@@ -1293,9 +1293,9 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
             ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#d1d5db')),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('TOPPADDING', (0, 0), (-1, -1), 8),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-        ('LEFTPADDING', (0, 0), (-1, -1), 4),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('LEFTPADDING', (0, 0), (-1, -1), 4),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 4),
             # Allow text wrapping in product name column for long names
             ('WORDWRAP', (0, 1), (0, -1), 'CJK'),
         ]))

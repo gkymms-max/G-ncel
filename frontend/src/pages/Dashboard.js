@@ -23,6 +23,16 @@ export default function Dashboard({ setIsAuthenticated }) {
     setIsAdmin(role === 'admin');
   }, []);
 
+  // Hide BrowserViews when navigating away from contact-channels
+  useEffect(() => {
+    if (window.electron && window.electron.ipcRenderer) {
+      if (!location.pathname.includes('/contact-channels')) {
+        // Hide all BrowserViews when not on contact channels page
+        window.electron.ipcRenderer.send('hide-all-browser-views');
+      }
+    }
+  }, [location.pathname]);
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');

@@ -26,4 +26,21 @@ if (window.navigator && window.navigator.userAgentData) {
   };
 }
 
-console.log('BrowserView preload: Electron environment masked');
+// CRITICAL: Polyfill window.chrome object that WhatsApp Web expects
+if (!window.chrome) {
+  window.chrome = {};
+}
+if (!window.chrome.runtime) {
+  window.chrome.runtime = {
+    onConnect: { addListener: () => {} },
+    onMessage: { addListener: () => {} },
+    sendMessage: () => {},
+    connect: () => ({ 
+      onMessage: { addListener: () => {} }, 
+      postMessage: () => {},
+      disconnect: () => {}
+    })
+  };
+}
+
+console.log('BrowserView preload: Electron environment masked + window.chrome polyfilled');

@@ -33,8 +33,9 @@ function createWindow() {
   const setupSession = (sessionName) => {
     const ses = session.fromPartition(sessionName);
     
-    // Set user agent for the session (NO Electron identifier - WhatsApp blocks it)
-    ses.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
+    // Set user agent for the session - Use actual Chromium version (120.x for Electron 28)
+    // WhatsApp detects version mismatches, so must match actual Chromium build
+    ses.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
     
     ses.webRequest.onHeadersReceived((details, callback) => {
       callback({

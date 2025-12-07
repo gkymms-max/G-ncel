@@ -78,13 +78,14 @@ function createWindow() {
       delete browserViews[channelId];
     }
 
-    // Create new BrowserView with session partition
+    // Create new BrowserView with session partition and preload script
     const view = new BrowserView({
       webPreferences: {
         partition: `persist:channel_${channelId}`,
         nodeIntegration: false,
-        contextIsolation: true,
-        webSecurity: true
+        contextIsolation: false,  // Must be false for preload to delete globals
+        webSecurity: true,
+        preload: path.join(__dirname, 'preload-browserview.js')
       }
     });
 

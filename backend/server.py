@@ -1216,11 +1216,11 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
         ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
         ('LEFTPADDING', (0, 0), (-1, -1), 4),
         ('RIGHTPADDING', (0, 0), (-1, -1), 4),
-        # Allow text wrapping in product name column for long names
-        ('WORDWRAP', (0, 1), (0, -1), 'CJK'),
-    ]))
-    story.append(items_table)
-    story.append(Spacer(1, 0.3*cm))
+            # Allow text wrapping in product name column for long names
+            ('WORDWRAP', (0, 1), (0, -1), 'CJK'),
+        ]))
+        story.append(items_table)
+        story.append(Spacer(1, 0.2*cm))
     
     # Totals
     totals_data = [

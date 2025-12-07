@@ -1071,27 +1071,33 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
         
         # Format quantity display and extract package count
         if item.get('display_text'):
-            # Example: "2 paket (100 m²)" 
-            # package_count should be "2"
-            # actual_quantity should be "100"
-            if 'paket' in item['display_text'].lower():
+            # Example: "2 paket (100 m²)" or "2 Paket (100 Metre)"
+            display_text_lower = item['display_text'].lower()
+            
+            if 'paket' in display_text_lower:
                 # Extract package count
                 package_part = item['display_text'].split('paket')[0].strip()
+                package_part = package_part.split('Paket')[0].strip()  # Case-insensitive
                 try:
                     package_count = str(int(float(package_part)))
-                except:
-                    package_count = package_part
+                except Exception as e:
+                    print(f"Error parsing package count from '{item['display_text']}': {e}")
+                    package_count = package_part if package_part else "-"
                 
-                # Extract calculated amount
+                # Extract calculated amount in parentheses
                 if '(' in item['display_text'] and ')' in item['display_text']:
                     calc_part = item['display_text'].split('(')[1].split(')')[0]
                     actual_quantity = calc_part.split(' ')[0]
                 else:
                     actual_quantity = str(item['quantity'])
             else:
+                # No package-based, just show quantity
                 actual_quantity = str(item['quantity'])
         else:
+            # No display_text, just show quantity
             actual_quantity = str(item['quantity'])
+        
+        print(f"DEBUG PDF: product={item.get('product_name')}, display_text='{item.get('display_text')}', package_count={package_count}, actual_quantity={actual_quantity}")
         
         table_data.append([
             item['product_name'],  # Full product name, no truncation

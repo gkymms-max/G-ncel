@@ -10,7 +10,9 @@ contextBridge.exposeInMainWorld('electron', {
         'setup-channel-session',
         'create-browser-view',
         'show-browser-view',
-        'remove-browser-view'
+        'remove-browser-view',
+        'hide-all-browser-views',
+        'restore-browser-views'
       ];
       if (validChannels.includes(channel)) {
         ipcRenderer.send(channel, data);

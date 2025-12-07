@@ -74,6 +74,15 @@ class Category(BaseModel):
 class CategoryCreate(BaseModel):
     name: str
 
+class Group(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class GroupCreate(BaseModel):
+    name: str
+
 class UserResponse(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str

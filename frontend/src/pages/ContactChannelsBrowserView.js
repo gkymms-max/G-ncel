@@ -103,20 +103,22 @@ export default function ContactChannelsBrowserView() {
   };
 
   const handleEditChannel = (channel) => {
-    setEditingChannel(channel);
-    setFormData({
-      type: channel.type,
-      title: channel.title,
-      url: channel.url,
-      order: channel.order
-    });
-    
-    // Hide BrowserViews when dialog opens
+    // Hide BrowserViews FIRST before opening dialog
     if (window.electron && window.electron.ipcRenderer) {
       window.electron.ipcRenderer.send('hide-all-browser-views');
     }
     
-    setDialogOpen(true);
+    // Small delay to ensure BrowserView is hidden
+    setTimeout(() => {
+      setEditingChannel(channel);
+      setFormData({
+        type: channel.type,
+        title: channel.title,
+        url: channel.url,
+        order: channel.order
+      });
+      setDialogOpen(true);
+    }, 50);
   };
 
   const handleSubmit = async (e) => {

@@ -1096,7 +1096,7 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
         table_data.append([
             item['product_name'],  # Full product name, no truncation
             unit,
-            package_info,
+            package_count,  # Changed from package_info to package_count
             f"{item['unit_price']:.2f}",
             actual_quantity,
             f"{item['subtotal']:.2f} {quote['currency']}"

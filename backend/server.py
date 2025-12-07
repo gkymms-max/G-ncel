@@ -151,6 +151,7 @@ class Product(BaseModel):
 class ProductCreate(BaseModel):
     code: str
     name: str
+    group: Optional[str] = None  # Ürün grubu
     category: str
     unit: Literal["KG", "Metre", "m²", "Adet"]
     unit_price: float

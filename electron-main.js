@@ -125,7 +125,7 @@ function createWindow() {
 
     // Show requested view by moving it on-screen
     if (browserViews[channelId]) {
-      browserViews[channelId].setBounds({ x: 256, y: 120, width: width - 256, height: height - 120 });
+      browserViews[channelId].setBounds({ x: 256, y: 120, width: width - 256, height: height - 160 });
     }
   });
 

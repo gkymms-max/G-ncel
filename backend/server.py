@@ -134,6 +134,7 @@ class Product(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     code: str
     name: str
+    group: Optional[str] = None  # Ürün grubu (örn: Tül, Stor, vb.)
     category: str
     unit: Literal["KG", "Metre", "m²", "Adet"]
     unit_price: float

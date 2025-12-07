@@ -49,7 +49,7 @@ export default function Dashboard({ setIsAuthenticated }) {
   ];
 
   const adminMenuItems = [
-    { path: "/categories", icon: FolderOpen, label: "Kategoriler" },
+    { path: "/categories", icon: FolderOpen, label: "Grup ve Kategori" },
     { path: "/users", icon: Users, label: "Kullanıcılar" },
     { path: "/contact-channels", icon: MessageCircle, label: "İletişim Kanalları" },
     { path: "/market-watch", icon: TrendingUp, label: "Borsa Takibi" },

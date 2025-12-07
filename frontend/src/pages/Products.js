@@ -295,6 +295,22 @@ export default function Products() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
+                  <Label htmlFor="group">Grup (Opsiyonel)</Label>
+                  <Select value={formData.group || ""} onValueChange={(value) => setFormData({ ...formData, group: value || null })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Grup seçin">
+                        {formData.group || "Grup seçin"}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Grup Yok</SelectItem>
+                      {groups.map(grp => (
+                        <SelectItem key={grp.id} value={grp.name}>{grp.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
                   <Label htmlFor="category">Kategori *</Label>
                   <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })} required>
                     <SelectTrigger data-testid="product-category-select">
@@ -312,6 +328,9 @@ export default function Products() {
                     <p className="text-xs text-gray-500 mt-1">Seçili: {formData.category}</p>
                   )}
                 </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="unit">Birim *</Label>
                   <Select value={formData.unit} onValueChange={(value) => setFormData({ ...formData, unit: value })}>

@@ -18,6 +18,7 @@
     "files": [
       "electron-main.js",
       "preload.js",
+      "preload-browserview.js",
       "build/**/*"
     ],
     "directories": {

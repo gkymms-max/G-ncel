@@ -298,14 +298,14 @@ export default function Products() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="group">Grup (Opsiyonel)</Label>
-                  <Select value={formData.group || ""} onValueChange={(value) => setFormData({ ...formData, group: value || null })}>
+                  <Select value={formData.group || "none"} onValueChange={(value) => setFormData({ ...formData, group: value === "none" ? null : value })}>
                     <SelectTrigger>
                       <SelectValue placeholder="Grup seçin">
-                        {formData.group || "Grup seçin"}
+                        {formData.group || "Grup Yok"}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Grup Yok</SelectItem>
+                      <SelectItem value="none">Grup Yok</SelectItem>
                       {groups.map(grp => (
                         <SelectItem key={grp.id} value={grp.name}>{grp.name}</SelectItem>
                       ))}

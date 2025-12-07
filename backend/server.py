@@ -400,6 +400,54 @@ async def delete_category(category_id: str, current_user: dict = Depends(get_adm
         raise HTTPException(status_code=404, detail="Category not found")
     return {"message": "Category deleted successfully"}
 
+# Groups endpoints
+@api_router.get("/groups", response_model=List[Group])
+async def get_groups(current_user: dict = Depends(get_current_user)):
+    groups = await db.groups.find({}, {"_id": 0}).to_list(1000)
+    for grp in groups:
+        if isinstance(grp['created_at'], str):
+            grp['created_at'] = datetime.fromisoformat(grp['created_at'])
+    return groups
+
+@api_router.post("/groups", response_model=Group)
+async def create_group(group: GroupCreate, current_user: dict = Depends(get_admin_user)):
+    # Check if group already exists
+    existing = await db.groups.find_one({"name": group.name}, {"_id": 0})
+    if existing:
+        raise HTTPException(status_code=400, detail="Group already exists")
+    
+    doc = {
+        "id": str(uuid.uuid4()),
+        "name": group.name,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.groups.insert_one(doc)
+    return Group(**doc)
+
+@api_router.put("/groups/{group_id}", response_model=Group)
+async def update_group(group_id: str, group: GroupCreate, current_user: dict = Depends(get_admin_user)):
+    existing = await db.groups.find_one({"id": group_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Group not found")
+    
+    # Check if new name already exists (excluding current group)
+    name_exists = await db.groups.find_one({"name": group.name, "id": {"$ne": group_id}}, {"_id": 0})
+    if name_exists:
+        raise HTTPException(status_code=400, detail="Group name already exists")
+    
+    await db.groups.update_one({"id": group_id}, {"$set": {"name": group.name}})
+    updated = await db.groups.find_one({"id": group_id}, {"_id": 0})
+    if isinstance(updated['created_at'], str):
+        updated['created_at'] = datetime.fromisoformat(updated['created_at'])
+    return updated
+
+@api_router.delete("/groups/{group_id}")
+async def delete_group(group_id: str, current_user: dict = Depends(get_admin_user)):
+    result = await db.groups.delete_one({"id": group_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Group not found")
+    return {"message": "Group deleted successfully"}
+
 class UserCreateByAdmin(BaseModel):
     username: str
     password: str

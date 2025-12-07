@@ -53,6 +53,18 @@ export default function Products() {
     fetchCategories();
   }, []);
 
+  const fetchGroups = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/groups`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setGroups(response.data);
+    } catch (error) {
+      console.error("Gruplar yüklenemedi", error);
+    }
+  };
+
   const fetchCategories = async () => {
     try {
       const token = localStorage.getItem('token');

@@ -140,6 +140,24 @@ function createWindow() {
     }
   });
 
+  // Hide all BrowserViews (for dialogs)
+  ipcMain.on('hide-all-browser-views', () => {
+    console.log('Hiding all BrowserViews');
+    Object.values(browserViews).forEach(view => {
+      mainWindow.removeBrowserView(view);
+    });
+  });
+
+  // Restore BrowserViews (after dialog closes)
+  ipcMain.on('restore-browser-views', (event, activeChannelId) => {
+    console.log('Restoring BrowserView:', activeChannelId);
+    if (activeChannelId && browserViews[activeChannelId]) {
+      mainWindow.addBrowserView(browserViews[activeChannelId]);
+      const { width, height } = mainWindow.getBounds();
+      browserViews[activeChannelId].setBounds({ x: 256, y: 120, width: width - 256, height: height - 120 });
+    }
+  });
+
   // Load the app
   const serverUrl = !app.isPackaged 
     ? 'http://localhost:3000'

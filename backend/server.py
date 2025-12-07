@@ -1133,16 +1133,18 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
                 grouped_items['Diğer'] = []
             grouped_items['Diğer'].append(item)
     
-    table_data = [['Ürün Adı', 'Birim', 'Koli/PK', 'Birim Fiyat', 'Miktar', 'Tutar']]
-    
     # Add items grouped by group
     for group_name in sorted(grouped_items.keys()):
-        # Add group header row
+        # Add group header as separate paragraph
         group_style = ParagraphStyle('GroupHeader', parent=styles['Heading3'], 
-                                     fontSize=10, textColor=colors.HexColor(theme_color),
-                                     fontName=font_bold, spaceBefore=6, spaceAfter=6)
-        group_header = Paragraph(f"<b>{group_name}</b>", group_style)
-        table_data.append([group_header, '', '', '', '', ''])
+                                     fontSize=11, textColor=colors.HexColor(theme_color),
+                                     fontName=font_bold, spaceBefore=8, spaceAfter=4,
+                                     leftIndent=0)
+        group_header = Paragraph(f"<b>▸ {group_name}</b>", group_style)
+        story.append(group_header)
+        
+        # Create table for this group
+        table_data = [['Ürün Adı', 'Birim', 'Koli/PK', 'Birim Fiyat', 'Miktar', 'Tutar']]
         
         # Add items in this group
         for item in grouped_items[group_name]:

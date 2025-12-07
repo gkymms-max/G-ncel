@@ -6,6 +6,7 @@ import Products from "./Products";
 import Quotes from "./Quotes";
 import SettingsPage from "./SettingsPage";
 import GroupsAndCategories from "./GroupsAndCategories";
+import Reminders from "./Reminders";
 import UsersPage from "./Users";
 import ContactChannels from "./ContactChannels";
 import ContactChannelsBrowserView from "./ContactChannelsBrowserView";

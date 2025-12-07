@@ -119,7 +119,7 @@ export default function Dashboard({ setIsAuthenticated }) {
           <Route path="/quotes" element={<Quotes />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/settings" element={<SettingsPage />} />
-          {isAdmin && <Route path="/categories" element={<Categories />} />}
+          {isAdmin && <Route path="/categories" element={<GroupsAndCategories />} />}
           {isAdmin && <Route path="/users" element={<UsersPage />} />}
           {isAdmin && <Route path="/contact-channels" element={
             typeof window !== 'undefined' && window.electron ? <ContactChannelsBrowserView /> : <ContactChannels />

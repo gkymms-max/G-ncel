@@ -60,23 +60,23 @@ export default function ContactChannelsBrowserView() {
   }, [channels]);
 
   // Track created BrowserViews to avoid recreating them
-  const [createdViewIds, setCreatedViewIds] = useState(new Set());
+  const createdViewIds = useRef(new Set());
 
   // Create BrowserViews only for new channels
   useEffect(() => {
     if (window.electron && window.electron.ipcRenderer) {
       channels.forEach(channel => {
-        if (!createdViewIds.has(channel.id)) {
-          console.log('Creating BrowserView for:', channel.id, channel.url);
+        if (!createdViewIds.current.has(channel.id)) {
+          console.log('Creating BrowserView for:', channel.id, channel.title, channel.url);
           window.electron.ipcRenderer.send('create-browser-view', {
             channelId: channel.id,
             url: channel.url
           });
-          setCreatedViewIds(prev => new Set([...prev, channel.id]));
+          createdViewIds.current.add(channel.id);
         }
       });
     }
-  }, [channels, createdViewIds]);
+  }, [channels]);
 
   // Show active channel's BrowserView
   useEffect(() => {

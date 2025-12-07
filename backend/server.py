@@ -90,6 +90,21 @@ class UserResponse(BaseModel):
     role: str
     created_at: datetime
 
+class Reminder(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    description: Optional[str] = None
+    reminder_datetime: datetime
+    user_id: str
+    is_completed: bool = False
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ReminderCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    reminder_datetime: datetime
+
 class Role(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))

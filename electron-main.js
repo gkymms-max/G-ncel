@@ -156,7 +156,7 @@ function createWindow() {
   mainWindow.on('resize', () => {
     const { width, height } = mainWindow.getBounds();
     Object.values(browserViews).forEach(view => {
-      view.setBounds({ x: 200, y: 120, width: width - 200, height: height - 120 });
+      view.setBounds({ x: 256, y: 120, width: width - 256, height: height - 120 });
     });
   });
 

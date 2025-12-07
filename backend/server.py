@@ -468,6 +468,71 @@ class UserCreateByAdmin(BaseModel):
     password: str
     role: Literal["admin", "user"] = "user"
 
+# Reminders endpoints (User specific)
+@api_router.get("/reminders", response_model=List[Reminder])
+async def get_reminders(current_user: dict = Depends(get_current_user)):
+    reminders = await db.reminders.find({"user_id": current_user["username"]}, {"_id": 0}).to_list(1000)
+    for reminder in reminders:
+        if isinstance(reminder['created_at'], str):
+            reminder['created_at'] = datetime.fromisoformat(reminder['created_at'])
+        if isinstance(reminder['reminder_datetime'], str):
+            reminder['reminder_datetime'] = datetime.fromisoformat(reminder['reminder_datetime'])
+    # Sort by reminder_datetime
+    reminders.sort(key=lambda x: x.get('reminder_datetime'))
+    return reminders
+
+@api_router.post("/reminders", response_model=Reminder)
+async def create_reminder(reminder: ReminderCreate, current_user: dict = Depends(get_current_user)):
+    doc = {
+        "id": str(uuid.uuid4()),
+        "title": reminder.title,
+        "description": reminder.description,
+        "reminder_datetime": reminder.reminder_datetime.isoformat(),
+        "user_id": current_user["username"],
+        "is_completed": False,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.reminders.insert_one(doc)
+    return Reminder(**doc)
+
+@api_router.put("/reminders/{reminder_id}", response_model=Reminder)
+async def update_reminder(reminder_id: str, reminder: ReminderCreate, current_user: dict = Depends(get_current_user)):
+    existing = await db.reminders.find_one({"id": reminder_id, "user_id": current_user["username"]}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Reminder not found")
+    
+    await db.reminders.update_one(
+        {"id": reminder_id},
+        {"$set": {
+            "title": reminder.title,
+            "description": reminder.description,
+            "reminder_datetime": reminder.reminder_datetime.isoformat()
+        }}
+    )
+    updated = await db.reminders.find_one({"id": reminder_id}, {"_id": 0})
+    if isinstance(updated['created_at'], str):
+        updated['created_at'] = datetime.fromisoformat(updated['created_at'])
+    if isinstance(updated['reminder_datetime'], str):
+        updated['reminder_datetime'] = datetime.fromisoformat(updated['reminder_datetime'])
+    return updated
+
+@api_router.patch("/reminders/{reminder_id}/complete")
+async def complete_reminder(reminder_id: str, current_user: dict = Depends(get_current_user)):
+    result = await db.reminders.update_one(
+        {"id": reminder_id, "user_id": current_user["username"]},
+        {"$set": {"is_completed": True}}
+    )
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Reminder not found")
+    return {"message": "Reminder marked as completed"}
+
+@api_router.delete("/reminders/{reminder_id}")
+async def delete_reminder(reminder_id: str, current_user: dict = Depends(get_current_user)):
+    result = await db.reminders.delete_one({"id": reminder_id, "user_id": current_user["username"]})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Reminder not found")
+    return {"message": "Reminder deleted successfully"}
+
 # Contact Channels endpoints (User specific)
 @api_router.get("/contact-channels", response_model=List[ContactChannel])
 async def get_contact_channels(current_user: dict = Depends(get_current_user)):

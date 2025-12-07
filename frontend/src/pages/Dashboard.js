@@ -5,7 +5,7 @@ import { LogOut, Package, FileText, Settings, FolderOpen, Users, MessageCircle, 
 import Products from "./Products";
 import Quotes from "./Quotes";
 import SettingsPage from "./SettingsPage";
-import Categories from "./Categories";
+import GroupsAndCategories from "./GroupsAndCategories";
 import UsersPage from "./Users";
 import ContactChannels from "./ContactChannels";
 import ContactChannelsBrowserView from "./ContactChannelsBrowserView";

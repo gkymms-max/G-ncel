@@ -1118,8 +1118,34 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
     all_products = await db.products.find({}, {"_id": 0}).to_list(1000)
     product_lookup = {p['id']: p for p in all_products}
     
-    table_data = [['Ürün Adı', 'Birim', 'Koli/PK', 'Birim Fiyat', 'Miktar', 'Tutar']]
+    # Group items by product group
+    grouped_items = {}
     for item in quote['items']:
+        product = product_lookup.get(item['product_id'])
+        group_name = product.get('group') if product else None
+        
+        if group_name:
+            if group_name not in grouped_items:
+                grouped_items[group_name] = []
+            grouped_items[group_name].append(item)
+        else:
+            if 'Diğer' not in grouped_items:
+                grouped_items['Diğer'] = []
+            grouped_items['Diğer'].append(item)
+    
+    table_data = [['Ürün Adı', 'Birim', 'Koli/PK', 'Birim Fiyat', 'Miktar', 'Tutar']]
+    
+    # Add items grouped by group
+    for group_name in sorted(grouped_items.keys()):
+        # Add group header row
+        group_style = ParagraphStyle('GroupHeader', parent=styles['Heading3'], 
+                                     fontSize=10, textColor=colors.HexColor(theme_color),
+                                     fontName=font_bold, spaceBefore=6, spaceAfter=6)
+        group_header = Paragraph(f"<b>{group_name}</b>", group_style)
+        table_data.append([group_header, '', '', '', '', ''])
+        
+        # Add items in this group
+        for item in grouped_items[group_name]:
         # Get product details
         product = product_lookup.get(item['product_id'])
         

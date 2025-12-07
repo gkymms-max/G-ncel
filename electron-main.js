@@ -123,9 +123,9 @@ function createWindow() {
     if (browserViews[channelId]) {
       mainWindow.addBrowserView(browserViews[channelId]);
       
-      // Update bounds - leave space for sidebar (200px) and header (120px)
+      // Update bounds - leave space for sidebar (256px = w-64) and header (120px)
       const { width, height } = mainWindow.getBounds();
-      browserViews[channelId].setBounds({ x: 200, y: 120, width: width - 200, height: height - 120 });
+      browserViews[channelId].setBounds({ x: 256, y: 120, width: width - 256, height: height - 120 });
     }
   });
 

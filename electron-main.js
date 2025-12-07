@@ -140,11 +140,12 @@ function createWindow() {
     }
   });
 
-  // Hide all BrowserViews (for dialogs)
+  // Hide all BrowserViews (for dialogs) - move off-screen instead of removing
   ipcMain.on('hide-all-browser-views', () => {
-    console.log('Hiding all BrowserViews');
+    console.log('Hiding all BrowserViews - moving off-screen');
     Object.values(browserViews).forEach(view => {
-      mainWindow.removeBrowserView(view);
+      // Move off-screen instead of removing to preserve session
+      view.setBounds({ x: -5000, y: -5000, width: 1, height: 1 });
     });
   });
 

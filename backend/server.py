@@ -1184,19 +1184,20 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
             # No display_text, just show quantity
             actual_quantity = str(item['quantity'])
         
-        print(f"DEBUG PDF: product={item.get('product_name')}, display_text='{item.get('display_text')}', package_count={package_count}, actual_quantity={actual_quantity}")
+            print(f"DEBUG PDF: product={item.get('product_name')}, display_text='{item.get('display_text')}', package_count={package_count}, actual_quantity={actual_quantity}")
+            
+            table_data.append([
+                item['product_name'],  # Full product name, no truncation
+                unit,
+                package_count,  # Changed from package_info to package_count
+                f"{item['unit_price']:.2f}",
+                actual_quantity,
+                f"{item['subtotal']:.2f} {quote['currency']}"
+            ])
         
-        table_data.append([
-            item['product_name'],  # Full product name, no truncation
-            unit,
-            package_count,  # Changed from package_info to package_count
-            f"{item['unit_price']:.2f}",
-            actual_quantity,
-            f"{item['subtotal']:.2f} {quote['currency']}"
-        ])
-    
-    items_table = Table(table_data, colWidths=[7*cm, 1.8*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2.5*cm])
-    items_table.setStyle(TableStyle([
+        # Create table for this group
+        items_table = Table(table_data, colWidths=[7*cm, 1.8*cm, 1.8*cm, 2.2*cm, 2.2*cm, 2.5*cm])
+        items_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor(theme_color)),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (1, 0), (1, -1), 'CENTER'),   # Birim column centered

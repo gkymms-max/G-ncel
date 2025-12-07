@@ -44,6 +44,13 @@ export default function ContactChannelsBrowserView() {
 
   useEffect(() => {
     fetchChannels();
+    
+    // Clean up BrowserViews when component unmounts (navigating away)
+    return () => {
+      if (window.electron && window.electron.ipcRenderer) {
+        window.electron.ipcRenderer.send('hide-all-browser-views');
+      }
+    };
   }, []);
 
   useEffect(() => {

@@ -91,9 +91,9 @@ function createWindow() {
     // Setup session for this view
     setupSession(`persist:channel_${channelId}`);
 
-    // Set bounds - leave space for sidebar (256px = w-64) and header (120px)
+    // Set bounds - leave space for sidebar (256px) and header (120px) + bottom margin (40px for safety)
     const { width, height } = mainWindow.getBounds();
-    view.setBounds({ x: 256, y: 120, width: width - 256, height: height - 120 });
+    view.setBounds({ x: 256, y: 120, width: width - 256, height: height - 160 });
     view.setAutoResize({ width: true, height: true, horizontal: { width: true } });
     
     // Set alwaysOnTop to false so dialogs can appear above

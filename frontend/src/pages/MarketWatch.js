@@ -53,25 +53,13 @@ export default function MarketWatch() {
         {markets.map(market => (
           <Card key={market.id} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveTab(market.id)}>
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-2">
-                <market.icon className="h-5 w-5 text-gray-600" />
+              <div className="flex items-center justify-between mb-3">
+                <market.icon className="h-6 w-6 text-gray-600" />
               </div>
-              <div className="text-xs text-gray-500 mb-1">{market.name}</div>
-              <div className="relative w-full h-[80px]">
-                {market.widget ? (
-                  <iframe
-                    src={market.widget}
-                    className="w-full h-full border-0"
-                    title={`${market.name} mini`}
-                    frameBorder="0"
-                    allowTransparency="true"
-                    scrolling="no"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-xs text-gray-500">
-                    Canlı
-                  </div>
-                )}
+              <div className="text-sm font-medium text-gray-700 mb-2">{market.name.split(' ')[0]}</div>
+              <div className="text-xs text-gray-500 mb-2">{market.shortName || market.name}</div>
+              <div className="text-lg font-bold text-indigo-600">
+                {market.price || "Yükleniyor..."}
               </div>
             </CardContent>
           </Card>

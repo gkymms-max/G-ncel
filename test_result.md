@@ -73,6 +73,45 @@ current_testing_request:
         - "Click on a card to view the full widget"
       expected: "Summary cards should show clean text layout as requested by user"
 
+backend:
+  - task: "Theme Color System Backend Support"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Backend theme_color field added to Settings model. All 5 theme colors (İndigo, Mavi, Yeşil, Mor, Turuncu) tested successfully. Settings API accepts and stores theme_color values correctly."
+
+  - task: "PDF Generation with Theme Colors"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PDF generation updated to use theme_color from settings instead of old pdf_theme. Tested PDF generation with theme color #10B981 - PDF created successfully with correct theme color integration."
+
+  - task: "Settings API Theme Color Support"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Settings API fully supports theme_color field. GET /api/settings returns theme_color, PUT /api/settings accepts theme_color updates. Default theme_color is #4F46E5 (İndigo)."
+
 agent_communication:
   - agent: "main"
     message: "Implemented 3 bug fixes. Ready for comprehensive testing."
+  - agent: "testing"
+    message: "✅ BACKEND TESTING COMPLETE - All 3 bug fixes working correctly. Theme color system fully functional in backend: 1) Settings API supports theme_color field, 2) PDF generation uses theme_color from settings, 3) All 5 theme colors tested successfully. Admin user (admin/admin123) confirmed working. Backend APIs ready for frontend integration testing."

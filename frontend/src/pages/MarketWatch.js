@@ -6,33 +6,43 @@ import { TrendingUp, DollarSign, Euro, CircleDollarSign, Gem } from "lucide-reac
 const markets = [
   {
     id: "usd",
-    name: "Dolar (USD/TRY)",
+    name: "Dolar",
+    shortName: "USD/TRY",
     icon: DollarSign,
+    price: "Canlı",
     widget: "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=tr#%7B%22symbol%22%3A%22FX%3AUSDTRY%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22dateRange%22%3A%221D%22%2C%22colorTheme%22%3A%22light%22%2C%22trendLineColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%201)%22%2C%22underLineColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22largeChartUrl%22%3A%22%22%2C%22chartOnly%22%3Afalse%2C%22noTimeScale%22%3Afalse%7D"
   },
   {
     id: "eur",
-    name: "Euro (EUR/TRY)",
+    name: "Euro",
+    shortName: "EUR/TRY",
     icon: Euro,
+    price: "Canlı",
     widget: "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=tr#%7B%22symbol%22%3A%22FX%3AEURTRY%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22dateRange%22%3A%221D%22%2C%22colorTheme%22%3A%22light%22%2C%22trendLineColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%201)%22%2C%22underLineColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(41%2C%2098%2C%20255%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22largeChartUrl%22%3A%22%22%2C%22chartOnly%22%3Afalse%2C%22noTimeScale%22%3Afalse%7D"
   },
   {
     id: "gold",
-    name: "Altın (XAU/USD)",
+    name: "Altın",
+    shortName: "XAU/USD",
     icon: CircleDollarSign,
+    price: "Canlı",
     widget: "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=tr#%7B%22symbol%22%3A%22TVC%3AGOLD%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22dateRange%22%3A%221D%22%2C%22colorTheme%22%3A%22light%22%2C%22trendLineColor%22%3A%22rgba(255%2C%20235%2C%2059%2C%201)%22%2C%22underLineColor%22%3A%22rgba(255%2C%20235%2C%2059%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(255%2C%20235%2C%2059%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22largeChartUrl%22%3A%22%22%2C%22chartOnly%22%3Afalse%2C%22noTimeScale%22%3Afalse%7D"
   },
   {
     id: "silver",
-    name: "Gümüş (XAG/USD)",
+    name: "Gümüş",
+    shortName: "XAG/USD",
     icon: Gem,
+    price: "Canlı",
     widget: "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=tr#%7B%22symbol%22%3A%22TVC%3ASILVER%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22dateRange%22%3A%221D%22%2C%22colorTheme%22%3A%22light%22%2C%22trendLineColor%22%3A%22rgba(192%2C%20192%2C%20192%2C%201)%22%2C%22underLineColor%22%3A%22rgba(192%2C%20192%2C%20192%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(192%2C%20192%2C%20192%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22largeChartUrl%22%3A%22%22%2C%22chartOnly%22%3Afalse%2C%22noTimeScale%22%3Afalse%7D"
   },
   {
     id: "aluminum",
-    name: "Alüminyum (LME)",
+    name: "Alüminyum",
+    shortName: "COMEX",
     icon: TrendingUp,
-    widget: "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=tr#%7B%22symbol%22%3A%22CAPITALCOM%3AALUMINIUM%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22dateRange%22%3A%221D%22%2C%22colorTheme%22%3A%22light%22%2C%22trendLineColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%201)%22%2C%22underLineColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22largeChartUrl%22%3A%22%22%2C%22chartOnly%22%3Afalse%2C%22noTimeScale%22%3Afalse%7D"
+    price: "Canlı",
+    widget: "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=tr#%7B%22symbol%22%3A%22COMEX%3AHG1!%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22dateRange%22%3A%221D%22%2C%22colorTheme%22%3A%22light%22%2C%22trendLineColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%201)%22%2C%22underLineColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22largeChartUrl%22%3A%22%22%2C%22chartOnly%22%3Afalse%2C%22noTimeScale%22%3Afalse%7D"
   }
 ];
 

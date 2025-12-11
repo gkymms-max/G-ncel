@@ -39,10 +39,10 @@ const markets = [
   {
     id: "aluminum",
     name: "Alüminyum",
-    shortName: "COMEX",
+    shortName: "Investing.com",
     icon: TrendingUp,
     price: "Canlı",
-    widget: "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=tr#%7B%22symbol%22%3A%22COMEX%3AALI1%21%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22dateRange%22%3A%221D%22%2C%22colorTheme%22%3A%22light%22%2C%22trendLineColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%201)%22%2C%22underLineColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22largeChartUrl%22%3A%22%22%2C%22chartOnly%22%3Afalse%2C%22noTimeScale%22%3Afalse%7D"
+    widget: "https://www.investing.com/commodities/aluminum-streaming-chart"
   }
 ];
 

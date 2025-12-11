@@ -670,6 +670,58 @@ async def delete_quote(quote_id: str, current_user: dict = Depends(get_current_u
         raise HTTPException(status_code=404, detail="Quote not found")
     return {"message": "Quote deleted successfully"}
 
+@api_router.patch("/quotes/{quote_id}/status")
+async def update_quote_status(
+    quote_id: str, 
+    status: Literal["draft", "pending", "approved", "rejected"],
+    rejection_reason: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
+    quote = await db.quotes.find_one({"id": quote_id}, {"_id": 0})
+    if not quote:
+        raise HTTPException(status_code=404, detail="Quote not found")
+    
+    update_data = {"status": status}
+    
+    if status == "approved":
+        update_data["approved_by"] = current_user["username"]
+        update_data["approved_at"] = datetime.now(timezone.utc).isoformat()
+    elif status == "rejected":
+        if rejection_reason:
+            update_data["rejection_reason"] = rejection_reason
+    
+    await db.quotes.update_one(
+        {"id": quote_id},
+        {"$set": update_data}
+    )
+    
+    updated_quote = await db.quotes.find_one({"id": quote_id}, {"_id": 0})
+    if isinstance(updated_quote['quote_date'], str):
+        updated_quote['quote_date'] = datetime.fromisoformat(updated_quote['quote_date'])
+    if isinstance(updated_quote['validity_date'], str):
+        updated_quote['validity_date'] = datetime.fromisoformat(updated_quote['validity_date'])
+    if isinstance(updated_quote['created_at'], str):
+        updated_quote['created_at'] = datetime.fromisoformat(updated_quote['created_at'])
+    
+    return updated_quote
+
+@api_router.get("/quotes/pending/list")
+async def get_pending_quotes(current_user: dict = Depends(get_current_user)):
+    """Get all pending quotes (admin only)"""
+    if current_user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    quotes = await db.quotes.find({"status": "pending"}, {"_id": 0}).to_list(1000)
+    for quote in quotes:
+        if isinstance(quote['quote_date'], str):
+            quote['quote_date'] = datetime.fromisoformat(quote['quote_date'])
+        if isinstance(quote['validity_date'], str):
+            quote['validity_date'] = datetime.fromisoformat(quote['validity_date'])
+        if isinstance(quote['created_at'], str):
+            quote['created_at'] = datetime.fromisoformat(quote['created_at'])
+    
+    return quotes
+
 @api_router.get("/quotes/{quote_id}/pdf")
 async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_user)):
     quote = await db.quotes.find_one({"id": quote_id, "user_id": current_user["username"]}, {"_id": 0})

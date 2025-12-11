@@ -110,8 +110,47 @@ backend:
         agent: "testing"
         comment: "✅ Settings API fully supports theme_color field. GET /api/settings returns theme_color, PUT /api/settings accepts theme_color updates. Default theme_color is #4F46E5 (İndigo)."
 
+frontend:
+  - task: "Theme Color System Frontend Integration"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/SettingsPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Theme color system fully working. All 5 theme colors (İndigo #4F46E5, Mavi #3B82F6, Yeşil #10B981, Mor #8B5CF6, Turuncu #F97316) can be selected and saved. Theme persists across page navigation. CSS variable --theme-color is set correctly. localStorage integration working."
+
+  - task: "Market Watch Summary Cards Text Layout"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/MarketWatch.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Summary cards showing clean text layout as requested. All 5 cards display 'Canlı Fiyat' text with theme color styling and 'Widget'a tıklayın' instruction. No mini-widgets embedded in cards. Cards are clickable and switch to corresponding tabs correctly."
+
+  - task: "Aluminum Widget Symbol Fix"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/MarketWatch.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ Aluminum widget shows 'Hatalı sembol' (Invalid symbol) error. Current symbol 'CAPITALCOM:ALUMINIUM' is not valid on TradingView. Research shows correct symbols should be 'MCX:ALUMINIUM1!' or 'COMEX:ALI1!' for aluminum futures. Widget iframe loads but displays symbol error."
+
 agent_communication:
   - agent: "main"
     message: "Implemented 3 bug fixes. Ready for comprehensive testing."
   - agent: "testing"
     message: "✅ BACKEND TESTING COMPLETE - All 3 bug fixes working correctly. Theme color system fully functional in backend: 1) Settings API supports theme_color field, 2) PDF generation uses theme_color from settings, 3) All 5 theme colors tested successfully. Admin user (admin/admin123) confirmed working. Backend APIs ready for frontend integration testing."
+  - agent: "testing"
+    message: "✅ FRONTEND TESTING COMPLETE - 2 out of 3 scenarios working: 1) Theme color system fully functional with persistence, 2) Summary cards show text layout correctly. ❌ ISSUE FOUND: Aluminum widget symbol 'CAPITALCOM:ALUMINIUM' is invalid - needs to be changed to 'MCX:ALUMINIUM1!' or 'COMEX:ALI1!' based on TradingView research."

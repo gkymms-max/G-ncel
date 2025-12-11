@@ -240,6 +240,7 @@ class SettingsUpdate(BaseModel):
     pdf_theme: Optional[Literal["blue", "green", "purple", "orange"]] = None
     # UI Theme
     ui_theme: Optional[Literal["light", "dark"]] = None
+    theme_color: Optional[str] = None
 
 # Auth helpers
 def hash_password(password: str) -> str:

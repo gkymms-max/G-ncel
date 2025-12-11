@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Package, FileText, Settings, FolderOpen, Users, MessageCircle, UserCheck, TrendingUp } from "lucide-react";
+import { LogOut, Package, FileText, Settings, FolderOpen, Users, MessageCircle, UserCheck, TrendingUp, Home as HomeIcon } from "lucide-react";
+import Home from "./Home";
 import Products from "./Products";
 import Quotes from "./Quotes";
 import SettingsPage from "./SettingsPage";
@@ -29,7 +30,8 @@ export default function Dashboard({ setIsAuthenticated }) {
   };
 
   const userMenuItems = [
-    { path: "/", icon: Package, label: "Ürünler" },
+    { path: "/", icon: HomeIcon, label: "Ana Sayfa" },
+    { path: "/products", icon: Package, label: "Ürünler" },
     { path: "/quotes", icon: FileText, label: "Teklifler" },
     { path: "/customers", icon: UserCheck, label: "Müşteriler" },
     { path: "/settings", icon: Settings, label: "Ayarlar" },
@@ -102,7 +104,8 @@ export default function Dashboard({ setIsAuthenticated }) {
       {/* Main content */}
       <div className="flex-1 overflow-auto">
         <Routes>
-          <Route path="/" element={<Products />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
           <Route path="/quotes" element={<Quotes />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/settings" element={<SettingsPage />} />

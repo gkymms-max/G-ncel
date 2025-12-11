@@ -39,10 +39,10 @@ const markets = [
   {
     id: "aluminum",
     name: "Alüminyum",
-    shortName: "COMEX",
+    shortName: "LME",
     icon: TrendingUp,
     price: "Canlı",
-    widget: "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=tr#%7B%22symbol%22%3A%22COMEX%3AHG1!%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22dateRange%22%3A%221D%22%2C%22colorTheme%22%3A%22light%22%2C%22trendLineColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%201)%22%2C%22underLineColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22largeChartUrl%22%3A%22%22%2C%22chartOnly%22%3Afalse%2C%22noTimeScale%22%3Afalse%7D"
+    widget: "https://s.tradingview.com/embed-widget/mini-symbol-overview/?locale=tr#%7B%22symbol%22%3A%22CAPITALCOM%3AALUMINIUM%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22dateRange%22%3A%221D%22%2C%22colorTheme%22%3A%22light%22%2C%22trendLineColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%201)%22%2C%22underLineColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%200.3)%22%2C%22underLineBottomColor%22%3A%22rgba(150%2C%20150%2C%20150%2C%200)%22%2C%22isTransparent%22%3Afalse%2C%22autosize%22%3Atrue%2C%22largeChartUrl%22%3A%22%22%2C%22chartOnly%22%3Afalse%2C%22noTimeScale%22%3Afalse%7D"
   }
 ];
 
@@ -66,11 +66,12 @@ export default function MarketWatch() {
               <div className="flex items-center justify-between mb-3">
                 <market.icon className="h-6 w-6 text-gray-600" />
               </div>
-              <div className="text-sm font-medium text-gray-700 mb-2">{market.name.split(' ')[0]}</div>
-              <div className="text-xs text-gray-500 mb-2">{market.shortName || market.name}</div>
-              <div className="text-lg font-bold text-indigo-600">
-                {market.price || "Yükleniyor..."}
+              <div className="text-sm font-medium text-gray-700 mb-1">{market.name}</div>
+              <div className="text-xs text-gray-500 mb-3">{market.shortName || market.name}</div>
+              <div className="text-base font-semibold" style={{ color: 'var(--theme-color, #4F46E5)' }}>
+                Canlı Fiyat
               </div>
+              <div className="text-xs text-gray-500 mt-1">Widget'a tıklayın</div>
             </CardContent>
           </Card>
         ))}

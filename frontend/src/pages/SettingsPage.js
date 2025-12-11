@@ -39,6 +39,12 @@ export default function SettingsPage() {
     if (role === 'admin') {
       fetchRoles();
     }
+    
+    // Apply saved theme on load
+    const savedTheme = localStorage.getItem('theme_color');
+    if (savedTheme) {
+      applyTheme(savedTheme);
+    }
   }, []);
 
   const fetchRoles = async () => {
@@ -92,6 +98,11 @@ export default function SettingsPage() {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSettings(response.data);
+      
+      // Apply theme from settings
+      if (response.data.theme_color) {
+        applyTheme(response.data.theme_color);
+      }
     } catch (error) {
       toast.error("Ayarlar yüklenemedi");
     }

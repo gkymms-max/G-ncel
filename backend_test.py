@@ -490,6 +490,10 @@ class PriceQuoteAPITester:
         self.test_get_settings()
         self.test_update_settings()
         
+        # Theme color tests (Bug Fix #1)
+        self.test_theme_color_settings()
+        self.test_pdf_with_theme_color()
+        
         # Calculation logic tests
         self.test_calculation_logic()
         

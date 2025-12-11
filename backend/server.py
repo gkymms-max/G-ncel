@@ -222,6 +222,7 @@ class Settings(BaseModel):
     pdf_theme: Literal["blue", "green", "purple", "orange"] = "blue"
     # UI Theme
     ui_theme: Literal["light", "dark"] = "light"
+    theme_color: Optional[str] = "#4F46E5"
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class SettingsUpdate(BaseModel):

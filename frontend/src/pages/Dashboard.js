@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Package, FileText, Settings, FolderOpen, Users, MessageCircle, UserCheck, TrendingUp, Home as HomeIcon } from "lucide-react";
+import { LogOut, Package, FileText, Settings, FolderOpen, Users, MessageCircle, UserCheck, TrendingUp, Home as HomeIcon, CheckSquare } from "lucide-react";
 import Home from "./Home";
 import Products from "./Products";
 import Quotes from "./Quotes";
@@ -11,6 +11,7 @@ import UsersPage from "./Users";
 import ContactChannels from "./ContactChannels";
 import Customers from "./Customers";
 import MarketWatch from "./MarketWatch";
+import ApprovalPanel from "./ApprovalPanel";
 
 export default function Dashboard({ setIsAuthenticated }) {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ export default function Dashboard({ setIsAuthenticated }) {
   ];
 
   const adminMenuItems = [
+    { path: "/approval", icon: CheckSquare, label: "Teklif Onayları" },
     { path: "/categories", icon: FolderOpen, label: "Kategoriler" },
     { path: "/users", icon: Users, label: "Kullanıcılar" },
     { path: "/contact-channels", icon: MessageCircle, label: "İletişim Kanalları" },
@@ -109,6 +111,7 @@ export default function Dashboard({ setIsAuthenticated }) {
           <Route path="/quotes" element={<Quotes />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/settings" element={<SettingsPage />} />
+          {isAdmin && <Route path="/approval" element={<ApprovalPanel />} />}
           {isAdmin && <Route path="/categories" element={<Categories />} />}
           {isAdmin && <Route path="/users" element={<UsersPage />} />}
           {isAdmin && <Route path="/contact-channels" element={<ContactChannels />} />}

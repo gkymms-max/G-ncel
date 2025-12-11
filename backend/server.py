@@ -1004,6 +1004,198 @@ async def update_settings(settings_update: SettingsUpdate, current_user: dict = 
         settings['updated_at'] = datetime.fromisoformat(settings['updated_at'])
     return settings
 
+# Excel Export endpoints
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment
+
+@api_router.get("/export/products")
+async def export_products_excel(current_user: dict = Depends(get_current_user)):
+    """Export all products to Excel"""
+    products = await db.products.find({}, {"_id": 0}).to_list(1000)
+    
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Ürünler"
+    
+    # Headers
+    headers = ["Kod", "Ürün Adı", "Kategori", "Birim", "Birim Fiyat", "Para Birimi", "Açıklama"]
+    ws.append(headers)
+    
+    # Style headers
+    header_fill = PatternFill(start_color="4F46E5", end_color="4F46E5", fill_type="solid")
+    header_font = Font(color="FFFFFF", bold=True)
+    
+    for cell in ws[1]:
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center")
+    
+    # Data rows
+    for product in products:
+        ws.append([
+            product.get('code', ''),
+            product.get('name', ''),
+            product.get('category', ''),
+            product.get('unit', ''),
+            product.get('unit_price', 0),
+            product.get('currency', 'EUR'),
+            product.get('description', '')
+        ])
+    
+    # Adjust column widths
+    for column in ws.columns:
+        max_length = 0
+        column_letter = column[0].column_letter
+        for cell in column:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = min(max_length + 2, 50)
+        ws.column_dimensions[column_letter].width = adjusted_width
+    
+    # Save to BytesIO
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+    
+    return StreamingResponse(
+        output,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=urunler.xlsx"}
+    )
+
+@api_router.get("/export/customers")
+async def export_customers_excel(current_user: dict = Depends(get_current_user)):
+    """Export all customers to Excel"""
+    customers = await db.customers.find({"user_id": current_user["username"]}, {"_id": 0}).to_list(1000)
+    
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Müşteriler"
+    
+    # Headers
+    headers = ["Ad Soyad", "Firma", "E-posta", "Telefon", "Adres", "Vergi No"]
+    ws.append(headers)
+    
+    # Style headers
+    header_fill = PatternFill(start_color="10B981", end_color="10B981", fill_type="solid")
+    header_font = Font(color="FFFFFF", bold=True)
+    
+    for cell in ws[1]:
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center")
+    
+    # Data rows
+    for customer in customers:
+        ws.append([
+            customer.get('name', ''),
+            customer.get('company', ''),
+            customer.get('email', ''),
+            customer.get('phone', ''),
+            customer.get('address', ''),
+            customer.get('tax_number', '')
+        ])
+    
+    # Adjust column widths
+    for column in ws.columns:
+        max_length = 0
+        column_letter = column[0].column_letter
+        for cell in column:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = min(max_length + 2, 50)
+        ws.column_dimensions[column_letter].width = adjusted_width
+    
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+    
+    return StreamingResponse(
+        output,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=musteriler.xlsx"}
+    )
+
+@api_router.get("/export/quotes")
+async def export_quotes_excel(current_user: dict = Depends(get_current_user)):
+    """Export all quotes to Excel"""
+    quotes = await db.quotes.find({"user_id": current_user["username"]}, {"_id": 0}).to_list(1000)
+    
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Teklifler"
+    
+    # Headers
+    headers = ["Teklif No", "Müşteri", "Tarih", "Geçerlilik", "Durum", "Para Birimi", "Ara Toplam", "KDV", "Toplam"]
+    ws.append(headers)
+    
+    # Style headers
+    header_fill = PatternFill(start_color="F59E0B", end_color="F59E0B", fill_type="solid")
+    header_font = Font(color="FFFFFF", bold=True)
+    
+    for cell in ws[1]:
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center")
+    
+    # Data rows
+    for quote in quotes:
+        quote_date = quote.get('quote_date')
+        if isinstance(quote_date, str):
+            quote_date = datetime.fromisoformat(quote_date)
+        
+        validity_date = quote.get('validity_date')
+        if isinstance(validity_date, str):
+            validity_date = datetime.fromisoformat(validity_date)
+        
+        status_map = {
+            "draft": "Taslak",
+            "pending": "Beklemede",
+            "approved": "Onaylandı",
+            "rejected": "Reddedildi"
+        }
+        
+        ws.append([
+            quote.get('quote_number', ''),
+            quote.get('customer_name', ''),
+            quote_date.strftime('%d.%m.%Y') if quote_date else '',
+            validity_date.strftime('%d.%m.%Y') if validity_date else '',
+            status_map.get(quote.get('status', 'draft'), 'Taslak'),
+            quote.get('currency', 'EUR'),
+            round(quote.get('subtotal', 0), 2),
+            round(quote.get('vat_amount', 0), 2),
+            round(quote.get('total', 0), 2)
+        ])
+    
+    # Adjust column widths
+    for column in ws.columns:
+        max_length = 0
+        column_letter = column[0].column_letter
+        for cell in column:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = min(max_length + 2, 50)
+        ws.column_dimensions[column_letter].width = adjusted_width
+    
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+    
+    return StreamingResponse(
+        output,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=teklifler.xlsx"}
+    )
+
 app.include_router(api_router)
 
 app.add_middleware(

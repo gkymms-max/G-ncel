@@ -108,6 +108,12 @@ export default function SettingsPage() {
     }
   };
 
+  const applyTheme = (color) => {
+    // Apply theme color to CSS variables
+    document.documentElement.style.setProperty('--theme-color', color);
+    localStorage.setItem('theme_color', color);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -117,6 +123,10 @@ export default function SettingsPage() {
       await axios.put(`${API}/settings`, settings, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
+      // Apply theme immediately
+      applyTheme(settings.theme_color);
+      
       toast.success("Ayarlar kaydedildi");
     } catch (error) {
       toast.error(error.response?.data?.detail || "Bir hata oluştu");

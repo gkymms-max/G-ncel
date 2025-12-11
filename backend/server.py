@@ -179,6 +179,8 @@ class Quote(BaseModel):
     customer_name: str
     customer_email: str
     customer_phone: Optional[str] = None
+    customer_id: Optional[str] = None
+    customer_company: Optional[str] = None
     currency: str
     items: List[QuoteItem]
     subtotal: float
@@ -187,8 +189,13 @@ class Quote(BaseModel):
     discount_amount: float
     vat_rate: float
     vat_amount: float
+    vat_type: Optional[Literal["included", "excluded"]] = "excluded"
     total: float
     notes: Optional[str] = None
+    status: Literal["draft", "pending", "approved", "rejected"] = "draft"
+    approved_by: Optional[str] = None
+    approved_at: Optional[datetime] = None
+    rejection_reason: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class QuoteCreate(BaseModel):
@@ -197,12 +204,16 @@ class QuoteCreate(BaseModel):
     customer_name: str
     customer_email: str
     customer_phone: Optional[str] = None
+    customer_id: Optional[str] = None
+    customer_company: Optional[str] = None
     currency: str
     items: List[QuoteItem]
     discount_type: Literal["percentage", "amount"]
     discount_value: float
     vat_rate: float
+    vat_type: Optional[Literal["included", "excluded"]] = "excluded"
     notes: Optional[str] = None
+    status: Literal["draft", "pending", "approved", "rejected"] = "draft"
 
 class Settings(BaseModel):
     model_config = ConfigDict(extra="ignore")

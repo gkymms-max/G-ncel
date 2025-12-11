@@ -314,6 +314,69 @@ class PriceQuoteAPITester:
             self.log_result("Update Settings", False, f"Status: {status_code}, Response: {response_data}")
             return False
 
+    def test_theme_color_settings(self):
+        """Test theme color functionality in settings"""
+        theme_colors = [
+            "#4F46E5",  # İndigo
+            "#3B82F6",  # Mavi
+            "#10B981",  # Yeşil
+            "#8B5CF6",  # Mor
+            "#F97316"   # Turuncu
+        ]
+        
+        for color in theme_colors:
+            data = {
+                "theme_color": color,
+                "company_name": "Test Firma A.Ş."
+            }
+            
+            success, response_data, status_code = self.make_request('PUT', 'settings', data)
+            
+            if success and response_data.get('theme_color') == color:
+                self.log_result(f"Theme Color {color}", True, f"Theme color set to {color}")
+            else:
+                self.log_result(f"Theme Color {color}", False, f"Status: {status_code}, Expected: {color}, Got: {response_data.get('theme_color')}")
+                return False
+        
+        return True
+
+    def test_pdf_with_theme_color(self):
+        """Test PDF generation with theme color"""
+        if not self.created_quote_id:
+            self.log_result("PDF with Theme Color", False, "No quote ID available")
+            return False
+        
+        # First set a specific theme color
+        theme_color = "#10B981"  # Green
+        settings_data = {
+            "theme_color": theme_color,
+            "company_name": "Test Firma A.Ş."
+        }
+        
+        success, _, _ = self.make_request('PUT', 'settings', settings_data)
+        if not success:
+            self.log_result("PDF with Theme Color", False, "Failed to set theme color")
+            return False
+        
+        # Generate PDF
+        url = f"{self.api_url}/quotes/{self.created_quote_id}/pdf"
+        headers = {'Authorization': f'Bearer {self.token}'}
+        
+        try:
+            response = requests.get(url, headers=headers)
+            success = response.status_code == 200 and response.headers.get('content-type') == 'application/pdf'
+            
+            if success:
+                pdf_size = len(response.content)
+                self.log_result("PDF with Theme Color", True, f"PDF generated with theme color {theme_color}, size: {pdf_size} bytes")
+                return True
+            else:
+                self.log_result("PDF with Theme Color", False, f"Status: {response.status_code}, Content-Type: {response.headers.get('content-type')}")
+                return False
+        except Exception as e:
+            self.log_result("PDF with Theme Color", False, f"Exception: {str(e)}")
+            return False
+
     def test_calculation_logic(self):
         """Test calculation logic with different units"""
         # Test with KG unit

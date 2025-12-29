@@ -761,6 +761,88 @@ async def delete_customer(customer_id: str, current_user: dict = Depends(get_cur
         raise HTTPException(status_code=404, detail="Customer not found")
     return {"message": "Customer deleted successfully"}
 
+# ============= TEDARİKÇİ ENDPOINTS =============
+
+@api_router.get("/suppliers")
+async def get_suppliers(current_user: dict = Depends(get_current_user)):
+    suppliers = await db.suppliers.find({"user_id": current_user["username"]}, {"_id": 0}).to_list(1000)
+    for supplier in suppliers:
+        if isinstance(supplier.get('created_at'), str):
+            supplier['created_at'] = datetime.fromisoformat(supplier['created_at'])
+    return suppliers
+
+@api_router.post("/suppliers")
+async def create_supplier(supplier_data: SupplierCreate, current_user: dict = Depends(get_current_user)):
+    supplier = Supplier(**supplier_data.model_dump(), user_id=current_user["username"])
+    supplier_dict = supplier.model_dump()
+    supplier_dict['created_at'] = supplier_dict['created_at'].isoformat()
+    await db.suppliers.insert_one(supplier_dict)
+    return supplier
+
+@api_router.put("/suppliers/{supplier_id}")
+async def update_supplier(supplier_id: str, supplier_data: SupplierCreate, current_user: dict = Depends(get_current_user)):
+    update_data = {k: v for k, v in supplier_data.model_dump().items() if v is not None}
+    result = await db.suppliers.update_one(
+        {"id": supplier_id, "user_id": current_user["username"]},
+        {"$set": update_data}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Supplier not found")
+    
+    supplier = await db.suppliers.find_one({"id": supplier_id}, {"_id": 0})
+    if isinstance(supplier['created_at'], str):
+        supplier['created_at'] = datetime.fromisoformat(supplier['created_at'])
+    return supplier
+
+@api_router.delete("/suppliers/{supplier_id}")
+async def delete_supplier(supplier_id: str, current_user: dict = Depends(get_current_user)):
+    result = await db.suppliers.delete_one({"id": supplier_id, "user_id": current_user["username"]})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Supplier not found")
+    return {"message": "Supplier deleted successfully"}
+
+# ============= HESAP (KASA/BANKA) ENDPOINTS =============
+
+@api_router.get("/accounts")
+async def get_accounts(current_user: dict = Depends(get_current_user)):
+    accounts = await db.accounts.find({"user_id": current_user["username"]}, {"_id": 0}).to_list(1000)
+    for account in accounts:
+        if isinstance(account.get('created_at'), str):
+            account['created_at'] = datetime.fromisoformat(account['created_at'])
+    return accounts
+
+@api_router.post("/accounts")
+async def create_account(account_data: AccountCreate, current_user: dict = Depends(get_current_user)):
+    account = Account(**account_data.model_dump(), user_id=current_user["username"])
+    account_dict = account.model_dump()
+    account_dict['created_at'] = account_dict['created_at'].isoformat()
+    await db.accounts.insert_one(account_dict)
+    return account
+
+@api_router.put("/accounts/{account_id}")
+async def update_account(account_id: str, account_data: AccountCreate, current_user: dict = Depends(get_current_user)):
+    update_data = {k: v for k, v in account_data.model_dump().items() if v is not None and k != 'balance'}
+    result = await db.accounts.update_one(
+        {"id": account_id, "user_id": current_user["username"]},
+        {"$set": update_data}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    account = await db.accounts.find_one({"id": account_id}, {"_id": 0})
+    if isinstance(account['created_at'], str):
+        account['created_at'] = datetime.fromisoformat(account['created_at'])
+    return account
+
+@api_router.delete("/accounts/{account_id}")
+async def delete_account(account_id: str, current_user: dict = Depends(get_current_user)):
+    result = await db.accounts.delete_one({"id": account_id, "user_id": current_user["username"]})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Account not found")
+    return {"message": "Account deleted successfully"}
+
+# Existing Products endpoints continue below...
+
 @api_router.get("/products", response_model=List[Product])
 async def get_products(current_user: dict = Depends(get_current_user)):
     products = await db.products.find({}, {"_id": 0}).to_list(1000)

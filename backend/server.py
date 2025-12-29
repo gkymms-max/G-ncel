@@ -106,6 +106,218 @@ class ContactChannelCreate(BaseModel):
     value: str
     icon: Optional[str] = None
 
+# ============= MUHASEBE MODELLERİ =============
+
+# Tedarikçi Modeli
+class Supplier(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    company: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    tax_number: Optional[str] = None
+    tax_office: Optional[str] = None
+    user_id: str
+    balance: float = 0.0  # Borç bakiyesi
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class SupplierCreate(BaseModel):
+    name: str
+    company: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    tax_number: Optional[str] = None
+    tax_office: Optional[str] = None
+
+# Fatura Modeli (Alış/Satış)
+class InvoiceItem(BaseModel):
+    product_id: str
+    product_name: str
+    unit: str
+    quantity: float
+    unit_price: float
+    vat_rate: float
+    vat_amount: float
+    subtotal: float
+    total: float
+
+class Invoice(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    invoice_number: str
+    invoice_type: Literal["sales", "purchase"]  # Satış/Alış
+    user_id: str
+    # İlgili Taraf (Müşteri veya Tedarikçi)
+    party_id: str  # customer_id veya supplier_id
+    party_name: str
+    party_type: Literal["customer", "supplier"]
+    party_tax_number: Optional[str] = None
+    party_address: Optional[str] = None
+    # Fatura Detayları
+    items: List[InvoiceItem]
+    subtotal: float
+    discount_amount: float = 0
+    vat_amount: float
+    withholding_amount: float = 0  # Stopaj tutarı
+    total: float
+    currency: str = "TRY"
+    # Tarihler
+    invoice_date: datetime
+    due_date: datetime
+    # Durum
+    payment_status: Literal["unpaid", "partial", "paid"] = "unpaid"
+    paid_amount: float = 0
+    remaining_amount: float = 0
+    status: Literal["draft", "pending", "approved", "rejected"] = "draft"
+    notes: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class InvoiceCreate(BaseModel):
+    invoice_type: Literal["sales", "purchase"]
+    party_id: str
+    party_name: str
+    party_type: Literal["customer", "supplier"]
+    party_tax_number: Optional[str] = None
+    party_address: Optional[str] = None
+    items: List[InvoiceItem]
+    discount_amount: float = 0
+    withholding_amount: float = 0
+    currency: str = "TRY"
+    invoice_date: str
+    due_date: str
+    notes: Optional[str] = None
+    status: Literal["draft", "pending", "approved", "rejected"] = "draft"
+
+# Ödeme/Tahsilat Modeli
+class Payment(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    payment_type: Literal["income", "expense"]  # Tahsilat/Ödeme
+    invoice_id: Optional[str] = None  # Faturaya bağlı ise
+    party_id: str  # customer_id veya supplier_id
+    party_name: str
+    party_type: Literal["customer", "supplier"]
+    amount: float
+    payment_method: Literal["cash", "bank_transfer", "credit_card", "check", "promissory_note"]
+    payment_date: datetime
+    account_id: Optional[str] = None  # Kasa/Banka hesabı
+    account_name: Optional[str] = None
+    description: Optional[str] = None
+    check_number: Optional[str] = None  # Çek numarası
+    check_date: Optional[datetime] = None  # Çek tarihi
+    user_id: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class PaymentCreate(BaseModel):
+    payment_type: Literal["income", "expense"]
+    invoice_id: Optional[str] = None
+    party_id: str
+    party_name: str
+    party_type: Literal["customer", "supplier"]
+    amount: float
+    payment_method: Literal["cash", "bank_transfer", "credit_card", "check", "promissory_note"]
+    payment_date: str
+    account_id: Optional[str] = None
+    account_name: Optional[str] = None
+    description: Optional[str] = None
+    check_number: Optional[str] = None
+    check_date: Optional[str] = None
+
+# Kasa/Banka Hesabı Modeli
+class Account(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    account_type: Literal["cash", "bank"]
+    name: str
+    bank_name: Optional[str] = None
+    account_number: Optional[str] = None
+    iban: Optional[str] = None
+    currency: str = "TRY"
+    balance: float = 0.0
+    user_id: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class AccountCreate(BaseModel):
+    account_type: Literal["cash", "bank"]
+    name: str
+    bank_name: Optional[str] = None
+    account_number: Optional[str] = None
+    iban: Optional[str] = None
+    currency: str = "TRY"
+    balance: float = 0.0
+
+# Çek/Senet Modeli
+class CheckSenet(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    document_type: Literal["check", "promissory_note"]  # Çek/Senet
+    direction: Literal["incoming", "outgoing"]  # Alınan/Verilen
+    number: str
+    amount: float
+    currency: str = "TRY"
+    issue_date: datetime
+    due_date: datetime
+    bank_name: Optional[str] = None
+    party_id: str  # customer_id veya supplier_id
+    party_name: str
+    party_type: Literal["customer", "supplier"]
+    status: Literal["pending", "cashed", "bounced", "cancelled"] = "pending"
+    payment_id: Optional[str] = None  # İlgili ödeme kaydı
+    notes: Optional[str] = None
+    user_id: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class CheckSenetCreate(BaseModel):
+    document_type: Literal["check", "promissory_note"]
+    direction: Literal["incoming", "outgoing"]
+    number: str
+    amount: float
+    currency: str = "TRY"
+    issue_date: str
+    due_date: str
+    bank_name: Optional[str] = None
+    party_id: str
+    party_name: str
+    party_type: Literal["customer", "supplier"]
+    notes: Optional[str] = None
+
+# Stok Hareketi Modeli
+class StockMovement(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    product_id: str
+    product_name: str
+    movement_type: Literal["in", "out"]  # Giriş/Çıkış
+    quantity: float
+    unit: str
+    unit_price: float
+    total_value: float
+    reference_type: Optional[Literal["invoice", "manual", "adjustment"]] = "manual"
+    reference_id: Optional[str] = None  # invoice_id vs.
+    movement_date: datetime
+    warehouse: Optional[str] = None
+    notes: Optional[str] = None
+    user_id: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class StockMovementCreate(BaseModel):
+    product_id: str
+    product_name: str
+    movement_type: Literal["in", "out"]
+    quantity: float
+    unit: str
+    unit_price: float
+    reference_type: Optional[Literal["invoice", "manual", "adjustment"]] = "manual"
+    reference_id: Optional[str] = None
+    movement_date: str
+    warehouse: Optional[str] = None
+    notes: Optional[str] = None
+
+# ============= MUHASEBE MODELLERİ SONU =============
+
 class Customer(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))

@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Package, FileText, Settings, FolderOpen, Users, MessageCircle, UserCheck, TrendingUp, Home as HomeIcon, CheckSquare } from "lucide-react";
+import { LogOut, Package, FileText, Settings, FolderOpen, Users, UserCheck, TrendingUp, Home as HomeIcon, CheckSquare } from "lucide-react";
 import Home from "./Home";
 import Products from "./Products";
 import Quotes from "./Quotes";
 import SettingsPage from "./SettingsPage";
 import Categories from "./Categories";
 import UsersPage from "./Users";
-import ContactChannels from "./ContactChannels";
 import Customers from "./Customers";
 import MarketWatch from "./MarketWatch";
 import ApprovalPanel from "./ApprovalPanel";
@@ -42,7 +41,6 @@ export default function Dashboard({ setIsAuthenticated }) {
     { path: "/approval", icon: CheckSquare, label: "Teklif Onayları" },
     { path: "/categories", icon: FolderOpen, label: "Kategoriler" },
     { path: "/users", icon: Users, label: "Kullanıcılar" },
-    { path: "/contact-channels", icon: MessageCircle, label: "İletişim Kanalları" },
     { path: "/market-watch", icon: TrendingUp, label: "Borsa Takibi" },
   ];
 
@@ -115,7 +113,6 @@ export default function Dashboard({ setIsAuthenticated }) {
           {isAdmin && <Route path="/approval" element={<ApprovalPanel />} />}
           {isAdmin && <Route path="/categories" element={<Categories />} />}
           {isAdmin && <Route path="/users" element={<UsersPage />} />}
-          {isAdmin && <Route path="/contact-channels" element={<ContactChannels />} />}
           {isAdmin && <Route path="/market-watch" element={<MarketWatch />} />}
         </Routes>
       </div>

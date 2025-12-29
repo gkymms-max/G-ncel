@@ -58,9 +58,18 @@ export default function Dashboard({ setIsAuthenticated }) {
       {/* Sidebar */}
       <div className="w-64 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col shadow-2xl">
         <div className="p-6 border-b border-purple-800/30">
-          <h1 className="text-xl font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>Özay Plise</h1>
-          <h2 className="text-lg font-semibold text-purple-200 mt-0.5">Fiyat Teklifi</h2>
-          <p className="text-sm text-purple-300 mt-1">Yönetim Paneli</p>
+          <div className="flex items-center gap-3 mb-3">
+            <img 
+              src="https://customer-assets.emergentagent.com/job_pricequote-1/artifacts/0mg7uoiz_op.png" 
+              alt="Özay Plise Logo" 
+              className="h-12 w-12 object-contain rounded-lg bg-white/10 p-1"
+            />
+            <div>
+              <h1 className="text-xl font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>Özay Plise</h1>
+              <h2 className="text-sm font-semibold text-purple-200">Fiyat Teklifi</h2>
+            </div>
+          </div>
+          <p className="text-xs text-purple-300">Yönetim Paneli</p>
           {isAdmin && (
             <div className="mt-3">
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg">

@@ -58,13 +58,13 @@ export default function Dashboard({ setIsAuthenticated }) {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-      <div className="w-64 bg-gradient-to-b from-indigo-600 to-indigo-800 flex flex-col shadow-xl">
-        <div className="p-6 border-b border-indigo-500">
+      <div className="w-64 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col shadow-2xl">
+        <div className="p-6 border-b border-purple-800/30">
           <h1 className="text-2xl font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>Fiyat Teklifi</h1>
-          <p className="text-sm text-indigo-200 mt-1">Yönetim Paneli</p>
+          <p className="text-sm text-purple-300 mt-1">Yönetim Paneli</p>
           {isAdmin && (
             <div className="mt-3">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500 text-white">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg">
                 Admin
               </span>
             </div>
@@ -77,10 +77,10 @@ export default function Dashboard({ setIsAuthenticated }) {
             return (
               <button
                 key={item.path}
-                className={`w-full flex items-center px-4 py-3 rounded-lg transition-all ${
+                className={`w-full flex items-center px-4 py-3 rounded-xl transition-all duration-200 ${
                   active 
-                    ? 'bg-white text-indigo-700 shadow-md font-medium' 
-                    : 'text-indigo-100 hover:bg-indigo-700 hover:text-white'
+                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg transform scale-105' 
+                    : 'text-purple-200 hover:bg-white/10 hover:text-white hover:translate-x-1'
                 }`}
                 onClick={() => navigate(item.path)}
                 data-testid={`nav-${item.label.toLowerCase()}`}
@@ -91,9 +91,9 @@ export default function Dashboard({ setIsAuthenticated }) {
             );
           })}
         </nav>
-        <div className="p-4 border-t border-indigo-500">
+        <div className="p-4 border-t border-purple-800/30">
           <button
-            className="w-full flex items-center px-4 py-3 rounded-lg text-indigo-100 hover:bg-red-500 hover:text-white transition-all"
+            className="w-full flex items-center px-4 py-3 rounded-xl text-purple-200 hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-500 hover:text-white transition-all duration-200 hover:shadow-lg"
             onClick={handleLogout}
             data-testid="logout-button"
           >

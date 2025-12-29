@@ -59,11 +59,13 @@ export default function Dashboard({ setIsAuthenticated }) {
       <div className="w-64 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col shadow-2xl">
         <div className="p-6 border-b border-purple-800/30">
           <div className="flex items-center gap-3 mb-3">
-            <img 
-              src="https://customer-assets.emergentagent.com/job_pricequote-1/artifacts/0mg7uoiz_op.png" 
-              alt="Özay Plise Logo" 
-              className="h-12 w-12 object-contain rounded-lg bg-white/10 p-1"
-            />
+            <div className="h-14 w-14 bg-white rounded-lg p-2 flex items-center justify-center shadow-lg">
+              <img 
+                src="https://customer-assets.emergentagent.com/job_pricequote-1/artifacts/0mg7uoiz_op.png" 
+                alt="Özay Plise Logo" 
+                className="h-full w-full object-contain"
+              />
+            </div>
             <div>
               <h1 className="text-xl font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>Özay Plise</h1>
               <h2 className="text-sm font-semibold text-purple-200">Fiyat Teklifi</h2>

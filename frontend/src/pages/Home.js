@@ -260,26 +260,26 @@ export default function Home() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Button 
-                className="h-24 text-lg"
+                className="h-20 text-base"
                 onClick={() => navigate('/quotes')}
               >
-                <Plus className="mr-2 h-6 w-6" />
+                <Plus className="mr-2 h-5 w-5" />
                 Yeni Teklif Oluştur
               </Button>
               <Button 
-                className="h-24 text-lg"
+                className="h-20 text-base"
                 variant="outline"
                 onClick={() => navigate('/customers')}
               >
-                <Plus className="mr-2 h-6 w-6" />
+                <Plus className="mr-2 h-5 w-5" />
                 Yeni Müşteri Ekle
               </Button>
               <Button 
-                className="h-24 text-lg"
+                className="h-20 text-base"
                 variant="outline"
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/products')}
               >
-                <Package className="mr-2 h-6 w-6" />
+                <Package className="mr-2 h-5 w-5" />
                 Ürünleri Görüntüle
               </Button>
             </div>

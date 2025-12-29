@@ -60,7 +60,8 @@ export default function Dashboard({ setIsAuthenticated }) {
       {/* Sidebar */}
       <div className="w-64 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col shadow-2xl">
         <div className="p-6 border-b border-purple-800/30">
-          <h1 className="text-2xl font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>Fiyat Teklifi</h1>
+          <h1 className="text-xl font-bold text-white" style={{ fontFamily: 'Space Grotesk' }}>Özay Plise</h1>
+          <h2 className="text-lg font-semibold text-purple-200 mt-0.5">Fiyat Teklifi</h2>
           <p className="text-sm text-purple-300 mt-1">Yönetim Paneli</p>
           {isAdmin && (
             <div className="mt-3">

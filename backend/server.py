@@ -49,6 +49,20 @@ class User(BaseModel):
     username: str
     password_hash: str
     role: Literal["admin", "user"] = "user"
+    permissions: dict = Field(default_factory=lambda: {
+        "customers": {"view": False, "create": False, "update": False, "delete": False},
+        "suppliers": {"view": False, "create": False, "update": False, "delete": False},
+        "products": {"view": False, "create": False, "update": False, "delete": False},
+        "quotes": {"view": False, "create": False, "update": False, "delete": False, "approve": False},
+        "invoices": {"view": False, "create": False, "update": False, "delete": False, "approve": False},
+        "payments": {"view": False, "create": False, "update": False, "delete": False},
+        "accounts": {"view": False, "create": False, "update": False, "delete": False},
+        "reports": {"view": False, "export": False},
+        "settings": {"update": False},
+        "categories": {"manage": False},
+        "users": {"manage": False},
+        "market": {"view": False}
+    })
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class UserLogin(BaseModel):

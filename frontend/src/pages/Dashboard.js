@@ -13,6 +13,7 @@ import MarketWatch from "./MarketWatch";
 import ApprovalPanel from "./ApprovalPanel";
 import Suppliers from "./Suppliers";
 import Accounts from "./Accounts";
+import Invoices from "./Invoices";
 
 export default function Dashboard({ setIsAuthenticated }) {
   const navigate = useNavigate();
@@ -125,7 +126,7 @@ export default function Dashboard({ setIsAuthenticated }) {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/quotes" element={<Quotes />} />
-          <Route path="/invoices" element={<Home />} />
+          <Route path="/invoices" element={<Invoices />} />
           <Route path="/payments" element={<Home />} />
           <Route path="/accounts" element={<Accounts />} />
           <Route path="/products" element={<Products />} />

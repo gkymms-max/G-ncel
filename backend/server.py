@@ -843,6 +843,288 @@ async def delete_account(account_id: str, current_user: dict = Depends(get_curre
 
 # Existing Products endpoints continue below...
 
+# ============= FATURA ENDPOINTS =============
+
+@api_router.get("/invoices")
+async def get_invoices(
+    invoice_type: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
+    query = {"user_id": current_user["username"]}
+    if invoice_type:
+        query["invoice_type"] = invoice_type
+    
+    invoices = await db.invoices.find(query, {"_id": 0}).to_list(1000)
+    for invoice in invoices:
+        for field in ['invoice_date', 'due_date', 'created_at']:
+            if field in invoice and isinstance(invoice[field], str):
+                invoice[field] = datetime.fromisoformat(invoice[field])
+    return invoices
+
+@api_router.post("/invoices")
+async def create_invoice(invoice_data: InvoiceCreate, current_user: dict = Depends(get_current_user)):
+    # Calculate totals
+    subtotal = sum(item.subtotal for item in invoice_data.items)
+    vat_amount = sum(item.vat_amount for item in invoice_data.items)
+    total = subtotal + vat_amount - invoice_data.discount_amount - invoice_data.withholding_amount
+    
+    # Generate invoice number
+    invoice_count = await db.invoices.count_documents({"user_id": current_user["username"]})
+    invoice_number = f"FTR-{datetime.now().year}-{invoice_count + 1:05d}"
+    
+    invoice = Invoice(
+        invoice_number=invoice_number,
+        user_id=current_user["username"],
+        invoice_date=datetime.fromisoformat(invoice_data.invoice_date),
+        due_date=datetime.fromisoformat(invoice_data.due_date),
+        subtotal=subtotal,
+        vat_amount=vat_amount,
+        total=total,
+        remaining_amount=total,
+        **{k: v for k, v in invoice_data.model_dump().items() if k not in ['invoice_date', 'due_date']}
+    )
+    
+    invoice_dict = invoice.model_dump()
+    invoice_dict['invoice_date'] = invoice_dict['invoice_date'].isoformat()
+    invoice_dict['due_date'] = invoice_dict['due_date'].isoformat()
+    invoice_dict['created_at'] = invoice_dict['created_at'].isoformat()
+    
+    await db.invoices.insert_one(invoice_dict)
+    
+    # Update party balance
+    collection = db.customers if invoice.party_type == "customer" else db.suppliers
+    await collection.update_one(
+        {"id": invoice.party_id},
+        {"$inc": {"balance": total if invoice.invoice_type == "sales" else -total}}
+    )
+    
+    # Create stock movements
+    for item in invoice.items:
+        movement = StockMovement(
+            product_id=item.product_id,
+            product_name=item.product_name,
+            movement_type="out" if invoice.invoice_type == "sales" else "in",
+            quantity=item.quantity,
+            unit=item.unit,
+            unit_price=item.unit_price,
+            total_value=item.total,
+            reference_type="invoice",
+            reference_id=invoice.id,
+            movement_date=invoice.invoice_date,
+            user_id=current_user["username"]
+        )
+        movement_dict = movement.model_dump()
+        movement_dict['movement_date'] = movement_dict['movement_date'].isoformat()
+        movement_dict['created_at'] = movement_dict['created_at'].isoformat()
+        await db.stock_movements.insert_one(movement_dict)
+    
+    return invoice
+
+@api_router.patch("/invoices/{invoice_id}/status")
+async def update_invoice_status(
+    invoice_id: str,
+    status: Literal["draft", "pending", "approved", "rejected"],
+    current_user: dict = Depends(get_current_user)
+):
+    await db.invoices.update_one(
+        {"id": invoice_id},
+        {"$set": {"status": status}}
+    )
+    invoice = await db.invoices.find_one({"id": invoice_id}, {"_id": 0})
+    for field in ['invoice_date', 'due_date', 'created_at']:
+        if field in invoice and isinstance(invoice[field], str):
+            invoice[field] = datetime.fromisoformat(invoice[field])
+    return invoice
+
+@api_router.delete("/invoices/{invoice_id}")
+async def delete_invoice(invoice_id: str, current_user: dict = Depends(get_current_user)):
+    invoice = await db.invoices.find_one({"id": invoice_id}, {"_id": 0})
+    if not invoice:
+        raise HTTPException(status_code=404, detail="Invoice not found")
+    
+    # Revert balance changes
+    collection = db.customers if invoice['party_type'] == "customer" else db.suppliers
+    multiplier = 1 if invoice['invoice_type'] == "sales" else -1
+    await collection.update_one(
+        {"id": invoice['party_id']},
+        {"$inc": {"balance": -invoice['total'] * multiplier}}
+    )
+    
+    # Delete related stock movements
+    await db.stock_movements.delete_many({"reference_id": invoice_id})
+    
+    await db.invoices.delete_one({"id": invoice_id})
+    return {"message": "Invoice deleted successfully"}
+
+# ============= ÖDEME/TAHSİLAT ENDPOINTS =============
+
+@api_router.get("/payments")
+async def get_payments(
+    payment_type: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
+    query = {"user_id": current_user["username"]}
+    if payment_type:
+        query["payment_type"] = payment_type
+    
+    payments = await db.payments.find(query, {"_id": 0}).to_list(1000)
+    for payment in payments:
+        for field in ['payment_date', 'check_date', 'created_at']:
+            if field in payment and payment[field] and isinstance(payment[field], str):
+                payment[field] = datetime.fromisoformat(payment[field])
+    return payments
+
+@api_router.post("/payments")
+async def create_payment(payment_data: PaymentCreate, current_user: dict = Depends(get_current_user)):
+    payment = Payment(
+        user_id=current_user["username"],
+        payment_date=datetime.fromisoformat(payment_data.payment_date),
+        check_date=datetime.fromisoformat(payment_data.check_date) if payment_data.check_date else None,
+        **{k: v for k, v in payment_data.model_dump().items() if k not in ['payment_date', 'check_date']}
+    )
+    
+    payment_dict = payment.model_dump()
+    payment_dict['payment_date'] = payment_dict['payment_date'].isoformat()
+    if payment_dict.get('check_date'):
+        payment_dict['check_date'] = payment_dict['check_date'].isoformat()
+    payment_dict['created_at'] = payment_dict['created_at'].isoformat()
+    
+    await db.payments.insert_one(payment_dict)
+    
+    # Update invoice if linked
+    if payment.invoice_id:
+        invoice = await db.invoices.find_one({"id": payment.invoice_id}, {"_id": 0})
+        if invoice:
+            new_paid = invoice.get('paid_amount', 0) + payment.amount
+            new_remaining = invoice['total'] - new_paid
+            new_status = "paid" if new_remaining <= 0 else "partial"
+            
+            await db.invoices.update_one(
+                {"id": payment.invoice_id},
+                {"$set": {
+                    "paid_amount": new_paid,
+                    "remaining_amount": new_remaining,
+                    "payment_status": new_status
+                }}
+            )
+    
+    # Update account balance
+    if payment.account_id:
+        multiplier = 1 if payment.payment_type == "income" else -1
+        await db.accounts.update_one(
+            {"id": payment.account_id},
+            {"$inc": {"balance": payment.amount * multiplier}}
+        )
+    
+    # Update party balance
+    collection = db.customers if payment.party_type == "customer" else db.suppliers
+    multiplier = -1 if payment.payment_type == "income" else 1
+    await collection.update_one(
+        {"id": payment.party_id},
+        {"$inc": {"balance": payment.amount * multiplier}}
+    )
+    
+    return payment
+
+@api_router.delete("/payments/{payment_id}")
+async def delete_payment(payment_id: str, current_user: dict = Depends(get_current_user)):
+    payment = await db.payments.find_one({"id": payment_id}, {"_id": 0})
+    if not payment:
+        raise HTTPException(status_code=404, detail="Payment not found")
+    
+    # Revert invoice payment
+    if payment.get('invoice_id'):
+        invoice = await db.invoices.find_one({"id": payment['invoice_id']}, {"_id": 0})
+        if invoice:
+            new_paid = max(0, invoice.get('paid_amount', 0) - payment['amount'])
+            new_remaining = invoice['total'] - new_paid
+            new_status = "unpaid" if new_paid <= 0 else ("paid" if new_remaining <= 0 else "partial")
+            
+            await db.invoices.update_one(
+                {"id": payment['invoice_id']},
+                {"$set": {
+                    "paid_amount": new_paid,
+                    "remaining_amount": new_remaining,
+                    "payment_status": new_status
+                }}
+            )
+    
+    # Revert account balance
+    if payment.get('account_id'):
+        multiplier = 1 if payment['payment_type'] == "income" else -1
+        await db.accounts.update_one(
+            {"id": payment['account_id']},
+            {"$inc": {"balance": -payment['amount'] * multiplier}}
+        )
+    
+    # Revert party balance
+    collection = db.customers if payment['party_type'] == "customer" else db.suppliers
+    multiplier = -1 if payment['payment_type'] == "income" else 1
+    await collection.update_one(
+        {"id": payment['party_id']},
+        {"$inc": {"balance": -payment['amount'] * multiplier}}
+    )
+    
+    await db.payments.delete_one({"id": payment_id})
+    return {"message": "Payment deleted successfully"}
+
+# ============= ÇEK/SENET & STOK ENDPOINTS =============
+
+@api_router.get("/checks")
+async def get_checks(current_user: dict = Depends(get_current_user)):
+    checks = await db.checks.find({"user_id": current_user["username"]}, {"_id": 0}).to_list(1000)
+    for check in checks:
+        for field in ['issue_date', 'due_date', 'created_at']:
+            if field in check and isinstance(check[field], str):
+                check[field] = datetime.fromisoformat(check[field])
+    return checks
+
+@api_router.post("/checks")
+async def create_check(check_data: CheckSenetCreate, current_user: dict = Depends(get_current_user)):
+    check = CheckSenet(
+        user_id=current_user["username"],
+        issue_date=datetime.fromisoformat(check_data.issue_date),
+        due_date=datetime.fromisoformat(check_data.due_date),
+        **{k: v for k, v in check_data.model_dump().items() if k not in ['issue_date', 'due_date']}
+    )
+    
+    check_dict = check.model_dump()
+    check_dict['issue_date'] = check_dict['issue_date'].isoformat()
+    check_dict['due_date'] = check_dict['due_date'].isoformat()
+    check_dict['created_at'] = check_dict['created_at'].isoformat()
+    
+    await db.checks.insert_one(check_dict)
+    return check
+
+@api_router.get("/stock-movements")
+async def get_stock_movements(current_user: dict = Depends(get_current_user)):
+    movements = await db.stock_movements.find({"user_id": current_user["username"]}, {"_id": 0}).to_list(1000)
+    for movement in movements:
+        for field in ['movement_date', 'created_at']:
+            if field in movement and isinstance(movement[field], str):
+                movement[field] = datetime.fromisoformat(movement[field])
+    return movements
+
+@api_router.post("/stock-movements")
+async def create_stock_movement(movement_data: StockMovementCreate, current_user: dict = Depends(get_current_user)):
+    total_value = movement_data.quantity * movement_data.unit_price
+    
+    movement = StockMovement(
+        user_id=current_user["username"],
+        movement_date=datetime.fromisoformat(movement_data.movement_date),
+        total_value=total_value,
+        **{k: v for k, v in movement_data.model_dump().items() if k != 'movement_date'}
+    )
+    
+    movement_dict = movement.model_dump()
+    movement_dict['movement_date'] = movement_dict['movement_date'].isoformat()
+    movement_dict['created_at'] = movement_dict['created_at'].isoformat()
+    
+    await db.stock_movements.insert_one(movement_dict)
+    return movement
+
+# Existing Products endpoints continue below...
+
 @api_router.get("/products", response_model=List[Product])
 async def get_products(current_user: dict = Depends(get_current_user)):
     products = await db.products.find({}, {"_id": 0}).to_list(1000)

@@ -33,6 +33,7 @@ export default function Dashboard({ setIsAuthenticated }) {
 
   const userMenuItems = [
     { path: "/", icon: HomeIcon, label: "Ana Sayfa" },
+    { path: "/quotes", icon: FileText, label: "Teklifler" },
     { path: "/invoices", icon: Receipt, label: "Faturalar" },
     { path: "/payments", icon: CreditCard, label: "Ödeme/Tahsilat" },
     { path: "/accounts", icon: Wallet, label: "Kasa & Banka" },
@@ -43,7 +44,8 @@ export default function Dashboard({ setIsAuthenticated }) {
   ];
 
   const adminMenuItems = [
-    { path: "/approval", icon: CheckSquare, label: "Fatura Onayları" },
+    { path: "/quote-approval", icon: CheckSquare, label: "Teklif Onayları" },
+    { path: "/invoice-approval", icon: CheckSquare, label: "Fatura Onayları" },
     { path: "/categories", icon: FolderOpen, label: "Kategoriler" },
     { path: "/users", icon: Users, label: "Kullanıcılar" },
     { path: "/market-watch", icon: TrendingUp, label: "Borsa Takibi" },
@@ -122,14 +124,16 @@ export default function Dashboard({ setIsAuthenticated }) {
       <div className="flex-1 overflow-auto">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/invoices" element={<Quotes />} />
+          <Route path="/quotes" element={<Quotes />} />
+          <Route path="/invoices" element={<Home />} />
           <Route path="/payments" element={<Home />} />
           <Route path="/accounts" element={<Accounts />} />
           <Route path="/products" element={<Products />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/suppliers" element={<Suppliers />} />
           <Route path="/settings" element={<SettingsPage />} />
-          {isAdmin && <Route path="/approval" element={<ApprovalPanel />} />}
+          {isAdmin && <Route path="/quote-approval" element={<ApprovalPanel />} />}
+          {isAdmin && <Route path="/invoice-approval" element={<ApprovalPanel />} />}
           {isAdmin && <Route path="/categories" element={<Categories />} />}
           {isAdmin && <Route path="/users" element={<UsersPage />} />}
           {isAdmin && <Route path="/market-watch" element={<MarketWatch />} />}

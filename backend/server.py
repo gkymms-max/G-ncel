@@ -698,6 +698,26 @@ async def delete_user(user_id: str, current_user: dict = Depends(get_admin_user)
         raise HTTPException(status_code=404, detail="User not found")
     return {"message": "User deleted successfully"}
 
+@api_router.patch("/users/{user_id}/permissions")
+async def update_user_permissions(
+    user_id: str,
+    permissions: dict,
+    current_user: dict = Depends(get_admin_user)
+):
+    """Update user permissions - Admin only"""
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"permissions": permissions}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user = await db.users.find_one({"id": user_id}, {"_id": 0, "password_hash": 0})
+    if isinstance(user.get('created_at'), str):
+        user['created_at'] = datetime.fromisoformat(user['created_at'])
+    return user
+
 @api_router.put("/users/{user_id}/password")
 async def reset_user_password(user_id: str, password_data: dict, current_user: dict = Depends(get_admin_user)):
     new_password = password_data.get("password")

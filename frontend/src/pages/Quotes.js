@@ -585,19 +585,33 @@ export default function Quotes() {
                       </Button>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="use_package"
-                      checked={newItem.use_package}
-                      onChange={(e) => setNewItem({ ...newItem, use_package: e.target.checked })}
-                      className="h-4 w-4 rounded border-gray-300"
-                      data-testid="use-package-checkbox"
-                    />
-                    <Label htmlFor="use_package" className="text-sm font-normal cursor-pointer">
-                      Paket bazlı hesapla (ürünün paket bilgisini kullan)
-                    </Label>
-                  </div>
+                  
+                  {/* Paket bilgisi görüntüleme */}
+                  {newItem.product_id && (() => {
+                    const product = products.find(p => p.id === newItem.product_id);
+                    if (product) {
+                      let packageInfo = "";
+                      if (product.unit === "KG" && product.package_kg) {
+                        packageInfo = `Her paket ${product.package_kg} KG içerir`;
+                      } else if (product.unit === "m²" && product.package_m2) {
+                        packageInfo = `Her paket ${product.package_m2} m² içerir`;
+                      } else if (product.unit === "Metre" && product.package_length) {
+                        packageInfo = `Her paket ${product.package_length} Metre içerir`;
+                      } else if (product.unit === "Adet" && product.package_count) {
+                        packageInfo = `Her paket ${product.package_count} Adet içerir`;
+                      }
+                      if (packageInfo) {
+                        return (
+                          <div className="col-span-2 mt-2">
+                            <p className="text-sm text-blue-600 bg-blue-50 p-3 rounded-lg border border-blue-200">
+                              ℹ️ <strong>{packageInfo}</strong> - Miktar otomatik hesaplanıyor
+                            </p>
+                          </div>
+                        );
+                      }
+                    }
+                    return null;
+                  })()}
                 </div>
               </div>
 

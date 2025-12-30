@@ -1348,6 +1348,266 @@ async def get_quote_pdf(quote_id: str, current_user: dict = Depends(get_current_
     
     # Generate PDF
     buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=1.5*cm, bottomMargin=1.5*cm, leftMargin=2*cm, rightMargin=2*cm)
+    story = []
+    
+    # Register Turkish-compatible fonts
+    try:
+        pdfmetrics.registerFont(TTFont('DejaVuSans', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'))
+        pdfmetrics.registerFont(TTFont('DejaVuSans-Bold', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'))
+        font_name = 'DejaVuSans'
+        font_bold = 'DejaVuSans-Bold'
+    except:
+        font_name = 'Helvetica'
+        font_bold = 'Helvetica-Bold'
+    
+    # Get theme color from settings
+    theme_color = settings.get('theme_color', '#4F46E5') if settings else '#4F46E5'
+    primary_color = colors.HexColor(theme_color)
+    
+    styles = getSampleStyleSheet()
+    
+    # === PROFESSIONAL HEADER WITH BACKGROUND ===
+    header_bg = Table([['']], colWidths=[17*cm])
+    header_bg.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), primary_color),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+    ]))
+    story.append(header_bg)
+    story.append(Spacer(1, -0.3*cm))
+    
+    # Company info on colored background
+    company_style = ParagraphStyle('CompanyStyle', fontName=font_bold, fontSize=16, textColor=colors.white, spaceAfter=2)
+    contact_style = ParagraphStyle('ContactStyle', fontName=font_name, fontSize=9, textColor=colors.white, spaceAfter=1)
+    
+    if settings and settings.get('company_name'):
+        company_para = Paragraph(f"<b>{settings['company_name']}</b>", company_style)
+        company_cell = Table([[company_para]], colWidths=[17*cm])
+        company_cell.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), primary_color),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('TOPPADDING', (0, 0), (-1, -1), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+            ('LEFTPADDING', (0, 0), (-1, -1), 15),
+        ]))
+        story.append(company_cell)
+        story.append(Spacer(1, -0.3*cm))
+        
+        # Contact info
+        contact_parts = []
+        if settings.get('company_phone'):
+            contact_parts.append(f"📞 {settings['company_phone']}")
+        if settings.get('company_email'):
+            contact_parts.append(f"✉ {settings['company_email']}")
+        if settings.get('company_website'):
+            contact_parts.append(f"🌐 {settings['company_website']}")
+        
+        if contact_parts:
+            contact_para = Paragraph(" &nbsp;|&nbsp; ".join(contact_parts), contact_style)
+            contact_cell = Table([[contact_para]], colWidths=[17*cm])
+            contact_cell.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), primary_color),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('TOPPADDING', (0, 0), (-1, -1), 2),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 12),
+                ('LEFTPADDING', (0, 0), (-1, -1), 15),
+            ]))
+            story.append(contact_cell)
+    
+    story.append(Spacer(1, 0.6*cm))
+    
+    # === QUOTE TITLE ===
+    title_style = ParagraphStyle('TitleStyle', fontName=font_bold, fontSize=22, textColor=primary_color, alignment=1, spaceAfter=12)
+    story.append(Paragraph("<b>FİYAT TEKLİFİ</b>", title_style))
+    story.append(Spacer(1, 0.4*cm))
+    
+    # === INFO BOX ===
+    info_style = ParagraphStyle('InfoStyle', fontName=font_name, fontSize=9, leading=12)
+    info_bold = ParagraphStyle('InfoBold', fontName=font_bold, fontSize=9, leading=12)
+    
+    info_data = [
+        [Paragraph("<b>Teklif No:</b>", info_bold), Paragraph(quote['quote_number'], info_style),
+         Paragraph("<b>Müşteri:</b>", info_bold), Paragraph(quote['customer_name'], info_style)],
+        [Paragraph("<b>Tarih:</b>", info_bold), Paragraph(quote['quote_date'].strftime('%d.%m.%Y'), info_style),
+         Paragraph("<b>E-posta:</b>", info_bold), Paragraph(quote['customer_email'], info_style)],
+        [Paragraph("<b>Geçerlilik:</b>", info_bold), Paragraph(quote['validity_date'].strftime('%d.%m.%Y'), info_style),
+         Paragraph("<b>Telefon:</b>", info_bold), Paragraph(quote.get('customer_phone', '-'), info_style)]
+    ]
+    
+    info_table = Table(info_data, colWidths=[2.5*cm, 5.5*cm, 2.5*cm, 6.5*cm])
+    info_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#F3F4F6')),
+        ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#D1D5DB')),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('TOPPADDING', (0, 0), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ('LEFTPADDING', (0, 0), (-1, -1), 10),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+    ]))
+    story.append(info_table)
+    story.append(Spacer(1, 0.5*cm))
+    
+    # === ITEMS TABLE ===
+    all_products = await db.products.find({}, {"_id": 0}).to_list(1000)
+    product_lookup = {p['id']: p for p in all_products}
+    
+    header_style = ParagraphStyle('HeaderStyle', fontName=font_bold, fontSize=9, textColor=colors.white, alignment=1)
+    cell_style = ParagraphStyle('CellStyle', fontName=font_name, fontSize=8.5, leading=10)
+    
+    table_data = [[
+        Paragraph("<b>Ürün Adı</b>", header_style),
+        Paragraph("<b>Birim</b>", header_style),
+        Paragraph("<b>Paket</b>", header_style),
+        Paragraph("<b>Birim Fiyat</b>", header_style),
+        Paragraph("<b>Miktar</b>", header_style),
+        Paragraph("<b>Tutar</b>", header_style)
+    ]]
+    
+    for item in quote['items']:
+        product = product_lookup.get(item['product_id'])
+        package_info = "-"
+        actual_quantity = item['quantity']
+        unit = item['unit']
+        
+        if product:
+            if unit == "KG" and product.get('package_kg'):
+                package_info = f"{product['package_kg']}"
+            elif unit == "m²" and product.get('package_m2'):
+                package_info = f"{product['package_m2']}"
+            elif unit == "Metre" and product.get('package_length'):
+                package_info = f"{product['package_length']}"
+            elif unit == "Adet" and product.get('package_count'):
+                package_info = f"{product['package_count']}"
+        
+        if item.get('display_text') and '(' in item['display_text'] and ')' in item['display_text']:
+            calc_part = item['display_text'].split('(')[1].split(')')[0]
+            actual_quantity = calc_part.split(' ')[0]
+        else:
+            actual_quantity = str(item['quantity'])
+        
+        table_data.append([
+            Paragraph(item['product_name'], cell_style),
+            Paragraph(unit, cell_style),
+            Paragraph(package_info, cell_style),
+            Paragraph(f"{item['unit_price']:.2f}", cell_style),
+            Paragraph(actual_quantity, cell_style),
+            Paragraph(f"{item['subtotal']:.2f} {quote['currency']}", cell_style)
+        ])
+    
+    items_table = Table(table_data, colWidths=[7*cm, 1.5*cm, 1.5*cm, 2.5*cm, 2*cm, 2.5*cm])
+    items_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), primary_color),
+        ('ALIGN', (1, 0), (-1, 0), 'CENTER'),
+        ('ALIGN', (1, 1), (1, -1), 'CENTER'),
+        ('ALIGN', (2, 1), (2, -1), 'CENTER'),
+        ('ALIGN', (3, 1), (3, -1), 'RIGHT'),
+        ('ALIGN', (4, 1), (4, -1), 'CENTER'),
+        ('ALIGN', (5, 1), (5, -1), 'RIGHT'),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
+        ('GRID', (0, 0), (-1, -1), 0.75, colors.HexColor('#D1D5DB')),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('TOPPADDING', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+        ('LEFTPADDING', (0, 0), (-1, -1), 8),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+    ]))
+    story.append(items_table)
+    story.append(Spacer(1, 0.4*cm))
+    
+    # === TOTALS BOX ===
+    total_style = ParagraphStyle('TotalStyle', fontName=font_name, fontSize=10, leading=14)
+    total_bold = ParagraphStyle('TotalBold', fontName=font_bold, fontSize=12, textColor=primary_color, leading=16)
+    
+    totals_data = [
+        [Paragraph("<b>Ara Toplam:</b>", total_style), Paragraph(f"{quote['subtotal']:.2f} {quote['currency']}", total_style)]
+    ]
+    
+    if quote['discount_amount'] > 0:
+        totals_data.append([
+            Paragraph("<b>İndirim:</b>", total_style),
+            Paragraph(f"<font color='red'>-{quote['discount_amount']:.2f} {quote['currency']}</font>", total_style)
+        ])
+    
+    if quote['vat_amount'] > 0:
+        totals_data.append([
+            Paragraph(f"<b>KDV (%{quote['vat_rate']:.0f}):</b>", total_style),
+            Paragraph(f"{quote['vat_amount']:.2f} {quote['currency']}", total_style)
+        ])
+    
+    totals_data.append([
+        Paragraph("<b>GENEL TOPLAM:</b>", total_bold),
+        Paragraph(f"<b>{quote['total']:.2f} {quote['currency']}</b>", total_bold)
+    ])
+    
+    totals_table = Table(totals_data, colWidths=[14*cm, 3*cm])
+    totals_table.setStyle(TableStyle([
+        ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+        ('BACKGROUND', (0, 0), (-1, -2), colors.HexColor('#F9FAFB')),
+        ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#EEF2FF')),
+        ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#D1D5DB')),
+        ('LINEABOVE', (0, -1), (-1, -1), 2, primary_color),
+        ('TOPPADDING', (0, 0), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ('LEFTPADDING', (0, 0), (-1, -1), 12),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 12),
+    ]))
+    story.append(totals_table)
+    story.append(Spacer(1, 0.6*cm))
+    
+    # === NOTES ===
+    if quote.get('notes'):
+        note_style = ParagraphStyle('NoteStyle', fontName=font_name, fontSize=8.5, textColor=colors.HexColor('#6B7280'), leading=12)
+        story.append(Paragraph("<b>Notlar:</b>", note_style))
+        story.append(Paragraph(quote['notes'], note_style))
+        story.append(Spacer(1, 0.5*cm))
+    
+    # === SIGNATURE SECTION ===
+    story.append(Spacer(1, 1*cm))
+    sig_style = ParagraphStyle('SigStyle', fontName=font_name, fontSize=9, alignment=1)
+    signature_data = [[
+        Paragraph("_________________<br/><b>Hazırlayan</b>", sig_style),
+        Paragraph(""),
+        Paragraph("_________________<br/><b>Onaylayan</b>", sig_style)
+    ]]
+    sig_table = Table(signature_data, colWidths=[5*cm, 7*cm, 5*cm])
+    sig_table.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('ALIGN', (0, 0), (0, 0), 'CENTER'),
+        ('ALIGN', (2, 0), (2, 0), 'CENTER'),
+    ]))
+    story.append(sig_table)
+    
+    # === FOOTER ===
+    story.append(Spacer(1, 0.8*cm))
+    footer_style = ParagraphStyle('FooterStyle', fontName=font_name, fontSize=7, textColor=colors.HexColor('#9CA3AF'), alignment=1)
+    footer_text = f"Bu teklif {quote['validity_date'].strftime('%d.%m.%Y')} tarihine kadar geçerlidir."
+    if settings and settings.get('company_name'):
+        footer_text += f" • {settings['company_name']}"
+    story.append(Paragraph(footer_text, footer_style))
+    
+    # Build PDF
+    doc.build(story)
+    buffer.seek(0)
+    
+    return StreamingResponse(
+        buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=teklif_{quote['quote_number']}.pdf"}
+    )
+    quote = await db.quotes.find_one({"id": quote_id, "user_id": current_user["username"]}, {"_id": 0})
+    if not quote:
+        raise HTTPException(status_code=404, detail="Quote not found")
+    
+    settings = await db.settings.find_one({"user_id": current_user["username"]}, {"_id": 0})
+    
+    # Convert datetime strings
+    if isinstance(quote['quote_date'], str):
+        quote['quote_date'] = datetime.fromisoformat(quote['quote_date'])
+    if isinstance(quote['validity_date'], str):
+        quote['validity_date'] = datetime.fromisoformat(quote['validity_date'])
+    
+    # Generate PDF
+    buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm, leftMargin=2*cm, rightMargin=2*cm)
     story = []
     

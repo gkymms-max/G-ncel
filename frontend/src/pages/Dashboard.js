@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Package, FileText, Settings, FolderOpen, Users, UserCheck, TrendingUp, Home as HomeIcon, CheckSquare } from "lucide-react";
+import { LogOut, Package, FileText, Settings, FolderOpen, Users, UserCheck, TrendingUp, Home as HomeIcon, CheckSquare, Building2, Receipt, CreditCard, Wallet } from "lucide-react";
 import Home from "./Home";
 import Products from "./Products";
 import Quotes from "./Quotes";
@@ -11,6 +11,8 @@ import UsersPage from "./Users";
 import Customers from "./Customers";
 import MarketWatch from "./MarketWatch";
 import ApprovalPanel from "./ApprovalPanel";
+import Suppliers from "./Suppliers";
+import Accounts from "./Accounts";
 
 export default function Dashboard({ setIsAuthenticated }) {
   const navigate = useNavigate();
@@ -31,14 +33,17 @@ export default function Dashboard({ setIsAuthenticated }) {
 
   const userMenuItems = [
     { path: "/", icon: HomeIcon, label: "Ana Sayfa" },
+    { path: "/invoices", icon: Receipt, label: "Faturalar" },
+    { path: "/payments", icon: CreditCard, label: "Ödeme/Tahsilat" },
+    { path: "/accounts", icon: Wallet, label: "Kasa & Banka" },
     { path: "/products", icon: Package, label: "Ürünler" },
-    { path: "/quotes", icon: FileText, label: "Teklifler" },
     { path: "/customers", icon: UserCheck, label: "Müşteriler" },
+    { path: "/suppliers", icon: Building2, label: "Tedarikçiler" },
     { path: "/settings", icon: Settings, label: "Ayarlar" },
   ];
 
   const adminMenuItems = [
-    { path: "/approval", icon: CheckSquare, label: "Teklif Onayları" },
+    { path: "/approval", icon: CheckSquare, label: "Fatura Onayları" },
     { path: "/categories", icon: FolderOpen, label: "Kategoriler" },
     { path: "/users", icon: Users, label: "Kullanıcılar" },
     { path: "/market-watch", icon: TrendingUp, label: "Borsa Takibi" },
@@ -117,9 +122,12 @@ export default function Dashboard({ setIsAuthenticated }) {
       <div className="flex-1 overflow-auto">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/invoices" element={<Quotes />} />
+          <Route path="/payments" element={<Home />} />
+          <Route path="/accounts" element={<Accounts />} />
           <Route path="/products" element={<Products />} />
-          <Route path="/quotes" element={<Quotes />} />
           <Route path="/customers" element={<Customers />} />
+          <Route path="/suppliers" element={<Suppliers />} />
           <Route path="/settings" element={<SettingsPage />} />
           {isAdmin && <Route path="/approval" element={<ApprovalPanel />} />}
           {isAdmin && <Route path="/categories" element={<Categories />} />}

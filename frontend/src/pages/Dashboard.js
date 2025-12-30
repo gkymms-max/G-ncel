@@ -87,14 +87,14 @@ export default function Dashboard({ setIsAuthenticated }) {
             </div>
           )}
         </div>
-        <nav className="flex-1 p-4 space-y-2">
+        <nav className="flex-1 p-4 space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
             return (
               <button
                 key={item.path}
-                className={`w-full flex items-center px-4 py-3 rounded-xl transition-all duration-200 ${
+                className={`w-full flex items-center px-4 py-2.5 rounded-xl transition-all duration-200 ${
                   active 
                     ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg transform scale-105' 
                     : 'text-purple-200 hover:bg-white/10 hover:text-white hover:translate-x-1'

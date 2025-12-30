@@ -198,7 +198,7 @@ export default function Invoices() {
           </h1>
           <p className="text-gray-600">Alış ve satış faturalarınız</p>
         </div>
-        <Button onClick={() => toast.info("Fatura oluşturma formu yakında eklenecek")}>
+        <Button onClick={() => toast.info("Fatura oluşturma formu hazırlanıyor...")}>
           <Plus className="mr-2 h-4 w-4" />
           Yeni Fatura
         </Button>

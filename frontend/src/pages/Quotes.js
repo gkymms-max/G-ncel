@@ -120,7 +120,7 @@ export default function Quotes() {
     quantity: 0,
     unit_price: 0,
     note: "",
-    use_package: false
+    use_package: true  // Her zaman paket bazlı
   });
 
   useEffect(() => {

@@ -94,7 +94,7 @@ export default function Dashboard({ setIsAuthenticated }) {
             return (
               <button
                 key={item.path}
-                className={`w-full flex items-center px-4 py-2.5 rounded-xl transition-all duration-200 ${
+                className={`w-full flex items-center px-4 py-2.5 rounded-xl transition-all duration-200 text-sm ${
                   active 
                     ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg transform scale-105' 
                     : 'text-purple-200 hover:bg-white/10 hover:text-white hover:translate-x-1'
@@ -102,7 +102,7 @@ export default function Dashboard({ setIsAuthenticated }) {
                 onClick={() => navigate(item.path)}
                 data-testid={`nav-${item.label.toLowerCase()}`}
               >
-                <Icon className="mr-3 h-5 w-5" />
+                <Icon className="mr-3 h-4 w-4" />
                 {item.label}
               </button>
             );
